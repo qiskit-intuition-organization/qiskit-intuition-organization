@@ -85,6 +85,7 @@ LESSONS = [
             "twice = QuantumCircuit(1)\n"
             "twice.h(0)\n"
             "twice.h(0)                # recombine: the paths to 1 cancel\n\n"
+            "print(twice.draw())\n\n"
             "print('one H:  ', Statevector(once).probabilities_dict(decimals=3))\n"
             "print('two Hs: ', Statevector(twice).probabilities_dict(decimals=3))\n",
             "notes": [
@@ -302,6 +303,7 @@ LESSONS = [
             "qc = QuantumCircuit(1)\n"
             "qc.h(0)                 # put the arrow on the equator ({lesson:superposition})\n"
             "qc.measure_all()        # measure every qubit\n\n"
+            "print(qc.draw())\n\n"
             "sampler = StatevectorSampler()\n"
             "result = sampler.run([qc], shots=1000).result()\n"
             "counts = result[0].data.meas.get_counts()\n"
@@ -379,6 +381,7 @@ LESSONS = [
             "back = QuantumCircuit(1)\n"
             "back.h(0)\n"
             "back.h(0)\n\n"
+            "print(back.draw())\n\n"
             "print('H|0>  =', Statevector(plus))\n"
             "print('HH|0> =', Statevector(back))\n",
             "notes": [
@@ -453,7 +456,8 @@ LESSONS = [
             "    qc = QuantumCircuit(1)\n"
             "    qc.ry(theta, 0)\n"
             "    p1 = Statevector(qc).probabilities()[1]\n"
-            "    print(f'theta = {theta:.3f}  ->  P(1) = {p1:.3f}')\n",
+            "    print(f'theta = {theta:.3f}  ->  P(1) = {p1:.3f}')\n\n"
+            "print(qc.draw())          # the last circuit: RY(pi)\n",
             "notes": [
                 ("qc.ry(theta, 0)", "Rotate qubit 0 by angle θ (in radians) around the y axis."),
                 ("probabilities()[1]", "The probability array is indexed by outcome; [1] is P(1)."),
@@ -527,6 +531,7 @@ LESSONS = [
             "qc = QuantumCircuit(1)\n"
             "qc.h(0)\n"
             "qc.s(0)          # quarter turn around z\n\n"
+            "print(qc.draw())\n\n"
             "state = Statevector(qc)\n"
             "print('amplitudes   :', np.round(state.data, 3))\n"
             "print('probabilities:', state.probabilities_dict(decimals=3))\n",
@@ -602,7 +607,8 @@ LESSONS = [
             "    qc.p(phi, 0)\n"
             "    qc.h(0)\n"
             "    p0 = Statevector(qc).probabilities()[0]\n"
-            "    print(f'phi = {phi:.2f}  ->  P(0) = {p0:.3f}')\n",
+            "    print(f'phi = {phi:.2f}  ->  P(0) = {p0:.3f}')\n\n"
+            "print(qc.draw())          # the last circuit: H, phase, H\n",
             "notes": [
                 ("qc.p(phi, 0)", "Shift the phase of the |1⟩ path by φ."),
                 ("h → p → h", "Split, shift, recombine: the pattern behind every interferometer."),
@@ -683,7 +689,8 @@ LESSONS = [
             "sampler = StatevectorSampler()\n"
             "for axis in ['Z', 'X', 'Y']:\n"
             "    counts = sampler.run([measure_along(axis)], shots=1000).result()[0].data.meas.get_counts()\n"
-            "    print(axis, counts)\n",
+            "    print(axis, counts)\n"
+            "\nprint(measure_along('Y').draw())   # the Y measurement\n",
             "notes": [
                 ("qc.h(0) before measuring", "Swaps the X and Z axes, so the Z measurement answers the X question."),
                 ("qc.sdg(0); qc.h(0)", "Turns the Y axis onto Z."),
@@ -817,6 +824,7 @@ LESSONS = [
             "qc = QuantumCircuit(2)\n"
             "qc.h(0)\n"
             "qc.cx(0, 1)      # control q0, target q1\n\n"
+            "print(qc.draw())\n\n"
             "state = Statevector(qc)\n"
             "print(state.probabilities_dict(decimals=3))\n"
             "print('q0 alone:', partial_trace(state, [1]).purity().real)  # 0.5 = maximally mixed\n",
@@ -892,6 +900,7 @@ LESSONS = [
             "copier = QuantumCircuit(2)\n"
             "copier.h(0)           # the original: |+> on q0\n"
             "copier.cx(0, 1)       # try to copy q0 into q1\n\n"
+            "print(copier.draw())\n\n"
             "true_copy = QuantumCircuit(2)\n"
             "true_copy.h([0, 1])   # what two real copies of |+> look like\n\n"
             "print('copier:  ', Statevector(copier).probabilities_dict(decimals=3))\n"
@@ -976,6 +985,7 @@ LESSONS = [
             "qc.h(0)                # ...and would measure q0 and q1 here\n\n"
             "qc.cx(1, 2)            # Bob: X if q1 was 1  (deferred measurement)\n"
             "qc.cz(0, 2)            # Bob: Z if q0 was 1\n\n"
+            "print(qc.draw())\n\n"
             "original = QuantumCircuit(1)\n"
             "original.ry(1.1, 0)\n"
             "original.rz(0.7, 0)\n"
@@ -1062,7 +1072,8 @@ LESSONS = [
             "    qc.h(0)                       # ...and reads two bits\n"
             "    return qc\n\n"
             "for message in ['00', '01', '10', '11']:\n"
-            "    print(message, '->', Statevector(superdense(message)).probabilities_dict(decimals=3))\n",
+            "    print(message, '->', Statevector(superdense(message)).probabilities_dict(decimals=3))\n"
+            "\nprint(superdense('11').draw())\n",
             "notes": [
                 ("qc.x(0) / qc.z(0)", "Alice's twists, applied to her own qubit only."),
                 ("qc.cx(0, 1); qc.h(0)", "Bob's decoding: the Bell-pair circuit run backwards."),
@@ -1144,7 +1155,8 @@ LESSONS = [
             "}\n"
             "for name, oracle in oracles.items():\n"
             "    p1 = Statevector(deutsch(oracle)).probabilities([0])[1]\n"
-            "    print(f'{name:15s} -> q0 reads {round(p1)}')\n",
+            "    print(f'{name:15s} -> q0 reads {round(p1)}')\n"
+            "\nprint(deutsch(oracles['balanced x']).draw())\n",
             "notes": [
                 ("qc.x(1); qc.h([0, 1])", "Input in |+⟩, output qubit in |−⟩ — the setup that makes kickback happen."),
                 ("oracle(qc)", "The single query. A CNOT computes f(x) = x into the output qubit."),
@@ -1222,6 +1234,7 @@ LESSONS = [
             "    qc.h(range(n))\n"
             "    return qc\n\n"
             "state = Statevector(bernstein_vazirani('101'))\n"
+            "print(bernstein_vazirani('101').draw())\n"
             "print(state.probabilities_dict([0, 1, 2], decimals=3))   # input qubits only\n",
             "notes": [
                 ("qc.h(range(n + 1))", "Every input to |+⟩; the answer qubit (already flipped to |1⟩) to |−⟩."),
@@ -1386,6 +1399,7 @@ LESSONS = [
             "qc = QuantumCircuit(2)\n"
             "qc.h(1)                        # input |0> + |2>: period 2\n"
             "qft2(qc)\n"
+            "print(qc.draw())\n"
             "print(Statevector(qc).probabilities_dict(decimals=3))\n\n"
             "mine = QuantumCircuit(2)\n"
             "qft2(mine)\n"
@@ -1467,6 +1481,7 @@ LESSONS = [
             "qc.cp(2 * math.pi * phi, 0, 2)       # controlled-U\n"
             "qc.cp(2 * math.pi * phi * 2, 1, 2)   # controlled-U^2\n"
             "qc.append(QFTGate(2).inverse(), [0, 1])\n\n"
+            "print(qc.draw())\n\n"
             "print(Statevector(qc).probabilities_dict([0, 1], decimals=3))\n",
             "notes": [
                 ("qc.cp(2 * math.pi * phi, 0, 2)", "Controlled-U: kicks one turn of φ back onto q0."),
@@ -1624,6 +1639,7 @@ LESSONS = [
             "qc.cx(0, 1)\n"
             "qc.cx(1, 2)\n"
             "qc.measure_all()\n\n"
+            "print(qc.draw())\n\n"
             "native = transpile(qc, backend=backend, optimization_level=1, seed_transpiler=7)\n"
             "print('ops:', dict(native.count_ops()), ' depth:', native.depth())\n\n"
             "noisy = AerSimulator.from_backend(backend)\n"
@@ -1710,6 +1726,7 @@ LESSONS = [
             "theta = Parameter('theta')\n"
             "model = QuantumCircuit(1)\n"
             "model.ry(theta, 0)\n\n"
+            "print(model.draw())\n\n"
             "def p1(t):\n"
             "    return Statevector(model.assign_parameters({theta: t})).probabilities()[1]\n\n"
             "target = 0.8      # we want P(1) = 0.8\n"

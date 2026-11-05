@@ -27,6 +27,7 @@ def test_lesson_structure(lesson):
 
 @pytest.mark.parametrize("lesson", LESSONS, ids=lambda lesson: lesson["id"])
 def test_worked_example_runs_in_sandbox(lesson):
+    assert ".draw(" in lesson["qiskit"]["code"], "the worked example should print its circuit"
     result = execute_notebook_code(lesson["qiskit"]["code"])
     assert result["success"], result["error"]
     assert result["stdout"].strip()
