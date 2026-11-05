@@ -11,6 +11,7 @@ export type Lesson = {
   objectives: string[];
   explanation: string[];
   equation: string;
+  latex?: string;
   misconception: string;
   preset: string;
   try_this: string[];

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
 import CircuitLab from "@/components/circuit-lab";
 import IntuitionWidget from "@/components/intuition-widget";
+import MathBlock from "@/components/math";
 import { course, parseContent } from "@/lib/course";
 import type { Lesson } from "@/lib/course";
 import { notebookMarkdown, sanitizeNotebook } from "@/lib/notebook";
@@ -465,7 +466,7 @@ export default function Home() {
               {stage === 3 && (
                 <>
                   <Paragraphs lines={lesson.explanation} />
-                  <pre>{lesson.equation}</pre>
+                  <MathBlock latex={lesson.latex} fallback={lesson.equation} />
                   <p className="explanation-card">
                     <strong>Common mistake: </strong>
                     {lesson.misconception}
