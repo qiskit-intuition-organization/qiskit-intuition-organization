@@ -14,7 +14,6 @@ import {
   RotateCcw,
   Send,
   Sparkles,
-  X,
 } from "lucide-react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
@@ -23,29 +22,21 @@ import CircuitLab from "@/components/circuit-lab";
 import { course } from "@/lib/course";
 import type { GateName, GateOp } from "@/lib/quantum_simulator";
 import { cAbs2, simulateCircuit } from "@/lib/quantum_simulator";
+import { BlochSphere, CircuitDiagram } from "@/components/visuals";
 
 type WorkspaceMode = "circuit" | "code";
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
-const PRESETS: Record<string, { qubits: number; gates: GateOp[] }> = {
-  "Ground state": { qubits: 1, gates: [] },
-  Superposition: { qubits: 1, gates: [{ id: "h0", gate: "H", target: 0 }] },
-  Interference: {
-    qubits: 1,
-    gates: [
-      { id: "h1", gate: "H", target: 0 },
-      { id: "z1", gate: "Z", target: 0 },
-      { id: "h2", gate: "H", target: 0 },
-    ],
-  },
-  "Bell state": {
-    qubits: 2,
-    gates: [
-      { id: "bh", gate: "H", target: 0 },
-      { id: "bcx", gate: "CNOT", target: 1, control: 0 },
-    ],
-  },
-};
+// Every worked circuit from the course, so the Playground and lessons agree.
+const PRESETS: Record<string, { qubits: number; gates: GateOp[] }> = Object.fromEntries(
+  Object.entries(course.presets).map(([name, preset]) => [
+    name,
+    {
+      qubits: preset.qubits,
+      gates: preset.gates.map((g, i) => ({ ...g, id: `${name}-${i}`, control: g.control ?? undefined })),
+    },
+  ]),
+);
 
 const GATES: GateName[] = [
   "H",
@@ -58,6 +49,7 @@ const GATES: GateName[] = [
   "RY",
   "RZ",
   "CNOT",
+  "CZ",
 ];
 
 function localCoach(question: string, code: string, gates: GateOp[]): string {
@@ -154,13 +146,13 @@ export default function Home() {
   };
 
   const addGate = () => {
-    if (selectedGate === "CNOT" && (numQubits < 2 || target === control))
-      return;
+    const twoQubit = selectedGate === "CNOT" || selectedGate === "CZ";
+    if (twoQubit && (numQubits < 2 || target === control)) return;
     const operation: GateOp = {
       id: `${selectedGate}-${Date.now()}`,
       gate: selectedGate,
       target,
-      ...(selectedGate === "CNOT" ? { control } : {}),
+      ...(twoQubit ? { control } : {}),
       ...(["RX", "RY", "RZ"].includes(selectedGate)
         ? { angle: Math.PI / 2 }
         : {}),
@@ -205,14 +197,18 @@ export default function Home() {
   const circuitWorkspace = (guided: boolean) => (
     <>
       {!guided && (
-        <div className="preset-row" aria-label="Worked examples">
-          {Object.keys(PRESETS).map((name) => (
-            <button key={name} onClick={() => loadPreset(name)}>
-              <Sparkles size={14} aria-hidden="true" />
-              {name}
-            </button>
-          ))}
-        </div>
+        <label className="preset-picker">
+          <Sparkles size={14} aria-hidden="true" /> Load a circuit from the course
+          <select
+            value=""
+            onChange={(event) => event.target.value && loadPreset(event.target.value)}
+          >
+            <option value="">Choose an example…</option>
+            {Object.keys(PRESETS).map((name) => (
+              <option key={name}>{name}</option>
+            ))}
+          </select>
+        </label>
       )}
       <div className="builder-card">
         <div className="field">
@@ -253,7 +249,7 @@ export default function Home() {
             ))}
           </select>
         </div>
-        {selectedGate === "CNOT" && (
+        {(selectedGate === "CNOT" || selectedGate === "CZ") && (
           <div className="field">
             <label>Control</label>
             <select
@@ -272,7 +268,8 @@ export default function Home() {
           <button
             className="primary"
             disabled={
-              selectedGate === "CNOT" && (numQubits < 2 || control === target)
+              (selectedGate === "CNOT" || selectedGate === "CZ") &&
+              (numQubits < 2 || control === target)
             }
             onClick={addGate}
           >
@@ -289,32 +286,13 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <div className="circuit-strip" aria-label="Current circuit">
-        {gates.length === 0 && (
-          <p>No gates yet. The register starts in |0…0⟩.</p>
-        )}
-        {gates.map((gate, index) => (
-          <button
-            key={gate.id}
-            aria-label={`Remove ${gate.gate} gate ${index + 1}`}
-            title="Remove gate"
-            onClick={() =>
-              setGates((current) =>
-                current.filter((item) => item.id !== gate.id),
-              )
-            }
-          >
-            <small>{index + 1}</small>
-            <strong>{gate.gate}</strong>
-            <span>
-              {gate.gate === "CNOT"
-                ? `q${gate.control} → q${gate.target}`
-                : `q${gate.target}`}
-            </span>
-            <X className="remove-gate" size={13} aria-hidden="true" />
-          </button>
-        ))}
-      </div>
+      <CircuitDiagram
+        qubits={numQubits}
+        gates={gates}
+        onRemove={(index) =>
+          setGates((current) => current.filter((_, i) => i !== index))
+        }
+      />
       <div className="result-grid">
         <article className="panel">
           <h2>Measurement probabilities</h2>
@@ -330,17 +308,19 @@ export default function Home() {
           <p className="caption">Qiskit displays q0 as the rightmost bit.</p>
         </article>
         <article className="panel">
-          <h2>Single-qubit readout</h2>
-          {Object.entries(result.blochAngles).map(([qubit, value]) => (
-            <div className="readout" key={qubit}>
-              <strong>q{qubit}</strong>
-              <span>{value.purity > 0.98 ? "pure" : "mixed / entangled"}</span>
-              <code>
-                x {value.x.toFixed(2)} · y {value.y.toFixed(2)} · z{" "}
-                {value.z.toFixed(2)}
-              </code>
-            </div>
-          ))}
+          <h2>Each qubit&apos;s arrow</h2>
+          <div className="bloch-row">
+            {Object.entries(result.blochAngles).map(([qubit, value]) => (
+              <BlochSphere
+                key={qubit}
+                x={value.x}
+                y={value.y}
+                z={value.z}
+                size={150}
+                label={`q${qubit}${value.purity < 0.98 ? " · shrunk: entangled or mixed" : ""}`}
+              />
+            ))}
+          </div>
         </article>
       </div>
       <article className="explanation-card">
@@ -455,7 +435,7 @@ export default function Home() {
         </div>
         <AccountMenu />
         <nav aria-label="Primary navigation">
-          <Link href="/">Learning path · 16 lessons</Link>
+          <Link href="/">Learning path · {course.lessons.length} lessons</Link>
           <Link href="/playground">Playground & code coach</Link>
         </nav>
       </aside>

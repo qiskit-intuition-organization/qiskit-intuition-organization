@@ -4,6 +4,7 @@ import { cAbs2, simulateCircuit } from "@/lib/quantum_simulator";
 import type { GateName, GateOp } from "@/lib/quantum_simulator";
 import { course } from "@/lib/course";
 import type { Practice } from "@/lib/course";
+import { BlochSphere, CircuitDiagram, ProbabilityBars, piLabel } from "./visuals";
 
 export default function CircuitLab({
   preset,
@@ -123,12 +124,12 @@ export default function CircuitLab({
         )}
         {["RX", "RY", "RZ"].includes(gate) && (
           <label>
-            Angle {angle.toFixed(2)} radians
+            Angle {piLabel(angle)}
             <input
               type="range"
               min={-Math.PI * 2}
               max={Math.PI * 2}
-              step="0.01"
+              step={Math.PI / 16}
               value={angle}
               onChange={(e) => setAngle(Number(e.target.value))}
             />
@@ -171,76 +172,34 @@ export default function CircuitLab({
           Clear
         </button>
       </div>
-      <p aria-live="polite">
-        {gates
-          .map(
-            (g) =>
-              `${g.gate}(${g.control === undefined ? "" : `q${g.control} → `}q${g.target})`,
-          )
-          .join(" → ") || "Initial state |0…0⟩"}
-      </p>
+      <CircuitDiagram
+        qubits={initial.qubits}
+        gates={gates}
+        onRemove={(index) => {
+          setGates(gates.filter((_, i) => i !== index));
+          setCounts({});
+        }}
+      />
       <div className="result-grid">
         <div>
           <h3>Exact probabilities</h3>
-          {result.statevector.map((a, i) => (
-            <div className="probability-row" key={i}>
-              <code>{i.toString(2).padStart(initial.qubits, "0")}</code>
-              <div>
-                <i style={{ width: `${cAbs2(a) * 100}%` }} />
-              </div>
-              <span>{(cAbs2(a) * 100).toFixed(1)}%</span>
-            </div>
-          ))}
-          <p>q0 is the rightmost bit.</p>
+          <ProbabilityBars probabilities={result.statevector.map(cAbs2)} />
+          <p className="caption">Read bit strings right to left: q0 is the rightmost bit.</p>
         </div>
         <div>
-          <h3>Bloch vectors</h3>
-          {Object.entries(result.blochAngles).map(([q, b]) => (
-            <figure key={q}>
-              <svg
-                width="150"
-                height="150"
-                viewBox="0 0 150 150"
-                role="img"
-                aria-label={`Qubit ${q}: x ${b.x.toFixed(2)}, y ${b.y.toFixed(2)}, z ${b.z.toFixed(2)}`}
-              >
-                <circle
-                  cx="75"
-                  cy="75"
-                  r="55"
-                  fill="var(--teal-soft)"
-                  stroke="var(--teal)"
-                />
-                <ellipse
-                  cx="75"
-                  cy="75"
-                  rx="55"
-                  ry="15"
-                  fill="none"
-                  stroke="var(--teal)"
-                />
-                <path d="M75 20V130M20 75H130" stroke="#96a8ac" />
-                <line
-                  x1="75"
-                  y1="75"
-                  x2={75 + b.x * 48 + b.y * 15}
-                  y2={75 - b.z * 48 + b.y * 12}
-                  stroke="#ad6500"
-                  strokeWidth="4"
-                />
-                <text x="80" y="15">
-                  |0⟩
-                </text>
-                <text x="80" y="145">
-                  |1⟩
-                </text>
-              </svg>
-              <figcaption>
-                q{q} · {b.purity < 0.98 ? "mixed" : "pure"} · x {b.x.toFixed(2)}
-                , y {b.y.toFixed(2)}, z {b.z.toFixed(2)}
-              </figcaption>
-            </figure>
-          ))}
+          <h3>Each qubit&apos;s arrow</h3>
+          <div className="bloch-row">
+            {Object.entries(result.blochAngles).map(([q, b]) => (
+              <BlochSphere
+                key={q}
+                x={b.x}
+                y={b.y}
+                z={b.z}
+                size={150}
+                label={`q${q}${b.purity < 0.98 ? " · shrunk: entangled or mixed" : ""}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
       <div className="course-controls">
