@@ -358,7 +358,7 @@ LESSONS = [
         "try_this": [
             "One H puts the bars at 50/50 and the arrow on the equator.",
             "Add a second **H**. Before clicking, commit: random or certain?",
-            "Clear back to one H and add **X** before it. Same bars as |+⟩ — but is it the same state? Check the statevector.",
+            "Clear, then add **X** and then **H** (X first). Same bars as |+⟩ — but is it the same state? Compare the arrow with one H alone.",
         ],
         "objectives": [
             "Predict H|0⟩ and H|1⟩.",
@@ -581,8 +581,8 @@ LESSONS = [
         "preset": "Interference",
         "try_this": [
             "H → Z → H ends at |1⟩ with certainty, without any X gate.",
-            "Replace Z with **S** (a quarter-wave shift). Predict the bars first.",
-            "Replace Z with **RZ** and sweep the angle. Match what you see to the widget's curve.",
+            "Press **Undo** twice (removing the last H and the Z), then add **S** and **H** again: a quarter-wave shift instead of a half. Predict the bars first.",
+            "Do the same with **RZ** instead of S, trying a few angles. Match what you see to the curve in the Try it widget.",
         ],
         "objectives": [
             "Explain constructive and destructive interference with amplitudes.",
@@ -802,7 +802,7 @@ LESSONS = [
         "preset": "Bell state",
         "try_this": [
             "H then CNOT gives 50% |00⟩ and 50% |11⟩. Look at the Bloch spheres: both arrows have **shrunk to the center**.",
-            "Remove the H (undo twice, add CNOT alone). Is the result entangled?",
+            "Tap the H to remove it, leaving the CNOT alone. Is the result entangled?",
             "Add **X** on q1 after the CNOT. Which two outcomes remain?",
         ],
         "objectives": [
@@ -879,7 +879,7 @@ LESSONS = [
         "try_this": [
             "The example tries to copy |+⟩ from q0 into q1. Two true copies would show all four outcomes; you only see 00 and 11.",
             "Look at the Bloch readout: both arrows have shrunk to the centre. Copying didn't just fail — it took the original's arrow away.",
-            "Replace the H with **X**, so the original is |1⟩. Now the copy is perfect: 11 every time. The copier only works on 0 and 1.",
+            "Clear, then add **X** on q0 and a **CNOT** from q0 to q1, so the original is |1⟩. Now the copy is perfect: 11 every time. The copier only works on 0 and 1.",
         ],
         "objectives": [
             "Show that CNOT copies 0 and 1 but not superpositions.",
@@ -1285,7 +1285,7 @@ LESSONS = [
         "try_this": [
             "The worked example searches 4 items for `11`: H on both, an oracle (CZ), then the diffuser. The bars show 100% on 11.",
             "Undo gates from the end, one at a time, to see the state right after the oracle.",
-            "Load the preset again and change the oracle (wrap the CZ in X gates on q0) to search for a different item.",
+            "To search for a different item, the oracle's CZ gets wrapped in X gates. That's exactly the step 5 exercise, where you can edit every line.",
         ],
         "objectives": [
             "Identify state preparation, oracle, diffusion and readout.",
@@ -1709,6 +1709,7 @@ LESSONS = [
         "explanation": [
             "A variational circuit U(θ) prepares |ψ(θ)⟩. A cost C(θ) — such as the distance between measured and target probabilities — is estimated from shots and minimized by a classical optimizer.",
             "Gradients can be measured on the quantum device itself with the parameter-shift rule: ∂C/∂θ = [C(θ + π/2) − C(θ − π/2)]/2 for rotation gates.",
+            "Where to go next: you now have every building block — states, gates, measurement, entanglement, interference, algorithms, noise and training. Create a free IBM Quantum account and run one of your circuits on a real chip with the qiskit-ibm-runtime package, work through IBM's Qiskit tutorials, or try the qiskit-machine-learning package for larger trainable circuits.",
         ],
         "equation": "theta <- theta - eta * dC/dtheta",
         "latex": r"\theta \leftarrow \theta - \eta\,\frac{\partial C}{\partial \theta},\qquad \frac{\partial C}{\partial \theta} = \frac{C(\theta+\frac{\pi}{2}) - C(\theta-\frac{\pi}{2})}{2}",
