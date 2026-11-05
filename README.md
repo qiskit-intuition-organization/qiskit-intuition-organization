@@ -12,7 +12,7 @@ pinned: false
 
 **Learn quantum computing and Qiskit from zero, intuition first, in a paper lab notebook.**
 
-**▶ Try it:** [huggingface.co/spaces/j76dvyt4q5-cyber/Qiskit-Intuition](https://huggingface.co/spaces/j76dvyt4q5-cyber/Qiskit-Intuition). It works on laptops, tablets and phones, with no sign-up or API key.
+**▶ Try it:** [qiskit-intuition-organization-phi.vercel.app](https://qiskit-intuition-organization-phi.vercel.app). It works on laptops, tablets and phones, with no sign-up or API key.
 
 Most quantum courses open with linear algebra. This one opens with a picture you can grab and turn. Each idea becomes a prediction you test, then an experiment, and only then the math and the Qiskit code.
 
@@ -104,7 +104,9 @@ Everything is optional. On Hugging Face, add these as **Space secrets**. Locally
 
 ## Deployment
 
-Every push to `main` runs CI. It also uploads the app to the Hugging Face Space through `.github/workflows/sync-to-huggingface.yml`, which needs an `HF_TOKEN` repository secret with write access to the Space. The Space uses the Docker SDK and the root Dockerfile to start the Node frontend and private Python service.
+The live site runs on Vercel as two projects built from this repository: the Next.js frontend (Root Directory `web`) and the FastAPI backend (repository root). Every push to `main` runs CI and redeploys both.
+
+The workflow `.github/workflows/sync-to-huggingface.yml` can also upload the app to a Hugging Face Space through `.github/workflows/sync-to-huggingface.yml`, which needs an `HF_TOKEN` repository secret with write access to the Space. The Space uses the Docker SDK and the root Dockerfile to start the Node frontend and private Python service.
 
 ### Separate Vercel deployments
 
