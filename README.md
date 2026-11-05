@@ -118,7 +118,12 @@ For the backend project, use the **repository root** and the FastAPI preset.
 `app.py` exports the FastAPI application; it does not import Streamlit.
 Runtime dependencies are declared in `pyproject.toml` for Vercel/uv and in
 `requirements.txt` for pip/Docker. `uv.lock` fixes the versions used by uv.
-Keep both lists in sync and run `uv lock` when adding a dependency.
+The Vercel list is deliberately lean, because Vercel installs it on every cold
+start into a small temporary disk (the full set ran out of space). Optional
+extras stay out of it: `ai` (the Gemini coach; the built-in coach answers
+without it) and `plots` (matplotlib, for figures from learner code), plus the
+`dev` group (ruff). `requirements.txt` keeps everything for Docker and CI.
+Run `uv lock` after changing `pyproject.toml`.
 If an old deployment reports `ModuleNotFoundError: dotenv`, deploy this manifest
 change and redeploy the backend without the existing build cache.
 Deploy the same branch to both projects so the `/course/routing` endpoint exists

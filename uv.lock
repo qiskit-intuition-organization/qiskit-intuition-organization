@@ -1,5 +1,5 @@
 version = 1
-revision = 5
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1721,22 +1721,32 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "email-validator" },
     { name = "fastapi" },
-    { name = "google-genai" },
-    { name = "matplotlib" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pillow" },
     { name = "pydantic" },
     { name = "pyjwt" },
-    { name = "pylatexenc" },
     { name = "python-dotenv" },
     { name = "qiskit" },
     { name = "qiskit-aer" },
     { name = "requests" },
-    { name = "ruff" },
     { name = "sqlalchemy" },
     { name = "sqlalchemy-libsql" },
     { name = "uvicorn" },
+]
+
+[package.optional-dependencies]
+ai = [
+    { name = "google-genai" },
+]
+plots = [
+    { name = "matplotlib" },
+    { name = "pylatexenc" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -1744,22 +1754,25 @@ requires-dist = [
     { name = "argon2-cffi", specifier = ">=23.1.0,<26.0.0" },
     { name = "email-validator", specifier = ">=2.2.0,<3.0.0" },
     { name = "fastapi", specifier = ">=0.110.0" },
-    { name = "google-genai", specifier = ">=0.3.0" },
-    { name = "matplotlib", specifier = ">=3.8.0" },
+    { name = "google-genai", marker = "extra == 'ai'", specifier = ">=0.3.0" },
+    { name = "matplotlib", marker = "extra == 'plots'", specifier = ">=3.8.0" },
     { name = "numpy", specifier = ">=1.26.0" },
     { name = "pillow", specifier = ">=10.0.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "pyjwt", specifier = ">=2.10.0,<3.0.0" },
-    { name = "pylatexenc", specifier = ">=2.10" },
+    { name = "pylatexenc", marker = "extra == 'plots'", specifier = ">=2.10" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "qiskit", specifier = ">=1.0.0,<3.0.0" },
     { name = "qiskit-aer", specifier = ">=0.14.0,<0.18.0" },
     { name = "requests", specifier = ">=2.31.0" },
-    { name = "ruff", specifier = ">=0.4.0" },
     { name = "sqlalchemy", specifier = ">=2.0.0,<3.0.0" },
     { name = "sqlalchemy-libsql", specifier = "==0.2.0" },
     { name = "uvicorn", specifier = ">=0.28.0" },
 ]
+provides-extras = ["ai", "plots"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.4.0" }]
 
 [[package]]
 name = "requests"
