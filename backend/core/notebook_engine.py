@@ -24,10 +24,13 @@ import traceback
 
 os.environ.setdefault("MPLCONFIGDIR", os.path.join(tempfile.gettempdir(), "qiskit-intuition-mpl"))
 
-import matplotlib
+try:  # Optional: the Vercel backend omits matplotlib to keep its bundle small.
+    import matplotlib
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 import numpy as np
 import qiskit
 from qiskit import QuantumCircuit
@@ -161,7 +164,7 @@ def _run(code_string: str) -> dict:
     """Execute code in the current process and return a picklable result."""
     stdout_buffer = io.StringIO()
     stderr_buffer = io.StringIO()
-    existing_figs = set(plt.get_fignums())
+    existing_figs = set(plt.get_fignums()) if plt else set()
 
     # A single namespace so functions defined by the learner can see
     # module-level names (separate globals/locals breaks closures).
@@ -172,8 +175,9 @@ def _run(code_string: str) -> dict:
         "qiskit": qiskit,
         "QuantumCircuit": QuantumCircuit,
         "Statevector": Statevector,
-        "plt": plt,
     }
+    if plt:
+        namespace["plt"] = plt
 
     # Print numpy scalars as plain numbers (numpy 2 shows np.float64(...)).
     with contextlib.suppress(Exception):
@@ -195,7 +199,7 @@ def _run(code_string: str) -> dict:
             error_message = _truncate(traceback.format_exc())
 
     figures = []
-    for num in sorted(set(plt.get_fignums()) - existing_figs):
+    for num in sorted(set(plt.get_fignums()) - existing_figs) if plt else []:
         fig = plt.figure(num)
         if len(figures) < MAX_FIGURES:
             try:

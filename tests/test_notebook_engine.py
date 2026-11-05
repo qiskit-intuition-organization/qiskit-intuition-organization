@@ -85,3 +85,14 @@ def test_normal_qiskit_program_fits_within_the_memory_cap():
     result = execute_notebook_code(code)
     assert result["success"] is True, result["error"]
     assert "True" in result["stdout"]
+
+
+def test_sandbox_runs_without_matplotlib(monkeypatch):
+    """The Vercel backend omits matplotlib; code must still run, just without figures."""
+    from backend.core import notebook_engine
+
+    monkeypatch.setattr(notebook_engine, "plt", None)
+    result = notebook_engine._run("from qiskit import QuantumCircuit\nqc = QuantumCircuit(1)\nqc.h(0)\nprint(qc.num_qubits)")
+    assert result["success"], result["error"]
+    assert result["stdout"].strip() == "1"
+    assert result["figures"] == []

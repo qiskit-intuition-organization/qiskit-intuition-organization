@@ -3,9 +3,6 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 import base64
 import io
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 from ..core.quantum_engine import QuantumEngine
 
 router = APIRouter()
@@ -23,12 +20,22 @@ class SimulateRequest(BaseModel):
 
 def fig_to_base64(fig):
     try:
+        import matplotlib.pyplot as plt
+
         buf = io.BytesIO()
         fig.savefig(buf, format='png', bbox_inches='tight')
         buf.seek(0)
         img_str = base64.b64encode(buf.read()).decode('utf-8')
         plt.close(fig)
         return img_str
+    except Exception:
+        return ""
+
+
+def circuit_figure_base64(engine) -> str:
+    """PNG of the circuit, or "" when matplotlib isn't installed (as on Vercel)."""
+    try:
+        return fig_to_base64(engine.get_circuit_figure())
     except Exception:
         return ""
 
@@ -51,8 +58,7 @@ async def simulate(req: SimulateRequest):
         probabilities = engine.get_probabilities(noisy=req.noisy)
         
         # Capture circuit figure
-        fig = engine.get_circuit_figure()
-        fig_b64 = fig_to_base64(fig)
+        fig_b64 = circuit_figure_base64(engine)
             
         sv_list = [str(c) for c in sv.data]
         
