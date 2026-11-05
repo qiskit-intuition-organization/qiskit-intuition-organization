@@ -58,8 +58,46 @@ type Feedback = {
   error?: string;
   markdown?: string;
   passed?: boolean;
+  success?: boolean;
   figures?: string[];
+  /** Where to show the result: next to the worked example, or below the exercise. */
+  source?: "example";
 };
+
+/** Output of a run, shown where it was requested and scrolled into view. */
+function FeedbackPanel({ feedback, busy }: { feedback: Feedback; busy: boolean }) {
+  const panel = useRef<HTMLDivElement>(null);
+  const text = [feedback.error, feedback.message, feedback.markdown].filter(
+    Boolean,
+  ) as string[];
+  const hasOutput = Boolean(
+    text.length || feedback.stdout || feedback.stderr || feedback.figures?.length,
+  );
+  useEffect(() => {
+    if (busy || hasOutput)
+      panel.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [busy, hasOutput]);
+  if (!busy && !hasOutput) return null;
+  return (
+    <div ref={panel} aria-live="polite">
+      {busy && <p role="status">Running…</p>}
+      {(text.length > 0 || feedback.stdout || feedback.stderr) && (
+        <div className="explanation-card">
+          <Paragraphs lines={text} />
+          {feedback.stdout && <pre>{feedback.stdout}</pre>}
+          {feedback.stderr && <pre>{feedback.stderr}</pre>}
+        </div>
+      )}
+      {feedback.figures?.map((figure, i) => (
+        <img
+          key={i}
+          src={`data:image/png;base64,${figure}`}
+          alt={`Qiskit output figure ${i + 1}`}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   const [lessons, setLessons] = useState<Lesson[]>(course.lessons);
@@ -109,13 +147,30 @@ export default function Home() {
     setFeedback({});
     setView("course");
   };
-  const request = async (operation: string, body: unknown) => {
+  const request = async (
+    operation: string,
+    body: unknown,
+    source?: Feedback["source"],
+  ) => {
     setBusy(true);
-    setFeedback({});
+    setFeedback({ source });
     try {
       const data = await api<Feedback>(operation, body);
       if (activeOwner.current !== owner) return;
-      setFeedback(data);
+      const silent =
+        operation === "execute" &&
+        data.success &&
+        !data.stdout?.trim() &&
+        !data.stderr?.trim() &&
+        !data.figures?.length;
+      setFeedback({
+        ...data,
+        ...(silent && {
+          message:
+            "Ran without errors, but nothing was printed. Add `print(qc.draw())` to see your circuit.",
+        }),
+        source,
+      });
       if (data.passed)
         setNotebook((current) => ({
           ...current,
@@ -127,6 +182,7 @@ export default function Home() {
       if (activeOwner.current !== owner) return;
       setFeedback({
         error: error instanceof Error ? error.message : "Request failed",
+        source,
       });
     } finally {
       if (activeOwner.current === owner) setBusy(false);
@@ -333,11 +389,14 @@ export default function Home() {
                   <button
                     disabled={busy}
                     onClick={() =>
-                      request("execute", { code: lesson.qiskit.code })
+                      request("execute", { code: lesson.qiskit.code }, "example")
                     }
                   >
                     Run worked example
                   </button>
+                  {feedback.source === "example" && (
+                    <FeedbackPanel feedback={feedback} busy={busy} />
+                  )}
                   <dl>
                     {lesson.qiskit.notes.map(([term, note], i) => (
                       <div key={i}>
@@ -443,33 +502,9 @@ export default function Home() {
                   </div>
                 </>
               )}
-              {busy && <p role="status">Running…</p>}
-              {(feedback.error ||
-                feedback.message ||
-                feedback.markdown ||
-                feedback.stdout ||
-                feedback.stderr) && (
-                <div aria-live="polite" className="explanation-card">
-                  <Paragraphs
-                    lines={
-                      [
-                        feedback.error,
-                        feedback.message,
-                        feedback.markdown,
-                      ].filter(Boolean) as string[]
-                    }
-                  />
-                  {feedback.stdout && <pre>{feedback.stdout}</pre>}
-                  {feedback.stderr && <pre>{feedback.stderr}</pre>}
-                </div>
+              {feedback.source !== "example" && (
+                <FeedbackPanel feedback={feedback} busy={busy} />
               )}
-              {feedback.figures?.map((figure, i) => (
-                <img
-                  key={i}
-                  src={`data:image/png;base64,${figure}`}
-                  alt={`Qiskit output figure ${i + 1}`}
-                />
-              ))}
             </article>
             <label className="panel course-notes">
               Margin notes
