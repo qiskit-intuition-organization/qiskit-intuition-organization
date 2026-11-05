@@ -96,3 +96,21 @@ def test_sandbox_runs_without_matplotlib(monkeypatch):
     assert result["success"], result["error"]
     assert result["stdout"].strip() == "1"
     assert result["figures"] == []
+
+
+def test_worker_inherits_this_process_import_path(monkeypatch, tmp_path):
+    """Vercel installs packages onto the server's sys.path only; the worker must see them too."""
+    import subprocess
+    import sys
+
+    from backend.core import notebook_engine
+
+    extra = tmp_path / "runtime-site-packages"
+    extra.mkdir()
+    (extra / "runtime_only_pkg.py").write_text("VALUE = 42\n")
+    monkeypatch.setattr(sys, "path", [*sys.path, str(extra)])
+    child = subprocess.run(
+        [sys.executable, "-c", "import runtime_only_pkg; print(runtime_only_pkg.VALUE)"],
+        env=notebook_engine._child_env(), capture_output=True, text=True, cwd=tmp_path, timeout=60,
+    )
+    assert child.stdout.strip() == "42", child.stderr

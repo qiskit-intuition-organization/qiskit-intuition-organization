@@ -224,6 +224,19 @@ def _failure(message: str) -> dict:
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+def _child_env() -> dict:
+    """Environment for the worker: single-threaded, and able to import what we can.
+
+    The worker gets this process's import path as PYTHONPATH. Hosts that
+    install packages at startup (Vercel) put them on this process's
+    ``sys.path`` only, so a plain child interpreter would not find numpy.
+    """
+    env = {**os.environ, **_SINGLE_THREAD_ENV}
+    paths = [_PROJECT_ROOT, *sys.path, *env.get("PYTHONPATH", "").split(os.pathsep)]
+    env["PYTHONPATH"] = os.pathsep.join(dict.fromkeys(path for path in paths if path))
+    return env
+
+
 def execute_notebook_code(code_string, timeout: float = DEFAULT_TIMEOUT_SECONDS):
     """Validate and run learner code in a fresh, time-limited Python process.
 
@@ -238,8 +251,7 @@ def execute_notebook_code(code_string, timeout: float = DEFAULT_TIMEOUT_SECONDS)
     if security_violation:
         return _failure(security_violation)
 
-    env = {**os.environ, **_SINGLE_THREAD_ENV}
-    env["PYTHONPATH"] = os.pathsep.join(filter(None, [_PROJECT_ROOT, env.get("PYTHONPATH")]))
+    env = _child_env()
     with tempfile.TemporaryDirectory(prefix="qi-sandbox-") as workdir:
         result_path = os.path.join(workdir, "result.pickle")
         try:
