@@ -286,6 +286,8 @@ export function CurvePlot({
   ticks,
   width = 320,
   height = 170,
+  target,
+  trail = [],
 }: {
   fn: (x: number) => number;
   xMax: number;
@@ -295,8 +297,12 @@ export function CurvePlot({
   ticks?: [number, string][];
   width?: number;
   height?: number;
+  /** Optional horizontal goal line, e.g. a training target. */
+  target?: number;
+  /** Earlier x values, drawn as fading dots (e.g. an optimizer's path). */
+  trail?: number[];
 }) {
-  const pad = { l: 36, r: 12, t: 12, b: 30 };
+  const pad = { l: 36, r: 12, t: 18, b: 30 };
   const w = width - pad.l - pad.r;
   const h = height - pad.t - pad.b;
   const sx = (v: number) => pad.l + (v / xMax) * w;
@@ -316,10 +322,19 @@ export function CurvePlot({
         <text key={t} x={sx(v)} y={sy(0) + 16} textAnchor="middle" className="axis-label">{t}</text>
       ))}
       <path d={path} fill="none" stroke={INK} strokeWidth={2} />
+      {target !== undefined && (
+        <>
+          <line x1={pad.l} x2={pad.l + w} y1={sy(target)} y2={sy(target)} stroke={AMBER} strokeDasharray="6 4" strokeWidth={1.5} />
+          <text x={pad.l + w} y={sy(target) - 4} textAnchor="end" className="axis-label" fill={AMBER}>target</text>
+        </>
+      )}
+      {trail.map((t, i) => (
+        <circle key={i} cx={sx(t)} cy={sy(fn(t))} r={3} fill={AMBER} opacity={0.2 + (0.6 * (i + 1)) / (trail.length + 1)} />
+      ))}
       <line x1={sx(value)} x2={sx(value)} y1={sy(0)} y2={sy(fn(value))} stroke={RED} strokeDasharray="3 3" />
       <circle cx={sx(value)} cy={sy(fn(value))} r={5} fill={RED} />
       <text x={pad.l + w} y={height - 4} textAnchor="end" className="axis-label">{xLabel}</text>
-      <text x={pad.l + 4} y={pad.t + 10} className="axis-label">{yLabel}</text>
+      <text x={4} y={pad.t - 2} className="axis-label">{yLabel}</text>
     </svg>
   );
 }
@@ -337,7 +352,7 @@ export function AmplitudeBars({
   showMean?: boolean;
 }) {
   const n = amplitudes.length;
-  const width = 60 + n * 64;
+  const width = 60 + n * 64 + (showMean ? 64 : 0);
   const height = 190;
   const mid = 95;
   const scale = 80;
@@ -362,7 +377,7 @@ export function AmplitudeBars({
       {showMean && (
         <>
           <line x1={36} x2={width - 10} y1={mid - mean * scale} y2={mid - mean * scale} stroke={AMBER} strokeDasharray="5 4" strokeWidth={2} />
-          <text x={width - 12} y={mid - mean * scale - 5} textAnchor="end" className="axis-label" fill={AMBER}>average</text>
+          <text x={width - 4} y={mid - mean * scale + 4} textAnchor="end" className="axis-label" fill={AMBER}>average</text>
         </>
       )}
     </svg>
@@ -394,7 +409,7 @@ export function Phasors({ phase }: { phase: number }) {
       {arrow([0, 0], a, INK)}
       {arrow(a, sum, RED)}
       {Math.hypot(...sum) > 2 && arrow([0, 0], sum, AMBER, "6 4")}
-      <text x={8} y={18} className="axis-label">blue: path 1 · red: path 2 · dashed: total</text>
+      <title>Blue: path 1. Red: path 2, added on. Dashed amber: the total.</title>
     </svg>
   );
 }
