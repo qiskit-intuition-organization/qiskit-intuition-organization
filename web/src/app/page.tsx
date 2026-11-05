@@ -102,10 +102,14 @@ function FeedbackPanel({ feedback, busy }: { feedback: Feedback; busy: boolean }
 export default function Home() {
   const [lessons, setLessons] = useState<Lesson[]>(course.lessons);
   const [brand, setBrand] = useState(course.brand);
-  const { notebook, setNotebook, ready, owner } = useNotebook();
+  const { notebook, setNotebook, ready, owner, status } = useNotebook();
   const activeOwner = useRef(owner);
   activeOwner.current = owner;
-  const [view, setView] = useState("course");
+  const [view, setView] = useState(() =>
+    notebook.completed_lessons.length || notebook.learning_stage ? "course" : "map",
+  );
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [choice, setChoice] = useState<number | undefined>(undefined);
   const [notice, setNotice] = useState("");
   const [feedback, setFeedback] = useState<Feedback>({});
   const [busy, setBusy] = useState(false);
@@ -121,6 +125,23 @@ export default function Home() {
     setNotice("");
     setBusy(false);
   }, [owner]);
+  useEffect(() => setChoice(undefined), [lesson.id]);
+  const go = (next: string) => {
+    setView(next);
+    setMenuOpen(false);
+  };
+  const done = new Set(notebook.completed_lessons);
+  const completedCount = lessons.filter((l) => done.has(l.id)).length;
+  const nextIndex = Math.max(
+    0,
+    lessons.findIndex((l) => !done.has(l.id)),
+  );
+  const syncLine =
+    status === "saved"
+      ? "Saved to your account"
+      : status === "saving" || status === "pending"
+        ? "Saving…"
+        : "Saved in this browser";
 
   const patch = (update: Partial<Notebook>) =>
     setNotebook((current) => ({ ...current, ...update }));
@@ -145,7 +166,7 @@ export default function Home() {
   const open = (next: number) => {
     patch({ selected_lesson: next, learning_stage: 0 });
     setFeedback({});
-    setView("course");
+    go("course");
   };
   const request = async (
     operation: string,
@@ -196,7 +217,22 @@ export default function Home() {
     <div
       className={`site-shell ${notebook.reading_mode === "plain" ? "plain-reading" : ""}`}
     >
-      <aside className="site-sidebar">
+      <header className="mobile-bar">
+        <span className="brand-mark">Q</span>
+        <strong>
+          {view === "course"
+            ? `Lesson ${index + 1} of ${lessons.length}`
+            : { map: "Course map", notebook: "My notebook", glossary: "Glossary", author: "Content Studio" }[view]}
+        </strong>
+        <button
+          aria-expanded={menuOpen}
+          aria-controls="site-menu"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? "Close" : "Menu"}
+        </button>
+      </header>
+      <aside id="site-menu" className={`site-sidebar ${menuOpen ? "open" : ""}`}>
         <div className="site-brand">
           <span className="brand-mark">Q</span>
           <div>
@@ -207,7 +243,8 @@ export default function Home() {
         <AccountMenu />
         <nav aria-label="Primary navigation">
           {[
-            ["course", "Learning path"],
+            ["map", "Course map"],
+            ["course", "Current lesson"],
             ["notebook", "My notebook"],
             ["glossary", "Glossary"],
             ["author", "Content Studio"],
@@ -216,7 +253,7 @@ export default function Home() {
               key={id}
               aria-current={view === id ? "page" : undefined}
               className={view === id ? "active" : ""}
-              onClick={() => setView(id)}
+              onClick={() => go(id)}
             >
               {title}
             </button>
@@ -251,6 +288,7 @@ export default function Home() {
             }{" "}
             of {lessons.length} lessons completed
           </small>
+          <small className="sync-line">{syncLine}</small>
         </div>
         <label>
           <input
@@ -267,7 +305,9 @@ export default function Home() {
         </a>
       </aside>
       <main className="course-main">
-        <NotebookSyncNotice />
+        {!["guest", "saved", "saving", "pending"].includes(status) && (
+          <NotebookSyncNotice />
+        )}
         {notice && (
           <p role="status" className="explanation-card">
             {notice}
@@ -281,6 +321,16 @@ export default function Home() {
               </p>
               <h1>{lesson.title}</h1>
               <p>{lesson.summary}</p>
+              {stage === 0 && (
+                <aside className="goals-card" aria-label="Lesson goals">
+                  <strong>By the end of this lesson you can</strong>
+                  <ul>
+                    {lesson.objectives.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </aside>
+              )}
             </header>
             <nav className="course-stages" aria-label="Lesson stages">
               {STAGES.map((name, i) => (
@@ -316,12 +366,10 @@ export default function Home() {
                     </aside>
                   )}
                   <Paragraphs lines={lesson.intuition} />
-                  <ul>
-                    {lesson.objectives.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                  <p>{lesson.widget.caption}</p>
+                  <p className="widget-caption">
+                    <strong>Try it: </strong>
+                    {lesson.widget.caption}
+                  </p>
                   <IntuitionWidget
                     key={`${lesson.id}-intuition`}
                     widget={lesson.widget}
@@ -333,34 +381,73 @@ export default function Home() {
                 (lesson.quiz ? (
                   <>
                     <h3>{lesson.quiz.question}</h3>
-                    <fieldset className="course-quiz">
-                      <legend>Your prediction</legend>
-                      {lesson.quiz.options.map((option, i) => (
-                        <label key={i}>
-                          <input
-                            type="radio"
-                            name={`prediction-${lesson.id}`}
-                            checked={answer === i}
-                            onChange={() =>
-                              patch({
-                                quiz_answers: {
-                                  ...notebook.quiz_answers,
-                                  [lesson.id]: i,
-                                },
-                              })
-                            }
-                          />
-                          {option}
-                        </label>
-                      ))}
+                    <fieldset className="course-quiz" disabled={answer !== undefined}>
+                      <legend>
+                        {answer === undefined
+                          ? "Pick the answer you believe, then lock it in"
+                          : "Your locked-in prediction"}
+                      </legend>
+                      {lesson.quiz.options.map((option, i) => {
+                        const locked = answer !== undefined;
+                        const verdict = !locked
+                          ? ""
+                          : i === lesson.quiz!.answer
+                            ? "right"
+                            : i === answer
+                              ? "wrong"
+                              : "";
+                        return (
+                          <label key={i} className={`quiz-option ${verdict}`}>
+                            <input
+                              type="radio"
+                              name={`prediction-${lesson.id}`}
+                              checked={(locked ? answer : choice) === i}
+                              onChange={() => setChoice(i)}
+                            />
+                            <span>
+                              {option}
+                              {locked && (i === answer || i === lesson.quiz!.answer) && (
+                                <small>{lesson.quiz!.explanations[i]}</small>
+                              )}
+                            </span>
+                          </label>
+                        );
+                      })}
                     </fieldset>
-                    {answer !== undefined && (
-                      <p role="status" className="explanation-card">
-                        {answer === lesson.quiz.answer
-                          ? "Correct. "
-                          : "Try again. "}
-                        {lesson.quiz.explanations[answer]}
-                      </p>
+                    {answer === undefined ? (
+                      <div className="course-controls">
+                        <button
+                          className="primary"
+                          disabled={choice === undefined}
+                          onClick={() =>
+                            patch({
+                              quiz_answers: {
+                                ...notebook.quiz_answers,
+                                [lesson.id]: choice!,
+                              },
+                            })
+                          }
+                        >
+                          Lock in my prediction
+                        </button>
+                      </div>
+                    ) : (
+                      <div role="status" className="explanation-card">
+                        <p>
+                          {answer === lesson.quiz.answer
+                            ? "You predicted correctly. Now test it in the experiment."
+                            : "Not quite — and that's useful. Keep your guess in mind and see what the experiment shows."}
+                        </p>
+                        <button
+                          onClick={() => {
+                            const rest = { ...notebook.quiz_answers };
+                            delete rest[lesson.id];
+                            patch({ quiz_answers: rest });
+                          }}
+                        >
+                          Try a different prediction
+                        </button>
+                      </div>
                     )}
                   </>
                 ) : (
@@ -379,7 +466,10 @@ export default function Home() {
                 <>
                   <Paragraphs lines={lesson.explanation} />
                   <pre>{lesson.equation}</pre>
-                  <p className="explanation-card">{lesson.misconception}</p>
+                  <p className="explanation-card">
+                    <strong>Common mistake: </strong>
+                    {lesson.misconception}
+                  </p>
                 </>
               )}
               {stage === 4 && (
@@ -532,6 +622,73 @@ export default function Home() {
                 </button>
               )}
             </div>
+          </>
+        )}
+        {view === "map" && (
+          <>
+            <p className="eyebrow">
+              {completedCount} of {lessons.length} lessons completed
+            </p>
+            <h1>Course map</h1>
+            <p>
+              Every lesson follows the same loop: picture it, predict, test it,
+              then the math and the Qiskit code. Work in order, or jump to
+              anything that interests you.
+            </p>
+            <div className="course-controls">
+              <button className="primary" onClick={() => open(nextIndex)}>
+                {completedCount ? "Continue" : "Start"} with lesson{" "}
+                {nextIndex + 1}: {lessons[nextIndex].title}
+              </button>
+            </div>
+            {course.units.map((unit) => {
+              const unitLessons = lessons
+                .map((item, i) => ({ item, i }))
+                .filter(({ item }) => item.unit === unit.id);
+              if (!unitLessons.length) return null;
+              const unitDone = unitLessons.filter(({ item }) =>
+                done.has(item.id),
+              ).length;
+              return (
+                <section className="panel unit-card" key={unit.id}>
+                  <h2>{unit.title}</h2>
+                  <p>
+                    {unit.blurb}{" "}
+                    <small>
+                      {unitDone} of {unitLessons.length} done
+                    </small>
+                  </p>
+                  <ol className="unit-lessons">
+                    {unitLessons.map(({ item, i }) => {
+                      const started =
+                        !done.has(item.id) &&
+                        (notebook.lesson_max_stage[item.id] || 0) > 0;
+                      return (
+                        <li key={item.id}>
+                          <button
+                            className={done.has(item.id) ? "done" : started ? "started" : ""}
+                            onClick={() => open(i)}
+                          >
+                            <span className="lesson-number">{i + 1}</span>
+                            <span className="lesson-name">
+                              {item.title}
+                              <small>
+                                {item.duration}
+                                {done.has(item.id)
+                                  ? " · done ✓"
+                                  : started
+                                    ? " · in progress"
+                                    : ""}
+                              </small>
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </section>
+              );
+            })}
           </>
         )}
         {view === "notebook" && (
