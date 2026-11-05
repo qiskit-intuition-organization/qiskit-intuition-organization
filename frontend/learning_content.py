@@ -266,7 +266,7 @@ LESSONS = [
         "widget": {
             "type": "shots",
             "p1": 0.3,
-            "caption": "Set the true P(1), then change the number of shots. Re-roll to see how much the result jumps around.",
+            "caption": "Set the true chance of reading 1, pick a number of shots and run. The dashed bars are the truth; see how close few and many shots get.",
         },
         "quiz": {
             "question": "A qubit has P(0) = 0.75. You run 4 shots. Which result is impossible?",
@@ -565,7 +565,7 @@ LESSONS = [
         "widget": {
             "type": "interference",
             "phi": 0.0,
-            "caption": "Circuit: H → P(φ) → H. Slide the phase shift between the two paths.",
+            "caption": "Circuit: H → phase shift → H. Slide the shift and watch the two path arrows add up or cancel.",
         },
         "quiz": {
             "question": "In H → Z → H starting from |0⟩, what do you measure?",
@@ -641,7 +641,7 @@ LESSONS = [
             "type": "basis_measure",
             "theta": 0.5,
             "phi": 0.0,
-            "caption": "Move the arrow, then switch the question you ask. The red dashed line is the axis being measured.",
+            "caption": "Move the arrow, then switch the question you ask. The dashed line on the sphere is the axis being measured.",
         },
         "quiz": {
             "question": "The qubit is |+⟩ (front of the equator). You measure along X. What do you get?",
@@ -787,7 +787,7 @@ LESSONS = [
             "The tool is **CNOT**, a conditional flip: if the control qubit is 1, flip the target. On plain 0s and 1s it's ordinary logic. Give it a control in superposition and both branches happen: |00⟩ stays |00⟩ and |10⟩ becomes |11⟩. The pair is now (|00⟩ + |11⟩)/√2 — a **Bell state**.",
             "Measure either qubit and you get a coin flip. Measure both and they **always agree**. Neither qubit has an arrow of its own any more — the information lives in the pair.",
         ],
-        "widget": {"type": "entangle", "caption": "Compare 10 shots of two independent coins with 10 shots of a Bell pair."},
+        "widget": {"type": "entangle", "caption": "Run 10 shots of two separate coins and of a Bell pair. Both look random one qubit at a time — but only one pair always agrees."},
         "quiz": {
             "question": "In the Bell state (|00⟩ + |11⟩)/√2 you measure qubit 0 and get 1. What will qubit 1 give?",
             "options": ["0", "1", "50/50", "You can't measure it any more"],
@@ -856,8 +856,8 @@ LESSONS = [
             "It isn't CNOT's fault. The **no-cloning theorem** says no quantum circuit can copy an unknown state. If one could, you'd make a pile of copies, measure each along a different axis and read the arrow directly — which is exactly what measurement forbids.",
         ],
         "widget": {
-            "type": "entangle",
-            "caption": "A copier's output always agrees with the original — but agreeing isn't copying. Two true copies of |+⟩ would disagree half the time.",
+            "type": "copy_attempt",
+            "caption": "Tilt the original, then 'copy' it with CNOT. The dashed bars show what two real copies would give; the fidelity says how close the copier gets.",
         },
         "quiz": {
             "question": "You feed |+⟩ and a blank |0⟩ into the CNOT copier and measure both qubits. Which results can appear?",
@@ -936,7 +936,7 @@ LESSONS = [
         ],
         "widget": {
             "type": "teleport",
-            "caption": "Choose Alice's state and which result she happened to get, then let Bob apply the fix.",
+            "caption": "Choose Alice's state, then step through the protocol and watch Bob's arrow: useless until both fixes arrive, then an exact match.",
         },
         "quiz": {
             "question": "Before Alice's two bits reach Bob, what can he learn by measuring his qubit?",
@@ -1023,9 +1023,8 @@ LESSONS = [
             "Alice posts her qubit to Bob. Now he holds both halves: he undoes the entangling (CNOT, then H) and reads two bits with certainty. One qubit travelled and two bits arrived — the second rode in on the entanglement they set up earlier.",
         ],
         "widget": {
-            "type": "gate_play",
-            "gates": ["X", "Z"],
-            "caption": "Alice's twists are X and Z on her half. Try each combination and check that Bob reads a different two-bit message every time.",
+            "type": "superdense",
+            "caption": "Toggle Alice's twists (X, Z) on her half of the pair and check that Bob reads a different two-bit message for each combination.",
         },
         "quiz": {
             "question": "Alice applies only Z to her half of the Bell pair and sends it. After Bob's CNOT and H, what does he read (written q1 q0)?",
@@ -1105,7 +1104,7 @@ LESSONS = [
         ],
         "widget": {
             "type": "deutsch",
-            "caption": "Swap the hidden function and compare two classical queries with one quantum query.",
+            "caption": "Swap the hidden function. Watch q0 land on |+⟩ or |−⟩ after the single query — and the last H turn that into a certain 0 or 1.",
         },
         "quiz": {
             "question": "Deutsch's algorithm measures q0 and gets 1. What do you know?",
@@ -1186,9 +1185,8 @@ LESSONS = [
             "A final H on each input turns |+⟩ back into 0 and |−⟩ into 1. The input register now **is** the secret — every bit of it, from one query.",
         ],
         "widget": {
-            "type": "gate_play",
-            "gates": ["H", "Z"],
-            "caption": "Each input qubit goes through H, maybe a kicked-back sign, then H again. One sign flip turns a certain 0 into a certain 1.",
+            "type": "secret_string",
+            "caption": "Set the secret in the box. Watch each input qubit pick up a minus sign where the secret has a 1 — then one round of H gates reads the whole string.",
         },
         "quiz": {
             "question": "The secret is s = 10 (q1 = 1, q0 = 0). After one query and the final H gates, what do the input qubits read (q1 q0)?",
@@ -1266,7 +1264,7 @@ LESSONS = [
             "The **oracle** secretly flips the sign of the correct answer's amplitude. The odds don't change yet — it's a phase, like {lesson:phase}.",
             "The **diffuser** reflects every amplitude around the average. The marked one, now below average, gets flung far above it; the others shrink. Repeat about √N times and the answer dominates.",
         ],
-        "widget": {"type": "grover", "caption": "Pick the database size and step through oracle + diffuser rounds."},
+        "widget": {"type": "grover", "caption": "Alternate the oracle (flip the answer's sign) and the diffuser (reflect every bar about the average) and watch the answer's bar grow."},
         "quiz": {
             "question": "Right after the oracle marks the answer (and before the diffuser), what does a measurement show?",
             "options": [
@@ -1347,9 +1345,8 @@ LESSONS = [
             "Inside, it works like a row of clock hands. Each output qubit sits on the equator and turns at its own speed: half a turn per step, a quarter, an eighth… The whole circuit is H gates plus controlled phase turns. Finding hidden rhythms this way is how Shor's algorithm factors numbers.",
         ],
         "widget": {
-            "type": "gate_play",
-            "gates": ["H", "S", "T"],
-            "caption": "The QFT is built from H gates and phase turns of a half, a quarter, an eighth of a turn. H puts an arrow on the equator; S and T turn it like a clock hand.",
+            "type": "qft_clocks",
+            "caption": "Change x and watch three clock hands turn at different speeds. Then feed in a repeating pattern and see it collapse into a few sharp peaks.",
         },
         "quiz": {
             "question": "A 2-qubit register holds equal amplitudes on |0⟩ and |2⟩ — a pattern that repeats every 2 steps. After the QFT, which outcomes can you measure?",
@@ -1435,9 +1432,8 @@ LESSONS = [
             "Together the counting qubits hold the phase as a rhythm, and the inverse of the QFT from {lesson:qft} turns that rhythm into binary digits. In the example U = S, a quarter turn: φ = 0.01 in binary, so the counting register reads 01.",
         ],
         "widget": {
-            "type": "gate_play",
-            "gates": ["H", "S", "T"],
-            "caption": "Phase estimation reads how far a gate turns a qubit's clock hand. H puts the hand on the equator; S turns it a quarter, T an eighth — the turns the counting qubits pick up.",
+            "type": "phase_clock",
+            "caption": "Pick the hidden turn φ. The counting qubits see it after 1, 2 and 4 ticks; the inverse QFT reads off its binary digits. Try 0.3, which doesn't fit in three digits.",
         },
         "quiz": {
             "question": "Now the hidden gate is U = Z, which turns |1⟩ by half a turn (φ = ½ = 0.1 in binary). With two counting qubits, what do they read (q1 q0)?",

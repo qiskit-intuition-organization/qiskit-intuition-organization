@@ -756,7 +756,17 @@ def variational(widget: dict, key: str) -> None:
         st.caption(f"θ = {theta:.3f} rad")
 
 
+def web_only(widget: dict, key: str) -> None:
+    """Widgets added after the move to the web app have no Streamlit version."""
+    st.info("This interactive picture is in the web version of the course.")
+
+
 WIDGETS = {
+    "copy_attempt": web_only,
+    "superdense": web_only,
+    "secret_string": web_only,
+    "qft_clocks": web_only,
+    "phase_clock": web_only,
     "bloch_dial": bloch_dial,
     "gate_play": gate_play,
     "shots": shots,
