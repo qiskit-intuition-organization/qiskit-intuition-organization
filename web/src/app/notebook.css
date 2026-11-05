@@ -534,3 +534,6 @@ pre,
   .widget-grid { grid-template-columns: 1fr; }
   .panel.widget { padding: 14px; }
 }
+.glossary-search { display: grid; gap: 6px; max-width: 460px; margin: 16px 0; }
+.glossary-entry p, .notebook-entry p { margin: 6px 0; }
+.glossary-entry strong, .notebook-entry strong { color: #1d3a8a; }

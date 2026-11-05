@@ -111,6 +111,7 @@ export default function Home() {
   );
   const [menuOpen, setMenuOpen] = useState(false);
   const [choice, setChoice] = useState<number | undefined>(undefined);
+  const [glossaryQuery, setGlossaryQuery] = useState("");
   const [notice, setNotice] = useState("");
   const [feedback, setFeedback] = useState<Feedback>({});
   const [busy, setBusy] = useState(false);
@@ -699,7 +700,7 @@ export default function Home() {
               {owner
                 ? "Saved to your account and synced across devices."
                 : "Saved in this browser. Sign in to sync across devices."}{" "}
-              Download a backup or import a notebook from Streamlit.
+              Download a backup, or restore one you saved earlier.
             </p>
             <div className="course-controls">
               <button
@@ -750,31 +751,89 @@ export default function Home() {
                 />
               </label>
             </div>
-            {lessons.map((item, i) => (
-              <article className="panel" key={item.id}>
-                <h2>
-                  <button onClick={() => open(i)}>{item.title}</button>
-                  {notebook.completed_lessons.includes(item.id) ? " ✓" : ""}
-                </h2>
-                <p>{notebook.notes[item.id]}</p>
-                <p>{notebook.reflections[item.id]}</p>
-                {notebook.code_attempts[item.id] && (
-                  <pre>{notebook.code_attempts[item.id]}</pre>
-                )}
-              </article>
-            ))}
+            {(() => {
+              const touched = lessons
+                .map((item, i) => ({ item, i }))
+                .filter(
+                  ({ item }) =>
+                    done.has(item.id) ||
+                    notebook.notes[item.id]?.trim() ||
+                    notebook.reflections[item.id]?.trim() ||
+                    notebook.code_attempts[item.id] ||
+                    notebook.quiz_answers[item.id] !== undefined,
+                );
+              if (!touched.length)
+                return (
+                  <p className="panel">
+                    Nothing here yet. Your predictions, margin notes, code and
+                    explanations collect here as you work through lessons.
+                  </p>
+                );
+              return touched.map(({ item, i }) => {
+                const quiz = item.quiz;
+                const picked = notebook.quiz_answers[item.id];
+                return (
+                  <article className="panel notebook-entry" key={item.id}>
+                    <h2>
+                      <button onClick={() => open(i)}>
+                        {i + 1}. {item.title}
+                      </button>
+                      {done.has(item.id) ? " ✓" : ""}
+                    </h2>
+                    {quiz && picked !== undefined && (
+                      <p>
+                        <strong>I predicted:</strong> {quiz.options[picked]}{" "}
+                        {picked === quiz.answer ? "✓" : "✗"}
+                      </p>
+                    )}
+                    {notebook.notes[item.id]?.trim() && (
+                      <p>
+                        <strong>Margin notes:</strong> {notebook.notes[item.id]}
+                      </p>
+                    )}
+                    {notebook.reflections[item.id]?.trim() && (
+                      <p>
+                        <strong>My explanation:</strong> {notebook.reflections[item.id]}
+                      </p>
+                    )}
+                    {notebook.code_attempts[item.id] && (
+                      <pre>{notebook.code_attempts[item.id]}</pre>
+                    )}
+                  </article>
+                );
+              });
+            })()}
           </>
         )}
         {view === "glossary" && (
           <>
             <h1>Glossary</h1>
-            {course.glossary.map(([term, intuition, definition]) => (
-              <article className="panel" key={term}>
-                <h2>{term}</h2>
-                <p>{intuition}</p>
-                <p>{definition}</p>
-              </article>
-            ))}
+            <label className="glossary-search">
+              Search {course.glossary.length} terms
+              <input
+                type="search"
+                value={glossaryQuery}
+                placeholder="e.g. phase, entangle, oracle"
+                onChange={(e) => setGlossaryQuery(e.target.value)}
+              />
+            </label>
+            {course.glossary
+              .filter((row) =>
+                row.join(" ").toLowerCase().includes(glossaryQuery.trim().toLowerCase()),
+              )
+              .map(([term, intuition, definition]) => (
+                <article className="panel glossary-entry" key={term}>
+                  <h2>{term}</h2>
+                  <p>
+                    <strong>Picture it: </strong>
+                    {intuition}
+                  </p>
+                  <p>
+                    <strong>Precisely: </strong>
+                    {definition}
+                  </p>
+                </article>
+              ))}
           </>
         )}
         {view === "author" && (
