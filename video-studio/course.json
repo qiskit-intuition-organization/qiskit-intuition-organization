@@ -1,0 +1,2104 @@
+{
+ "units": [
+  {
+   "id": "one-qubit",
+   "title": "One qubit",
+   "blurb": "What a qubit is, how measurement works, and how gates move the state."
+  },
+  {
+   "id": "many-qubits",
+   "title": "Many qubits",
+   "blurb": "Registers, bit order, and entanglement: the part with no classical analogue."
+  },
+  {
+   "id": "algorithms",
+   "title": "Algorithms",
+   "blurb": "Using interference on purpose to make the right answer likely."
+  },
+  {
+   "id": "real-world",
+   "title": "Real hardware & beyond",
+   "blurb": "Noise, compilation, and trainable circuits."
+  }
+ ],
+ "lessons": [
+  {
+   "id": "why-quantum",
+   "number": 1,
+   "unit": "one-qubit",
+   "title": "Why quantum computers?",
+   "eyebrow": "Start here",
+   "summary": "Quantum computers aren't just faster computers. They win on certain problems by making wrong answers cancel out. Here's that idea in one small experiment.",
+   "intuition": [
+    "A popular story says a quantum computer \"tries every answer at once\". If that were the whole story it would be useless: a measurement hands you just one answer, picked at random.",
+    "The real trick is **interference**. Quantum states carry amplitudes that behave like waves: they can add up or cancel out. A quantum algorithm is choreographed so that the paths to wrong answers cancel and the paths to the right answer reinforce.",
+    "That only pays off for problems with a hidden structure to exploit: factoring, searching, simulating molecules. For everyday tasks your laptop stays the right tool. This course builds the idea from a single qubit up."
+   ],
+   "analogy": {
+    "title": "Water waves through a harbour wall",
+    "picture": "Waves pass through two gaps in a harbour wall and spread out. Where a crest from one gap meets a trough from the other, the water stays flat; where crests meet, the waves grow. Move the gaps and you choose where the calm spots are.",
+    "captures": "Outcomes come from paths adding up or cancelling, and a quantum algorithm places the \"calm spots\" on the wrong answers.",
+    "breaks": "Water waves are real ripples in space that you can watch. Quantum amplitudes live in the space of possible answers, and you never see the wave: each run shows you one outcome."
+   },
+   "misconception": "Quantum computers aren't fast because they \"try everything in parallel\". A measurement shows one outcome; the speed-up comes from interference making the useful outcome likely.",
+   "explanation": [
+    "Each outcome of a quantum computation has an **amplitude**: a number that can be positive, negative or even complex. The probability of an outcome is the squared size of its amplitude, and when several paths lead to the same outcome, their amplitudes add.",
+    "With two H gates, the two paths to |1⟩ carry amplitudes +½ and −½: they sum to zero, so 1 never appears. The paths to |0⟩ carry +½ and +½ and add up to 1. Every algorithm in this course is a more elaborate version of this bookkeeping."
+   ],
+   "equation": "P(x) = |sum of the amplitudes of every path to x|^2",
+   "takeaway": "Quantum speed-ups come from interference: wrong answers cancel, right ones reinforce.",
+   "objectives": [
+    "Explain why \"trying every answer at once\" isn't where quantum speed-ups come from.",
+    "Describe interference as amplitudes adding up or cancelling.",
+    "Run your first Qiskit circuit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "A measurement gives one answer",
+     "terms": [
+      "one answer",
+      "one outcome",
+      "single",
+      "random",
+      "measur"
+     ],
+     "hint": "say why reading \"all the answers\" isn't possible: a measurement returns one outcome."
+    },
+    {
+     "idea": "Interference cancels or reinforces paths",
+     "terms": [
+      "interfer",
+      "cancel",
+      "reinforc",
+      "add up",
+      "wave",
+      "amplitude"
+     ],
+     "hint": "name interference: the amplitudes of different paths add up or cancel."
+    },
+    {
+     "idea": "Only some problems benefit",
+     "terms": [
+      "some problems",
+      "certain",
+      "structure",
+      "specific",
+      "not everything",
+      "factor",
+      "search"
+     ],
+     "hint": "say that the advantage only exists for problems with the right structure."
+    }
+   ],
+   "checkpoint": "In your own words: why doesn't \"trying every answer at once\" make a computer faster, and what does interference add?",
+   "widget": {
+    "type": "interference",
+    "caption": "Slide the phase between two paths. In step, they add up on 0; half a wave apart, 0 vanishes completely. Quantum algorithms are built from exactly this cancellation."
+   },
+   "quiz": {
+    "question": "Which statement about quantum computers is right?",
+    "options": [
+     "They try every possible answer at once and read off the best one",
+     "They're faster than ordinary computers at everything",
+     "They arrange for wrong answers to cancel out, which helps on certain problems",
+     "They're ordinary computers built from very small transistors"
+    ],
+    "answer": 2,
+    "explanations": [
+     "A measurement returns one random outcome. Without interference, \"all answers at once\" is just a random guess.",
+     "For most everyday tasks they're slower and noisier. The advantages are for specific problems.",
+     "Right. Interference (amplitudes adding up and cancelling) is the engine, and it only pays off on problems with the right structure.",
+     "Small transistors are still classical. Qubits are different: they carry amplitudes that interfere."
+    ]
+   },
+   "try_this": [
+    "The example applies H twice. One H alone gives 50/50, so where did all the 1s go? Their two paths cancelled.",
+    "Remove the last H and the 50/50 comes back.",
+    "Put the second H back, with a **Z** between the two H gates. Now the paths to 0 cancel instead, and every shot reads 1."
+   ]
+  },
+  {
+   "id": "qubit",
+   "number": 2,
+   "unit": "one-qubit",
+   "title": "What is a qubit?",
+   "eyebrow": "Foundations",
+   "summary": "Start with a picture, not a formula: a qubit is an arrow on a sphere that you can never look at directly.",
+   "intuition": [
+    "A classical bit is a light switch. It is either off (0) or on (1), and looking at it doesn't change it.",
+    "A qubit is more like an **arrow pointing somewhere on a globe**. Straight up (the north pole) is the state |0⟩, straight down is |1⟩, and every other direction is a perfectly valid state too.",
+    "The catch: you never see the arrow. When you measure, the qubit only answers **0 or 1**. The closer the arrow is to the north pole, the more likely the answer is 0. After answering, the arrow snaps to the pole it reported."
+   ],
+   "analogy": {
+    "title": "A weather vane you may ask only one question",
+    "picture": "A weather vane can point in any direction, but you're only allowed to ask \"north or south?\". It answers with one word, and the instant it answers it swings to point exactly that way.",
+    "captures": "The state (a direction) holds far more than the answer (one bit), and asking changes the state.",
+    "breaks": "You could walk up and look at a real vane. Nobody can look at a qubit's arrow: you only learn where it points from the statistics of many identically prepared qubits."
+   },
+   "misconception": "A qubit in superposition is not secretly 0 or 1 and we just don't know which. The arrow genuinely points somewhere in between, and that difference becomes measurable through interference.",
+   "explanation": [
+    "Formally, a qubit is described by two complex numbers called amplitudes, α for |0⟩ and β for |1⟩. The squared magnitudes give the measurement probabilities and always add to one.",
+    "The arrow picture and the amplitudes describe the same thing: the arrow's angle from the north pole sets how |α|² and |β|² are split, and its direction around the equator records the relative phase between them (you will meet phase in Lesson 7)."
+   ],
+   "equation": "|psi> = alpha|0> + beta|1>,   |alpha|^2 + |beta|^2 = 1",
+   "takeaway": "The state is the arrow; a measurement only ever hands you one bit.",
+   "objectives": [
+    "Picture a qubit state as an arrow on the Bloch sphere.",
+    "Separate the state (the arrow) from a measurement outcome (0 or 1).",
+    "Create a circuit and inspect its exact state in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The state is the arrow, not the 0/1 you read",
+     "terms": [
+      "arrow",
+      "state",
+      "bloch",
+      "direction",
+      "amplitude"
+     ],
+     "hint": "say what the arrow (the state) is, separately from the single bit a measurement returns."
+    },
+    {
+     "idea": "Repeat the experiment many times",
+     "terms": [
+      "shot",
+      "many",
+      "repeat",
+      "again",
+      "frequen",
+      "fraction",
+      "statistic",
+      "sample"
+     ],
+     "hint": "one measurement gives one bit, so you'd prepare and measure many copies."
+    },
+    {
+     "idea": "Odds come from how close the arrow is to a pole",
+     "terms": [
+      "closer",
+      "north",
+      "pole",
+      "probabilit",
+      "likely",
+      "odds",
+      "angle"
+     ],
+     "hint": "link the chance of 0 to how near the arrow is to the north pole."
+    }
+   ],
+   "checkpoint": "If you could only measure a qubit, never see its arrow, how would you estimate where the arrow points?",
+   "widget": {
+    "type": "bloch_dial",
+    "theta": 0.0,
+    "caption": "Tilt the arrow away from the north pole. The sphere is the state; the bars are what a measurement would report."
+   },
+   "quiz": {
+    "question": "The arrow points exactly at the equator. You measure the qubit once. What do you see?",
+    "options": [
+     "Always 0",
+     "Always 1",
+     "0 or 1, each with a 50% chance",
+     "A value in between, like 0.5"
+    ],
+    "answer": 2,
+    "explanations": [
+     "Only the north pole gives 0 with certainty.",
+     "Only the south pole gives 1 with certainty.",
+     "Right. The equator is equally far from both poles, so both answers are equally likely.",
+     "Measurement always returns one classical bit, never a fraction. The 0.5 only appears as a frequency over many repeats."
+    ]
+   },
+   "try_this": [
+    "The register starts at |0⟩: the arrow points up and the bar is 100% on 0.",
+    "Add **X** on q0. Where did the probability go?",
+    "Undo, then add **RY** with angle 0.5π. Compare the bars with the widget you just used."
+   ]
+  },
+  {
+   "id": "flip",
+   "number": 3,
+   "unit": "one-qubit",
+   "title": "Flipping a qubit with X",
+   "eyebrow": "Your first gate",
+   "summary": "Gates rotate the arrow. The X gate is a half-turn that swaps the poles: the quantum version of NOT.",
+   "intuition": [
+    "A **gate** is an action that rotates the arrow. Gates never stretch or shrink it; they only turn it.",
+    "The **X gate** spins the sphere half a turn around its left-right (x) axis. The north pole lands on the south pole and vice versa, so |0⟩ ↔ |1⟩. That's exactly a classical NOT.",
+    "Because X is a rotation, doing it twice brings you back where you started. Most quantum gates are reversible like this."
+   ],
+   "analogy": {
+    "title": "Flipping a pancake",
+    "picture": "Flip the pan and the top of the pancake becomes the bottom. Flip it again and you're back where you started.",
+    "captures": "X is a half-turn: it swaps |0⟩ and |1⟩, it's predictable, and doing it twice undoes it.",
+    "breaks": "A pancake is either side up. X also turns every in-between direction of the arrow, swapping how much |0⟩ and how much |1⟩ it has."
+   },
+   "misconception": "X is not 'measure and flip'. It acts on the whole arrow, including superpositions: X(α|0⟩ + β|1⟩) = β|0⟩ + α|1⟩.",
+   "explanation": [
+    "X is the matrix [[0, 1], [1, 0]]: it swaps the two amplitudes. α|0⟩ + β|1⟩ becomes β|0⟩ + α|1⟩.",
+    "Every gate is a unitary matrix, which means it preserves the total probability and can be undone. Geometrically, every single-qubit gate is a rotation of the Bloch sphere."
+   ],
+   "equation": "X|0> = |1>,  X|1> = |0>",
+   "takeaway": "Gates turn the arrow; X is a half-turn that swaps |0⟩ and |1⟩.",
+   "objectives": [
+    "Describe a gate as a rotation of the Bloch arrow.",
+    "Predict the effect of X on |0⟩ and |1⟩.",
+    "Apply gates to specific qubits in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "X is a half-turn of the arrow",
+     "terms": [
+      "rotat",
+      "turn",
+      "half",
+      "180",
+      "π",
+      "pi"
+     ],
+     "hint": "describe X as a 180° rotation."
+    },
+    {
+     "idea": "A second turn undoes the first",
+     "terms": [
+      "twice",
+      "cancel",
+      "undo",
+      "back",
+      "identity",
+      "inverse",
+      "revers"
+     ],
+     "hint": "two half-turns bring the arrow back to where it started."
+    },
+    {
+     "idea": "X swaps the two amplitudes",
+     "terms": [
+      "swap",
+      "amplitude",
+      "matrix",
+      "exchang"
+     ],
+     "hint": "X exchanges α and β."
+    }
+   ],
+   "checkpoint": "Why is applying X twice the same as doing nothing?",
+   "widget": {
+    "type": "gate_play",
+    "gates": [
+     "X",
+     "Y"
+    ],
+    "caption": "Press gates and watch the arrow. Try X twice. Then try Y, a half-turn around a different axis."
+   },
+   "quiz": {
+    "question": "You apply X three times to a qubit that starts in |0⟩. What do you measure?",
+    "options": [
+     "0 every time",
+     "1 every time",
+     "0 or 1 at random",
+     "Nothing: the qubit is destroyed"
+    ],
+    "answer": 1,
+    "explanations": [
+     "Two X gates cancel, but the third flips it again.",
+     "Right. X·X does nothing, so three X's act like one: |0⟩ → |1⟩.",
+     "X is a perfect half-turn between the poles; there's no randomness in its result.",
+     "Gates are reversible rotations; they never destroy the qubit."
+    ]
+   },
+   "try_this": [
+    "The worked example applies one X: the bar moves to 100% on 1.",
+    "Add a second **X**. Predict before you click.",
+    "Try **Y** instead of X. Do the bars look different? (Hold that thought for Lesson 7.)"
+   ]
+  },
+  {
+   "id": "measurement",
+   "number": 4,
+   "unit": "one-qubit",
+   "title": "Measurement and shots",
+   "eyebrow": "Foundations",
+   "summary": "One measurement gives one bit. Real quantum programs run the same circuit many times ('shots') to learn the odds.",
+   "intuition": [
+    "Imagine a weighted coin. One flip tells you almost nothing about how it's weighted; a thousand flips tell you a lot.",
+    "A quantum measurement is one flip. To learn where the arrow points, you **prepare the same state again and again** and measure each copy. Each run is called a **shot**.",
+    "With few shots the counts are noisy; with many shots the fractions settle toward the true probabilities."
+   ],
+   "analogy": {
+    "title": "An opinion poll",
+    "picture": "Asking one voter tells you almost nothing about an election. Ask a thousand and you know the percentages, give or take a margin of error that shrinks as the poll grows.",
+    "captures": "Each shot is one vote; the fractions estimate the probabilities, with an error that shrinks like 1/√N.",
+    "breaks": "A voter already had an opinion before you asked. A qubit has no answer waiting: measuring creates it, and every \"vote\" needs a freshly prepared qubit."
+   },
+   "misconception": "Counts like 512/488 instead of 500/500 don't mean the circuit is wrong. That's shot noise. Compare to the exact probabilities before blaming the circuit.",
+   "explanation": [
+    "Measuring in the computational basis returns k with probability |amplitude_k|² and collapses the qubit to |k⟩. Repeating the experiment N times gives counts whose fractions approach the probabilities, with a typical error of about √(p(1−p)/N).",
+    "That is why Qiskit separates two tools: `Statevector` (exact, simulation-only) and the `Sampler` primitive (counts from shots, which is what real hardware returns)."
+   ],
+   "equation": "P(k) = |<k|psi>|^2,  error ~ sqrt(p(1-p)/N)",
+   "takeaway": "One shot is one vote; many shots reveal the odds.",
+   "objectives": [
+    "Explain why one measurement cannot reveal a state.",
+    "Use shots to estimate probabilities.",
+    "Measure and sample a circuit with Qiskit's Sampler primitive."
+   ],
+   "key_ideas": [
+    {
+     "idea": "More shots",
+     "terms": [
+      "shot",
+      "repeat",
+      "many",
+      "more"
+     ],
+     "hint": "talk about what changes as you add shots."
+    },
+    {
+     "idea": "The fraction settles toward 0.75",
+     "terms": [
+      "approach",
+      "converge",
+      "closer",
+      "settle",
+      "0.75",
+      "75"
+     ],
+     "hint": "the observed fraction of zeros gets closer and closer to 0.75."
+    },
+    {
+     "idea": "Small samples wobble",
+     "terms": [
+      "noise",
+      "fluctuat",
+      "wobble",
+      "error",
+      "vary",
+      "variation",
+      "sqrt",
+      "√"
+     ],
+     "hint": "few shots give noisy fractions; the typical error shrinks like 1/√N."
+    }
+   ],
+   "checkpoint": "If a state has P(0)=0.75, what happens to the observed fraction of zeros as the number of shots grows?",
+   "widget": {
+    "type": "shots",
+    "p1": 0.3,
+    "caption": "Set the true chance of reading 1, pick a number of shots and run. The dashed bars are the truth; see how close few and many shots get."
+   },
+   "quiz": {
+    "question": "A qubit has P(0) = 0.75. You run 4 shots. Which result is impossible?",
+    "options": [
+     "3 zeros, 1 one",
+     "4 zeros",
+     "2 zeros, 2 ones",
+     "None of them: all are possible"
+    ],
+    "answer": 3,
+    "explanations": [
+     "This is the most likely result, but not the only one.",
+     "Likely enough (about 32%). Four zeros is allowed.",
+     "Less likely, but possible. Small samples wander.",
+     "Right. Every outcome has non-zero probability. Only many shots pin the ratio down."
+    ]
+   },
+   "try_this": [
+    "The example puts q0 on the equator. The bars show the **exact** probabilities: what infinitely many shots would give.",
+    "Code it (stage 5) to see real sampled counts that wobble around these bars."
+   ]
+  },
+  {
+   "id": "superposition",
+   "number": 5,
+   "unit": "one-qubit",
+   "title": "Superposition with H",
+   "eyebrow": "Single-qubit gates",
+   "summary": "The Hadamard gate tips the arrow from a pole onto the equator, and tipping it again brings it back.",
+   "intuition": [
+    "Start with the arrow pointing straight up at |0⟩ and tip it over until it lies flat on the equator, facing you. It now points at neither pole, so the question \"0 or 1?\" has no favourite answer: you get each one half the time.",
+    "That tipping move is the **Hadamard (H)** gate: a half-turn around a diagonal axis halfway between x and z. It carries the north pole to the front of the equator (called |+⟩) and the south pole to the back (|−⟩). Either way, a measurement now gives 50/50.",
+    "Here's the surprise: apply H again and the arrow goes **straight back** to the pole. The 'randomness' was never lost. It was a definite direction all along."
+   ],
+   "analogy": {
+    "title": "A compass needle pointing east, not a spinning coin",
+    "picture": "North means 0 and south means 1. A needle pointing east is in a perfectly definite direction; it's only the question \"north or south?\" that has no good answer, so you get either one, 50/50.",
+    "captures": "|+⟩ is a definite state. The randomness comes from the question you ask, which is why a second H can bring the needle back to north exactly.",
+    "breaks": "A real needle pointing east would answer \"neither\". A qubit must answer 0 or 1, and then it really becomes that answer."
+   },
+   "misconception": "H does not 'add randomness'. It's a deterministic rotation; randomness only appears when you measure a state that sits off the poles.",
+   "explanation": [
+    "H maps |0⟩ → |+⟩ = (|0⟩ + |1⟩)/√2 and |1⟩ → |−⟩ = (|0⟩ − |1⟩)/√2. Both have amplitudes of size 1/√2, so both outcomes have probability ½.",
+    "The minus sign in |−⟩ is invisible to a measurement right now, but the second H turns |+⟩ back into |0⟩ and |−⟩ into |1⟩. That reversible return is your first taste of interference."
+   ],
+   "equation": "H|0> = (|0> + |1>)/sqrt(2) = |+>",
+   "takeaway": "H tips the arrow onto the equator: a definite state with random answers. A second H undoes it.",
+   "objectives": [
+    "Predict H|0⟩ and H|1⟩.",
+    "Explain why balanced amplitudes give 50/50 odds.",
+    "Recognize that H is its own inverse."
+   ],
+   "key_ideas": [
+    {
+     "idea": "One H gives equal amplitudes",
+     "terms": [
+      "equal",
+      "amplitude",
+      "0.707",
+      "1/√2",
+      "balanced",
+      "half",
+      "equator"
+     ],
+     "hint": "after one H both amplitudes are 1/√2, so each outcome is 50%."
+    },
+    {
+     "idea": "A second H undoes the first",
+     "terms": [
+      "undo",
+      "inverse",
+      "cancel",
+      "back",
+      "return",
+      "twice",
+      "interfer"
+     ],
+     "hint": "H is its own inverse, so the paths recombine to |0⟩."
+    },
+    {
+     "idea": "The arrow is definite; randomness comes from measuring",
+     "terms": [
+      "definite",
+      "determin",
+      "rotat",
+      "direction",
+      "measur"
+     ],
+     "hint": "the state after H is a definite direction; only the measurement is random."
+    }
+   ],
+   "checkpoint": "Why does measuring after one H look random, while measuring after two H gates is always 0?",
+   "widget": {
+    "type": "gate_play",
+    "gates": [
+     "H",
+     "X",
+     "Z"
+    ],
+    "caption": "Press H, then H again. Then try X → H and compare with H alone: same bars, different arrow."
+   },
+   "quiz": {
+    "question": "Starting from |0⟩ you apply H, then H again, then measure. What do you get?",
+    "options": [
+     "0 with 50%, 1 with 50%",
+     "Always 0",
+     "Always 1",
+     "25% each for 00, 01, 10, 11"
+    ],
+    "answer": 1,
+    "explanations": [
+     "That's what you'd see after one H. The second H undoes it.",
+     "Right. H is its own inverse: H·H = identity, so the arrow returns to |0⟩.",
+     "You'd need an X somewhere to end up at |1⟩.",
+     "There's only one qubit, so there are only two outcomes."
+    ]
+   },
+   "try_this": [
+    "One H puts the bars at 50/50 and the arrow on the equator.",
+    "Add a second **H**. Before clicking, commit: random or certain?",
+    "Clear, then add **X** and then **H** (X first). Same bars as |+⟩, but is it the same state? Compare the arrow with one H alone."
+   ]
+  },
+  {
+   "id": "rotations",
+   "number": 6,
+   "unit": "one-qubit",
+   "title": "Rotations: dialing in probability",
+   "eyebrow": "Single-qubit gates",
+   "summary": "X and H are fixed half-turns. RY lets you turn the arrow by any angle, and set any probability you like.",
+   "intuition": [
+    "Suppose you want a qubit that reads 1 exactly a quarter of the time. X and H can't do it: they're switches with fixed positions. You need a **dial**: **RY(θ)** turns the arrow by any angle θ around the y axis.",
+    "At θ = 0 nothing happens. At θ = π (half a turn) you reach |1⟩, the same as X. At θ = π/2 you land on the equator: 50/50, like H.",
+    "In between, the probability of reading 1 grows smoothly, following sin²(θ/2). That's how real algorithms load numbers into qubits."
+   ],
+   "analogy": {
+    "title": "A dimmer instead of a light switch",
+    "picture": "X is an on/off switch. RY(θ) is a dimmer: turn the knob and you can set any level in between.",
+    "captures": "Rotations give continuous control: the angle sets the probability of reading 1.",
+    "breaks": "A dimmer brightens evenly as you turn it; P(1) = sin²(θ/2) changes slowly near the ends and fast in the middle. And each measurement is still fully on or fully off, never half-bright."
+   },
+   "misconception": "Doubling the angle doesn't double the probability. P(1) = sin²(θ/2) is curved: small angles barely move the odds; angles near π/2 move them fastest.",
+   "explanation": [
+    "RY(θ)|0⟩ = cos(θ/2)|0⟩ + sin(θ/2)|1⟩. Note the half-angle: a full turn of the arrow on the sphere corresponds to θ = 2π.",
+    "RX and RZ are the same idea around the other axes. Any single-qubit gate can be built from a sequence of these rotations."
+   ],
+   "equation": "RY(theta)|0> = cos(theta/2)|0> + sin(theta/2)|1>",
+   "takeaway": "RY(θ) is a dial: P(1) = sin²(θ/2).",
+   "objectives": [
+    "Relate a rotation angle to measurement probability.",
+    "Explain why probability is not linear in the angle.",
+    "Use parameterized rotation gates in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "P(1) = sin²(θ/2)",
+     "terms": [
+      "sin",
+      "cos",
+      "θ/2",
+      "theta/2",
+      "half"
+     ],
+     "hint": "use the half-angle formula P(1) = sin²(θ/2)."
+    },
+    {
+     "idea": "Probability isn't linear in the angle",
+     "terms": [
+      "not linear",
+      "nonlinear",
+      "non-linear",
+      "curve",
+      "square",
+      "steep",
+      "slow"
+     ],
+     "hint": "the odds follow a curve: small angles barely move them."
+    },
+    {
+     "idea": "Check the two numbers",
+     "terms": [
+      "π/2",
+      "pi/2",
+      "equator",
+      "50",
+      "15"
+     ],
+     "hint": "RY(π/2) reaches the equator (50%); RY(π/4) gives about 15%."
+    }
+   ],
+   "checkpoint": "Why does RY(π/2) give 50/50 while RY(π/4) gives only about 15% for outcome 1?",
+   "widget": {
+    "type": "bloch_dial",
+    "theta": 0.6667,
+    "show_curve": true,
+    "caption": "Turn the dial and watch where you land on the P(1) = sin²(θ/2) curve."
+   },
+   "quiz": {
+    "question": "Which angle θ makes RY(θ)|0⟩ give P(1) = 25%?",
+    "options": [
+     "θ = π/4",
+     "θ = π/3",
+     "θ = π/2",
+     "θ = π"
+    ],
+    "answer": 1,
+    "explanations": [
+     "sin²(π/8) ≈ 0.15, too small. Probability isn't linear in the angle.",
+     "Right. sin²(π/6) = (½)² = ¼.",
+     "That's the equator: 50%.",
+     "That's a full flip to |1⟩: 100%."
+    ]
+   },
+   "try_this": [
+    "The example applies RY(π/3): about 75% / 25%.",
+    "Add another **RY** of 0.33π on the same qubit. Rotations add: where do you end up?",
+    "Find an angle that gives exactly 50/50 without using H."
+   ]
+  },
+  {
+   "id": "phase",
+   "number": 7,
+   "unit": "one-qubit",
+   "title": "Phase: the hidden direction",
+   "eyebrow": "Quantum behaviour",
+   "summary": "Spin the arrow around the equator and the measurement odds don't change at all. That invisible direction is phase.",
+   "intuition": [
+    "Measurement only cares about **latitude**: how far up or down the arrow points. But the arrow also has a **longitude**: which way it faces around the equator.",
+    "That longitude is called the **phase**. The Z, S and T gates turn the arrow around the vertical axis by 180°, 90° and 45°. They change the phase and leave the odds untouched.",
+    "So why care? Because the next gate can turn longitude into latitude. Phase is information that waits to be revealed."
+   ],
+   "analogy": {
+    "title": "Longitude on a globe",
+    "picture": "Two cities on the same line of latitude are equally far north, whatever their longitude. Z moves the arrow along its line of latitude (east or west) without moving it north or south.",
+    "captures": "Phase leaves the measurement odds untouched, yet it is a real difference that a later gate can turn into different odds.",
+    "breaks": "Longitude is printed on every map. Phase can't be read off directly: only interference reveals a relative phase, and turning the whole globe at once (a global phase) changes nothing at all."
+   },
+   "misconception": "'The gate did nothing because the bars didn't move' is the classic trap. A gate can change the state without changing the current measurement odds.",
+   "explanation": [
+    "Z multiplies the |1⟩ amplitude by −1, S by i, and T by e^{iπ/4}. Magnitudes are unchanged, so probabilities are unchanged; only the relative phase φ between the amplitudes moves.",
+    "On the Bloch sphere, a general state is cos(θ/2)|0⟩ + e^{iφ} sin(θ/2)|1⟩: θ is latitude (sets the odds), φ is longitude (the phase)."
+   ],
+   "equation": "|psi> = cos(theta/2)|0> + e^{i phi} sin(theta/2)|1>",
+   "takeaway": "Phase is the arrow's longitude: invisible now, decisive later.",
+   "objectives": [
+    "Distinguish amplitude magnitude from phase.",
+    "Explain why Z, S and T leave immediate probabilities unchanged.",
+    "Predict where phase gates move the Bloch arrow."
+   ],
+   "key_ideas": [
+    {
+     "idea": "Z changes the phase (longitude)",
+     "terms": [
+      "phase",
+      "longitude",
+      "around",
+      "spin",
+      "sign",
+      "relative"
+     ],
+     "hint": "Z turns the arrow around the vertical axis. It changes the phase."
+    },
+    {
+     "idea": "The odds stay the same right away",
+     "terms": [
+      "magnitude",
+      "same",
+      "unchanged",
+      "doesn't change",
+      "does not change",
+      "stay"
+     ],
+     "hint": "magnitudes don't change, so the bars don't move immediately."
+    },
+    {
+     "idea": "A later gate can reveal it",
+     "terms": [
+      "interfer",
+      "later",
+      "next",
+      "hadamard",
+      "h",
+      "recombin",
+      "reveal"
+     ],
+     "hint": "a later H turns that phase into a change in the odds."
+    }
+   ],
+   "checkpoint": "Why can Z matter even when the probability chart doesn't move right after it?",
+   "widget": {
+    "type": "bloch_dial",
+    "theta": 0.5,
+    "phi": 0.0,
+    "show_phi": true,
+    "caption": "Hold the arrow on the equator and spin φ. The sphere changes; the bars never do."
+   },
+   "quiz": {
+    "question": "The qubit is in |+⟩ (on the equator). You apply Z. What happens to the measurement probabilities?",
+    "options": [
+     "They swap",
+     "They stay 50/50",
+     "They become 100% for 1",
+     "They become 100% for 0"
+    ],
+    "answer": 1,
+    "explanations": [
+     "Z only rotates around the vertical axis; latitude, and therefore the odds, stay put.",
+     "Right. Z turns |+⟩ into |−⟩, a different state with identical odds.",
+     "Z doesn't move the arrow toward a pole.",
+     "Z doesn't move the arrow toward a pole."
+    ]
+   },
+   "try_this": [
+    "The example is H then S: the arrow faces sideways (|+i⟩), bars still 50/50.",
+    "Add **Z**, **S**, or **T** gates. Watch the Bloch arrow, not just the bars.",
+    "Now add **H** at the end. Suddenly the bars move, and Lesson 8 explains why."
+   ]
+  },
+  {
+   "id": "interference",
+   "number": 8,
+   "unit": "one-qubit",
+   "title": "Interference",
+   "eyebrow": "Quantum behaviour",
+   "summary": "Split, shift, recombine: interference turns hidden phase into a visible result. It's the engine of every quantum algorithm.",
+   "intuition": [
+    "Think of H as a beam splitter: it sends the state down two paths, |0⟩ and |1⟩. A second H recombines the paths.",
+    "If the paths come back **in step**, they reinforce on |0⟩ (constructive interference). If one path was shifted half a wave by Z, they **cancel** on |0⟩ and all the probability lands on |1⟩.",
+    "Any shift in between gives anything in between. Quantum algorithms are carefully designed patterns of these cancellations."
+   ],
+   "analogy": {
+    "title": "Noise-cancelling headphones",
+    "picture": "Headphones play a mirror image of the noise; crest meets trough and the sound disappears. Waves that line up instead get louder.",
+    "captures": "Amplitudes with opposite signs cancel and amplitudes with the same sign reinforce, so H–Z–H sends everything to |1⟩.",
+    "breaks": "Headphones cancel sound in the air. Here what cancels are amplitudes (numbers attached to outcomes), and the probability that vanishes from one outcome reappears on the other."
+   },
+   "misconception": "Cancellation is not two particles bumping into each other. It's amplitudes (which can be negative or complex) adding to zero. Probabilities alone could never cancel.",
+   "explanation": [
+    "After H the amplitudes are (1/√2, 1/√2). P(φ) multiplies the second by e^{iφ}. The final H adds and subtracts them: the |0⟩ amplitude becomes (1 + e^{iφ})/2 and the |1⟩ amplitude (1 − e^{iφ})/2.",
+    "So P(0) = cos²(φ/2). At φ = 0 the paths add on |0⟩; at φ = π they cancel there completely."
+   ],
+   "equation": "H P(phi) H |0>:  P(0) = cos^2(phi/2)",
+   "takeaway": "Amplitudes add like waves: in step they grow, out of step they cancel.",
+   "objectives": [
+    "Explain constructive and destructive interference with amplitudes.",
+    "Build H-Z-H as an interference experiment.",
+    "Use the general phase gate P(φ) in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The first H splits into two paths",
+     "terms": [
+      "split",
+      "two paths",
+      "superposition",
+      "first h",
+      "both paths"
+     ],
+     "hint": "say what the first H does."
+    },
+    {
+     "idea": "Z flips the sign of one path",
+     "terms": [
+      "z",
+      "phase",
+      "sign",
+      "minus",
+      "negative",
+      "shift"
+     ],
+     "hint": "say what the middle Z does."
+    },
+    {
+     "idea": "The last H recombines: |0⟩ cancels, |1⟩ adds",
+     "terms": [
+      "cancel",
+      "destructive",
+      "constructive",
+      "recombin",
+      "add",
+      "interfer"
+     ],
+     "hint": "explain the cancellation on |0⟩ and reinforcement on |1⟩."
+    }
+   ],
+   "checkpoint": "In H-Z-H, what role does each of the three gates play in producing a certain |1⟩?",
+   "widget": {
+    "type": "interference",
+    "phi": 0.0,
+    "caption": "Circuit: H → phase shift → H. Slide the shift and watch the two path arrows add up or cancel."
+   },
+   "quiz": {
+    "question": "In H → Z → H starting from |0⟩, what do you measure?",
+    "options": [
+     "0 always",
+     "1 always",
+     "50/50",
+     "It depends on the shot"
+    ],
+    "answer": 1,
+    "explanations": [
+     "That's H → H with no phase shift. Z changes the story.",
+     "Right. Z flips the sign of the |1⟩ path, so the paths cancel on |0⟩ and add up on |1⟩.",
+     "The phase shift of Z is exactly half a wave: complete cancellation, not a mix.",
+     "The outcome is certain; there's nothing random left."
+    ]
+   },
+   "try_this": [
+    "H → Z → H ends at |1⟩ with certainty, without any X gate.",
+    "Press **Undo** twice (removing the last H and the Z), then add **S** and **H** again: a quarter-wave shift instead of a half. Predict the bars first.",
+    "Do the same with **RZ** instead of S, trying a few angles. Match what you see to the curve in the Try it widget."
+   ]
+  },
+  {
+   "id": "bases",
+   "number": 9,
+   "unit": "one-qubit",
+   "title": "Measuring in other directions",
+   "eyebrow": "Quantum behaviour",
+   "summary": "Measurement doesn't have to ask 'up or down?'. Rotate first, and you can ask 'front or back?', which finally makes phase readable.",
+   "intuition": [
+    "So far every measurement asked one question: is the arrow nearer the north pole (0) or the south pole (1)? That's measuring along the **Z axis**.",
+    "You can ask about any axis. Measuring along **X** asks 'front (|+⟩) or back (|−⟩)?'; along **Y** asks 'right (|+i⟩) or left (|−i⟩)?'. The odds depend only on how close the arrow is to each end of that axis.",
+    "Hardware can only measure along Z, so Qiskit uses the trick from Lesson 8: **rotate** the axis you care about onto Z, then measure. That's how phase, invisible to a Z measurement, becomes readable."
+   ],
+   "analogy": {
+    "title": "Polarized sunglasses",
+    "picture": "Light that's polarized diagonally gets half-blocked by vertical sunglasses, but tilt the glasses to the diagonal and all of it passes.",
+    "captures": "The same state can be certain along one axis and 50/50 along another; the measurement axis is a choice. (Photon polarization really is a qubit.)",
+    "breaks": "A beam of light passes partly. A single photon passes or doesn't. If it passes, it's now lined up with the filter, which is the collapse."
+   },
+   "misconception": "A 50/50 result in Z doesn't mean the qubit is 'random'. |+⟩ is perfectly definite. It just isn't lined up with the question you asked.",
+   "explanation": [
+    "Measuring along an axis n̂ answers '+' with probability (1 + r⃗·n̂)/2, where r⃗ is the Bloch vector. For the Z axis this is just |α|².",
+    "H swaps the X and Z axes, so 'H, then measure' is an X measurement. S† followed by H maps the Y axis onto Z. Every basis measurement in Qiskit is 'rotate, then measure in Z'."
+   ],
+   "equation": "P(+ along n) = (1 + r.n)/2",
+   "takeaway": "A measurement asks about one axis; to ask about another, rotate it onto Z first.",
+   "objectives": [
+    "Describe a measurement as a question about one axis.",
+    "Predict outcomes for X- and Y-basis measurements.",
+    "Change basis in Qiskit with H and S† before measuring."
+   ],
+   "key_ideas": [
+    {
+     "idea": "A measurement asks about one axis",
+     "terms": [
+      "axis",
+      "basis",
+      "question",
+      "direction"
+     ],
+     "hint": "say which axis each measurement asks about."
+    },
+    {
+     "idea": "|+⟩ and |−⟩ sit at the ends of the X axis",
+     "terms": [
+      "pole",
+      "end",
+      "opposite",
+      "|+",
+      "|-",
+      "plus",
+      "minus",
+      "front",
+      "back",
+      "certain"
+     ],
+     "hint": "along X they're opposite poles, so the answer is certain."
+    },
+    {
+     "idea": "Along Z both are on the equator",
+     "terms": [
+      "equator",
+      "50",
+      "same probabilit",
+      "z basis",
+      "along z",
+      "can't tell",
+      "cannot tell"
+     ],
+     "hint": "measured along Z, both give 50/50, so the Z question can't separate them."
+    }
+   ],
+   "checkpoint": "Why can an X-basis measurement tell |+⟩ and |−⟩ apart when a Z-basis measurement can't?",
+   "widget": {
+    "type": "basis_measure",
+    "theta": 0.5,
+    "phi": 0.0,
+    "caption": "Move the arrow, then switch the question you ask. The dashed line on the sphere is the axis being measured."
+   },
+   "quiz": {
+    "question": "The qubit is |+⟩ (front of the equator). You measure along X. What do you get?",
+    "options": [
+     "'+' every time",
+     "50/50 between '+' and '−'",
+     "'−' every time",
+     "0 or 1 at random"
+    ],
+    "answer": 0,
+    "explanations": [
+     "Right. |+⟩ sits exactly at the '+' end of the X axis, so the answer is certain.",
+     "That's what a Z measurement of |+⟩ gives. Along X, |+⟩ is a pole, not the equator.",
+     "|−⟩ is the other end of the X axis; |+⟩ never answers '−'.",
+     "Those are Z-basis answers. Along X the question is '+' or '−', and here it's certain."
+    ]
+   },
+   "try_this": [
+    "The example prepares |+⟩ with H, then rotates the X axis onto Z with a second **H**: a certain 0, which means '+'.",
+    "Undo the last H to measure along Z instead. Now it's 50/50.",
+    "Clear, then build **H**, **Z**, **H**: you prepared |−⟩ and measured along X. What does it say now?"
+   ]
+  },
+  {
+   "id": "registers",
+   "number": 10,
+   "unit": "many-qubits",
+   "title": "Many qubits and bit order",
+   "eyebrow": "Multi-qubit systems",
+   "summary": "n qubits have 2ⁿ possible outcomes. Learn to read Qiskit's bit strings: qubit 0 is on the right.",
+   "intuition": [
+    "Two qubits can be read as 00, 01, 10 or 11: four outcomes. Three qubits give eight. Every extra qubit **doubles** the list.",
+    "A quantum state has one amplitude for every entry in that list. That doubling is where quantum computers get their room to work.",
+    "One convention to lock in now: **Qiskit writes qubit 0 on the right**. Flip only q0 and you'll see `01`, not `10`."
+   ],
+   "analogy": {
+    "title": "A combination lock",
+    "picture": "A lock with ten two-position wheels has 2¹⁰ = 1024 possible combinations. Every extra wheel doubles the count.",
+    "captures": "n qubits have 2ⁿ basis states, and each one gets its own amplitude.",
+    "breaks": "A lock is set to exactly one combination. n qubits carry an amplitude for every combination at once, yet a measurement still shows you only one."
+   },
+   "misconception": "2ⁿ amplitudes doesn't mean you can read out 2ⁿ answers. A measurement still returns a single n-bit string.",
+   "explanation": [
+    "The state of n qubits lives in a 2ⁿ-dimensional space. For independent qubits, the joint state is the tensor product: (α₀|0⟩ + β₀|1⟩) ⊗ (α₁|0⟩ + β₁|1⟩).",
+    "Qiskit orders tensor factors so that qubit 0 is the least significant (rightmost) bit. The basis state |q₁q₀⟩ = |10⟩ means q1 = 1 and q0 = 0."
+   ],
+   "equation": "|q1 q0>,  2 qubits -> 4 amplitudes",
+   "takeaway": "n qubits have 2ⁿ amplitudes, but a measurement shows one n-bit string.",
+   "objectives": [
+    "Count the outcomes of an n-qubit register.",
+    "Read Qiskit's little-endian bit strings.",
+    "Address individual qubits in multi-qubit circuits."
+   ],
+   "key_ideas": [
+    {
+     "idea": "Amplitudes double with each qubit",
+     "terms": [
+      "2^",
+      "2¹⁰",
+      "1024",
+      "double",
+      "exponential"
+     ],
+     "hint": "10 qubits have 2¹⁰ = 1024 amplitudes."
+    },
+    {
+     "idea": "A measurement returns one bit string",
+     "terms": [
+      "one",
+      "single",
+      "string",
+      "measur",
+      "collapse"
+     ],
+     "hint": "each measurement still gives just one 10-bit result."
+    }
+   ],
+   "checkpoint": "How many amplitudes does a 10-qubit state have, and why can't you read them all out?",
+   "widget": {
+    "type": "bit_order",
+    "qubits": 3,
+    "caption": "Flip individual qubits and read the bit string Qiskit would print."
+   },
+   "quiz": {
+    "question": "You build a 2-qubit circuit and apply X to qubit 1 only. Which bit string does Qiskit report?",
+    "options": [
+     "01",
+     "10",
+     "11",
+     "00"
+    ],
+    "answer": 1,
+    "explanations": [
+     "That would be qubit 0 flipped. Qiskit puts q0 on the right.",
+     "Right. Strings read q1 q0, so flipping q1 gives 10.",
+     "Only one qubit was flipped.",
+     "X definitely flips the qubit it's applied to."
+    ]
+   },
+   "try_this": [
+    "The example flips q0 in a 2-qubit register: the result is `01`.",
+    "Add **X** on q1. Which string appears now?",
+    "Add **H** on both qubits from a fresh start. How many outcomes share the probability?"
+   ]
+  },
+  {
+   "id": "entanglement",
+   "number": 11,
+   "unit": "many-qubits",
+   "title": "Entanglement",
+   "eyebrow": "Multi-qubit systems",
+   "summary": "Use CNOT on a superposition and two qubits stop having their own arrows. They share one state.",
+   "intuition": [
+    "Here's the goal: two qubits whose answers always match, even though each one, on its own, is a fair coin flip.",
+    "The tool is **CNOT**, a conditional flip: if the control qubit is 1, flip the target. On plain 0s and 1s it's ordinary logic. Give it a control in superposition and both branches happen: |00⟩ stays |00⟩ and |10⟩ becomes |11⟩. The pair is now (|00⟩ + |11⟩)/√2, a **Bell state**.",
+    "Measure either qubit and you get a coin flip. Measure both and they **always agree**. Neither qubit has an arrow of its own any more: the information lives in the pair."
+   ],
+   "analogy": {
+    "title": "Two dancers sharing one routine",
+    "picture": "Watch either dancer alone and their moves look improvised. Watch both and they're perfectly coordinated: the choreography belongs to the pair, not to either dancer.",
+    "captures": "Each qubit alone is a coin flip, but the pair's results always agree; the state lives in the pair.",
+    "breaks": "Dancers follow steps written in advance. Experiments (Bell tests) show entangled qubits can't be carrying pre-written answers, and neither one can be used to send the other a message."
+   },
+   "misconception": "Entanglement can't be used to send messages faster than light. Each side alone sees random results; the correlation only shows up when the results are compared.",
+   "explanation": [
+    "CNOT maps |c, t⟩ → |c, t ⊕ c⟩. Applied to (|0⟩ + |1⟩)/√2 ⊗ |0⟩, it gives (|00⟩ + |11⟩)/√2, which cannot be written as a product of two single-qubit states.",
+    "When a state can't be factored, each qubit alone is in a mixed state: its Bloch vector is shorter than 1. For a Bell state it has length 0: each qubit alone is a perfect coin flip, but the pair is perfectly ordered."
+   ],
+   "equation": "|Phi+> = (|00> + |11>)/sqrt(2)",
+   "takeaway": "Entangled qubits share one state: each alone is random, together they agree.",
+   "objectives": [
+    "Use H followed by CNOT to build a Bell state.",
+    "Read joint probabilities such as 00 and 11.",
+    "Explain why entangled qubits have no individual Bloch arrow."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The pair has one definite joint state",
+     "terms": [
+      "pair",
+      "joint",
+      "together",
+      "whole",
+      "shared",
+      "pure"
+     ],
+     "hint": "the two-qubit state is perfectly definite."
+    },
+    {
+     "idea": "Each qubit alone is a coin flip",
+     "terms": [
+      "random",
+      "50/50",
+      "coin",
+      "mixed",
+      "shrink",
+      "no direction",
+      "individual",
+      "alone"
+     ],
+     "hint": "on its own, each qubit has no arrow. Its Bloch vector has length 0."
+    },
+    {
+     "idea": "The state can't be split into two separate states",
+     "terms": [
+      "product",
+      "factor",
+      "separat",
+      "independent",
+      "correlat"
+     ],
+     "hint": "the information lives in the correlations, not in either qubit."
+    }
+   ],
+   "checkpoint": "Why do the individual Bloch vectors shrink to zero in a Bell state even though the two-qubit state is perfectly pure?",
+   "widget": {
+    "type": "entangle",
+    "caption": "Run 10 shots of two separate coins and of a Bell pair. Both look random one qubit at a time, but only one pair always agrees."
+   },
+   "quiz": {
+    "question": "In the Bell state (|00⟩ + |11⟩)/√2 you measure qubit 0 and get 1. What will qubit 1 give?",
+    "options": [
+     "0",
+     "1",
+     "50/50",
+     "You can't measure it any more"
+    ],
+    "answer": 1,
+    "explanations": [
+     "The state has no 01 or 10 component, so the results can't differ.",
+     "Right. Only 00 and 11 have amplitude, so the outcomes always match.",
+     "On its own, before anything is measured, yes, but not once its partner gave 1.",
+     "You can; it just has a determined answer now."
+    ]
+   },
+   "try_this": [
+    "H then CNOT gives 50% |00⟩ and 50% |11⟩. Look at the Bloch spheres: both arrows have **shrunk to the center**.",
+    "Tap the H to remove it, leaving the CNOT alone. Is the result entangled?",
+    "Add **X** on q1 after the CNOT. Which two outcomes remain?"
+   ]
+  },
+  {
+   "id": "no-cloning",
+   "number": 12,
+   "unit": "many-qubits",
+   "title": "Why you can't copy a qubit",
+   "eyebrow": "Multi-qubit systems",
+   "summary": "A circuit that copies 0s and 1s perfectly fails on everything in between. That's not a flaw in the circuit: no circuit can copy an unknown quantum state.",
+   "intuition": [
+    "Copying classical bits is easy. CNOT with a blank target turns |0⟩|0⟩ into |0⟩|0⟩ and |1⟩|0⟩ into |1⟩|1⟩: a perfect photocopier for 0s and 1s.",
+    "Now feed it |+⟩, the arrow on the equator. Two real copies would be |+⟩|+⟩: two independent arrows, giving all four outcomes. What comes out instead is the Bell state from Lesson 11, (|00⟩ + |11⟩)/√2. The original is now entangled with the \"copy\", and neither has an arrow of its own.",
+    "It isn't CNOT's fault. The **no-cloning theorem** says no quantum circuit can copy an unknown state. If one could, you'd make a pile of copies, measure each along a different axis and read the arrow directly. That is exactly what measurement forbids."
+   ],
+   "analogy": {
+    "title": "A photocopier that only understands black and white",
+    "picture": "It copies a pure black or pure white page perfectly. Feed it a grey page and, instead of a second grey page, it binds the original and the copy together so that whenever anyone looks, both come out black or both come out white.",
+    "captures": "The copier works on 0 and 1 but entangles everything in between, and the original loses its own \"shade\".",
+    "breaks": "Grey paper looks grey to anyone. A qubit's shade can't be seen at all, and that's exactly why a working copier would be so powerful, and why it can't exist."
+   },
+   "misconception": "No-cloning doesn't stop you making many qubits in the same known state: just run the same preparation again. It forbids copying a state you don't know.",
+   "explanation": [
+    "Suppose a unitary U copied every state: U|ψ⟩|0⟩ = |ψ⟩|ψ⟩. Unitaries preserve overlaps, so for any two states ⟨φ|ψ⟩ = ⟨φ|ψ⟩². That only holds if the overlap is 0 or 1: the states are identical or perfectly distinguishable. A machine that copies |0⟩ and |1⟩ therefore can't copy |+⟩.",
+    "Concretely, CNOT(|+⟩|0⟩) = (|00⟩ + |11⟩)/√2, while a true copy is |+⟩|+⟩ = (|00⟩ + |01⟩ + |10⟩ + |11⟩)/2, and their fidelity is only ½. Known states can be prepared as often as you like; it's unknown states that can't be copied. That is what makes quantum key distribution secure."
+   ],
+   "equation": "U|psi>|0> = |psi>|psi> for every psi  =>  <phi|psi> = <phi|psi>^2",
+   "takeaway": "No circuit copies an unknown state: CNOT copies 0 and 1, but entangles everything in between.",
+   "objectives": [
+    "Show that CNOT copies 0 and 1 but not superpositions.",
+    "State the no-cloning theorem and why it has to hold.",
+    "Compare a \"copied\" state with a true copy using fidelity in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "Copies would let you measure along many axes",
+     "terms": [
+      "many copies",
+      "lots of copies",
+      "each copy",
+      "different ax",
+      "every ax",
+      "read the arrow",
+      "learn the state"
+     ],
+     "hint": "say what you'd do with many copies: measure them along different axes and reconstruct the arrow."
+    },
+    {
+     "idea": "Measurement only gives one bit",
+     "terms": [
+      "one bit",
+      "can't see",
+      "cannot see",
+      "only 0 or 1",
+      "statistic",
+      "forbid",
+      "impossible"
+     ],
+     "hint": "connect it to measurement: one qubit only ever hands you one bit."
+    },
+    {
+     "idea": "CNOT entangles instead of copying",
+     "terms": [
+      "entangl",
+      "bell",
+      "00 and 11",
+      "agree"
+     ],
+     "hint": "describe what the CNOT \"copier\" actually produces."
+    }
+   ],
+   "checkpoint": "If you could copy an unknown qubit, how would you use the copies to read its arrow, and why does that rule copying out?",
+   "widget": {
+    "type": "copy_attempt",
+    "caption": "Tilt the original, then 'copy' it with CNOT. The dashed bars show what two real copies would give; the fidelity says how close the copier gets."
+   },
+   "quiz": {
+    "question": "You feed |+⟩ and a blank |0⟩ into the CNOT copier and measure both qubits. Which results can appear?",
+    "options": [
+     "00, 01, 10 and 11, 25% each (two independent copies)",
+     "Only 00 and 11, 50% each",
+     "Only 00",
+     "Only 01 and 10"
+    ],
+    "answer": 1,
+    "explanations": [
+     "That's what two true copies of |+⟩ would give. The copier produces something else.",
+     "Right. CNOT makes the Bell state (|00⟩ + |11⟩)/√2: the \"copy\" always agrees with the original, but the two are entangled rather than two independent |+⟩s.",
+     "That would mean the original was |0⟩, but |+⟩ gives 1 half the time.",
+     "CNOT copies the control's value into the target, so the two always agree."
+    ]
+   },
+   "try_this": [
+    "The example tries to copy |+⟩ from q0 into q1. Two true copies would show all four outcomes; you only see 00 and 11.",
+    "Look at the Bloch readout: both arrows have shrunk to the centre. Copying didn't just fail. It took the original's arrow away.",
+    "Clear, then add **X** on q0 and a **CNOT** from q0 to q1, so the original is |1⟩. Now the copy is perfect: 11 every time. The copier only works on 0 and 1."
+   ]
+  },
+  {
+   "id": "teleportation",
+   "number": 13,
+   "unit": "many-qubits",
+   "title": "Teleportation",
+   "eyebrow": "Multi-qubit systems",
+   "summary": "Move an unknown qubit state from Alice to Bob with one shared Bell pair and two ordinary bits, without anyone learning what the state is.",
+   "intuition": [
+    "Alice has a qubit in a state she doesn't know, and she can't copy it (Lesson 12 showed why). But she and Bob share a **Bell pair** from Lesson 11.",
+    "Alice entangles her mystery qubit with her half of the pair and measures both. Her two results look completely random, but they tell Bob **which of four simple fixes** (nothing, X, Z, or both) turns his half into her original state.",
+    "After Bob's fix, his qubit is exactly Alice's state, and hers has been destroyed by the measurement. The state **moved**; it wasn't copied. And nothing travelled faster than light: Bob had to wait for Alice's message."
+   ],
+   "analogy": {
+    "title": "A fax that shreds the original",
+    "picture": "The page comes out at Bob's end, the original is destroyed at Alice's, and nothing gets through without the phone line.",
+    "captures": "The state moves rather than being copied, and Bob can't finish until Alice's ordinary message arrives.",
+    "breaks": "A fax reads the page. Alice never learns her state, and her two bits alone say nothing about it. The state travels in the shared entanglement and the bits together."
+   },
+   "misconception": "Teleportation doesn't move matter or beat the speed of light. It needs a classical message, and it moves the state rather than copying it: Alice's original is destroyed.",
+   "explanation": [
+    "The no-cloning theorem forbids copying an unknown state. Teleportation sidesteps it: |ψ⟩ ⊗ |Φ⁺⟩ can be rewritten as four equally weighted terms, each pairing one of Alice's outcomes (m₀, m₁) with Bob holding X^{m₁}Z^{m₀}|ψ⟩.",
+    "Bob undoes that with X^{m₁} and then Z^{m₀}. In a simulator you can replace 'measure, then fix if the bit is 1' with controlled gates: CX from q1 and CZ from q0. This is the deferred measurement principle, and the final state is the same."
+   ],
+   "equation": "|psi>|Phi+> = 1/2 sum |m0 m1> X^m1 Z^m0 |psi>",
+   "takeaway": "Shared entanglement plus two ordinary bits move a state: nothing is copied, nothing outruns light.",
+   "objectives": [
+    "Explain why an unknown quantum state can't simply be copied.",
+    "Follow the teleportation protocol step by step.",
+    "Build teleportation in Qiskit using deferred measurement."
+   ],
+   "key_ideas": [
+    {
+     "idea": "Bob needs Alice's two classical bits",
+     "terms": [
+      "classical",
+      "bits",
+      "phone",
+      "message",
+      "communicat",
+      "wait"
+     ],
+     "hint": "the fix depends on bits sent by ordinary means."
+    },
+    {
+     "idea": "Without them his qubit is random",
+     "terms": [
+      "random",
+      "50/50",
+      "noise",
+      "coin",
+      "mixed",
+      "nothing"
+     ],
+     "hint": "averaged over Alice's results, Bob's qubit is a coin flip."
+    },
+    {
+     "idea": "So nothing outruns light",
+     "terms": [
+      "light",
+      "speed",
+      "instant",
+      "causal"
+     ],
+     "hint": "explain why no information arrives faster than light."
+    }
+   ],
+   "checkpoint": "Why can't Bob use teleportation to receive a message before Alice's bits arrive?",
+   "widget": {
+    "type": "teleport",
+    "caption": "Choose Alice's state, then step through the protocol and watch Bob's arrow: useless until both fixes arrive, then an exact match."
+   },
+   "quiz": {
+    "question": "Before Alice's two bits reach Bob, what can he learn by measuring his qubit?",
+    "options": [
+     "Alice's state exactly",
+     "Nothing useful: his results are 50/50 whatever Alice sent",
+     "Alice's two measurement results",
+     "Whether the teleportation worked"
+    ],
+    "answer": 1,
+    "explanations": [
+     "Without the fix, his qubit is one of four scrambled versions of her state.",
+     "Right. Averaged over Alice's four equally likely results, Bob's qubit is a perfect coin flip. That is why teleportation can't send messages faster than light.",
+     "Those bits only travel by ordinary communication.",
+     "He can't check without knowing the state or the bits."
+    ]
+   },
+   "try_this": [
+    "q0 starts tilted by RY. Compare the Bloch spheres: after the protocol, **q2 points exactly where q0 started**.",
+    "Undo the last two gates (Bob's fixes). q2's arrow shrinks to nothing. Without Alice's bits, Bob holds only noise.",
+    "Look at q0 at the end: it no longer points where it started. The state moved to q2, and no copy was made."
+   ]
+  },
+  {
+   "id": "superdense",
+   "number": 14,
+   "unit": "many-qubits",
+   "title": "Superdense coding: two bits in one qubit",
+   "eyebrow": "Multi-qubit systems",
+   "summary": "Teleportation spends two bits to move one qubit. Superdense coding runs the trade the other way: with a shared Bell pair, sending one qubit delivers two bits.",
+   "intuition": [
+    "Alice and Bob share a Bell pair again: Alice holds q0, Bob holds q1. Alice wants to send Bob two ordinary bits, but she's only allowed to send him one qubit.",
+    "She twists her half in one of four ways: nothing, X, Z, or both. Each twist turns the shared pair into a different one of the four **Bell states**, and those four can be told apart perfectly, as long as you look at both qubits together.",
+    "Alice posts her qubit to Bob. Now he holds both halves: he undoes the entangling (CNOT, then H) and reads two bits with certainty. One qubit travelled and two bits arrived. The second rode in on the entanglement they set up earlier."
+   ],
+   "analogy": {
+    "title": "A safe with two keys",
+    "picture": "Bob already holds one key to a safe. Alice turns her key to one of four positions and posts it to him. With both keys in his hands, Bob can tell which of the four positions she chose.",
+    "captures": "A shared resource is set up in advance, only one object travels, and reading the message needs both halves together.",
+    "breaks": "You could look at a posted key and see its position. Alice's qubit on its own looks completely random (it's half of an entangled pair), so anyone who intercepts it learns nothing. The message exists only in the pair."
+   },
+   "misconception": "Superdense coding doesn't beat light or squeeze bits out of nothing. The Bell pair had to be shared beforehand, and Alice's qubit still has to travel to Bob.",
+   "explanation": [
+    "The four Bell states are |Φ±⟩ = (|00⟩ ± |11⟩)/√2 and |Ψ±⟩ = (|01⟩ ± |10⟩)/√2. They're orthogonal, so a single joint measurement tells them apart. Alice's nothing, X, Z or both, applied to her qubit only, turns |Φ⁺⟩ into each of them in turn.",
+    "Bob's CNOT followed by H is the circuit that made the pair, run backwards, so it rotates the four Bell states onto |00⟩, |01⟩, |10⟩ and |11⟩. On its own, one qubit can carry at most one bit (Holevo's bound); the extra bit is paid for by the entanglement shared in advance."
+   ],
+   "equation": "Alice applies X^b1 then Z^b0 to her half of |Phi+>; Bob's CNOT, H read b1 b0",
+   "takeaway": "With a shared Bell pair, sending one qubit delivers two bits. The second rides on the entanglement.",
+   "objectives": [
+    "Encode two classical bits by acting on one half of a Bell pair.",
+    "Explain why the four Bell states can be told apart.",
+    "Build superdense coding in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The Bell pair was shared in advance",
+     "terms": [
+      "bell pair",
+      "entangl",
+      "shared",
+      "beforehand",
+      "in advance",
+      "earlier"
+     ],
+     "hint": "say what Alice and Bob set up before any message was sent."
+    },
+    {
+     "idea": "Four twists give four distinguishable Bell states",
+     "terms": [
+      "four",
+      "bell state",
+      "distinguish",
+      "orthogonal",
+      "tell apart",
+      "different"
+     ],
+     "hint": "explain why Bob can tell the four twists apart."
+    },
+    {
+     "idea": "Bob reads both qubits together",
+     "terms": [
+      "both qubits",
+      "both halves",
+      "together",
+      "joint",
+      "pair"
+     ],
+     "hint": "the message only appears when Bob has both halves."
+    }
+   ],
+   "checkpoint": "One qubit travelled, yet two bits arrived. Where did the second bit come from?",
+   "widget": {
+    "type": "superdense",
+    "caption": "Toggle Alice's twists (X, Z) on her half of the pair and check that Bob reads a different two-bit message for each combination."
+   },
+   "quiz": {
+    "question": "Alice applies only Z to her half of the Bell pair and sends it. After Bob's CNOT and H, what does he read (written q1 q0)?",
+    "options": [
+     "00",
+     "01",
+     "10",
+     "11"
+    ],
+    "answer": 1,
+    "explanations": [
+     "That's the message for \"no twist\".",
+     "Right. Z flips the sign of the |11⟩ part of the pair; Bob's CNOT and H turn that sign into a 1 on q0.",
+     "That's what X gives: it changes which pairs agree, which shows up on q1.",
+     "That takes both X and Z."
+    ]
+   },
+   "try_this": [
+    "The example sends the message 11: Alice applies X and Z, and Bob's CNOT and H read 11 with certainty.",
+    "Remove Alice's **Z**. Which message arrives now?",
+    "Remove both twists and Bob reads 00. Four twists, four messages: two bits."
+   ]
+  },
+  {
+   "id": "deutsch",
+   "number": 15,
+   "unit": "algorithms",
+   "title": "Phase kickback: Deutsch's algorithm",
+   "eyebrow": "Algorithms",
+   "summary": "A function hides in a black box. Is it constant or balanced? Classically you must ask twice; a quantum computer can tell with one question.",
+   "intuition": [
+    "A black box computes a one-bit function f(x). It's either **constant** (same answer for 0 and 1) or **balanced** (different answers). Classically, you have to try both inputs.",
+    "Quantumly, feed it both inputs at once in superposition, and put the box's output qubit in |−⟩. Then the answer doesn't change the output qubit at all. Instead it **kicks back** a sign, (−1)^f(x), onto the input. This is **phase kickback**.",
+    "A constant f leaves the input at |+⟩; a balanced f flips it to |−⟩. One final H turns that phase difference into a definite 0 or 1 (the trick from Lesson 8). One question, certain answer."
+   ],
+   "analogy": {
+    "title": "Spotting a two-headed coin",
+    "picture": "A genuine coin has different faces (balanced); a trick coin has the same face twice (constant). Normally you have to look at both sides to tell.",
+    "captures": "The question is about how the two answers relate, and one quantum query settles it.",
+    "breaks": "You still never see either face: you only learn whether they differ. And no real coin lets you look at both sides in superposition; the oracle must accept quantum inputs."
+   },
+   "misconception": "The speed-up isn't 'evaluate both inputs and read both answers'. You never learn f(0) or f(1). You learn only a global property of f, extracted by interference.",
+   "explanation": [
+    "The oracle maps |x⟩|y⟩ → |x⟩|y ⊕ f(x)⟩. With the output qubit in |−⟩, flipping y only multiplies by −1, so |x⟩|−⟩ → (−1)^{f(x)}|x⟩|−⟩: the answer moves into the phase of the input.",
+    "With the input in |+⟩ you get (|0⟩ + (−1)^{f(0)⊕f(1)}|1⟩)/√2 up to a global sign, and the final H outputs f(0) ⊕ f(1): 0 for constant, 1 for balanced. Deutsch–Jozsa extends this to n input qubits, where any deterministic classical method needs exponentially many queries."
+   ],
+   "equation": "U_f|x>|-> = (-1)^f(x) |x>|->",
+   "takeaway": "Phase kickback writes f's answer into the input's phase; interference reads it in one query.",
+   "objectives": [
+    "Explain phase kickback.",
+    "Tell constant from balanced functions with a single query.",
+    "Build Deutsch's algorithm in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The output qubit starts in |−⟩",
+     "terms": [
+      "|-",
+      "|−",
+      "minus",
+      "output qubit",
+      "target"
+     ],
+     "hint": "say how the output qubit is prepared."
+    },
+    {
+     "idea": "Flipping |−⟩ just multiplies by −1",
+     "terms": [
+      "(-1)",
+      "-1",
+      "sign",
+      "phase",
+      "kick"
+     ],
+     "hint": "a flip of |−⟩ only changes its sign."
+    },
+    {
+     "idea": "That sign lands on the input",
+     "terms": [
+      "input",
+      "control",
+      "q0",
+      "kickback",
+      "kick back",
+      "moves"
+     ],
+     "hint": "the −1 belongs to the input's branch, so the answer becomes a phase on q0."
+    }
+   ],
+   "checkpoint": "Why does putting the output qubit in |−⟩ turn the oracle's answer into a phase on the input?",
+   "widget": {
+    "type": "deutsch",
+    "caption": "Swap the hidden function. Watch q0 land on |+⟩ or |−⟩ after the single query, and the last H turn that into a certain 0 or 1."
+   },
+   "quiz": {
+    "question": "Deutsch's algorithm measures q0 and gets 1. What do you know?",
+    "options": [
+     "f is constant",
+     "f is balanced",
+     "f(0) = 1",
+     "Nothing yet: run it again"
+    ],
+    "answer": 1,
+    "explanations": [
+     "Constant functions leave q0 at |+⟩, which the final H turns into 0.",
+     "Right. Only a balanced function kicks back opposite signs, giving |−⟩ and then 1 with certainty.",
+     "The algorithm reveals how f(0) and f(1) relate, not either value on its own.",
+     "The result is deterministic: one run is enough."
+    ]
+   },
+   "try_this": [
+    "The example hides f(x) = x (a CNOT). q0 (the right-hand bit) reads 1 in every outcome: balanced.",
+    "Undo the final H: q0's arrow sits at the back of the equator (|−⟩). That's the kicked-back phase.",
+    "Clear and rebuild without the CNOT: **X** on q1, then **H** on q0, **H** on q1, **H** on q0. f is now constant: what does q0 read?"
+   ]
+  },
+  {
+   "id": "bernstein-vazirani",
+   "number": 16,
+   "unit": "algorithms",
+   "title": "A secret string in one question",
+   "eyebrow": "Algorithms",
+   "summary": "A box hides a secret bit string. Classically you need one question per bit; the Bernstein–Vazirani algorithm reads the whole string with a single query.",
+   "intuition": [
+    "A box hides a secret string, say s = 11. You hand it any bit string x and it answers with one bit: the parity of s·x (whether s and x share an odd or even number of 1s). Classically, the best you can do is test one position at a time: one question per bit of s.",
+    "Quantumly, reuse the trick from Lesson 15: put every input qubit in |+⟩ and the answer qubit in |−⟩. Each 1 in the secret kicks a minus sign back onto the matching input qubit, turning its |+⟩ into |−⟩.",
+    "A final H on each input turns |+⟩ back into 0 and |−⟩ into 1. The input register now **is** the secret: every bit of it, from one query."
+   ],
+   "analogy": {
+    "title": "A wall of switches and a buzzer",
+    "picture": "A panel of switches hides which ones are wired to a buzzer. The buzzer only tells you whether an odd or an even number of the wired switches are on. Classically you test one switch at a time; Bernstein–Vazirani tests them all at once and comes back with the full wiring diagram.",
+    "captures": "The hidden rule is a parity, and one quantum query replaces n classical ones.",
+    "breaks": "No real panel can be tested \"all at once\" like this: the inputs must be in superposition, and it only works because the hidden rule is a parity that interference can unpick. Most hidden rules aren't."
+   },
+   "misconception": "The algorithm doesn't query every x and collect the answers. It asks once, with the inputs in superposition, and interference makes the secret the only possible outcome.",
+   "explanation": [
+    "The oracle writes f(x) = s·x mod 2 into the answer qubit. With the answer qubit in |−⟩ each query becomes |x⟩ → (−1)^{s·x}|x⟩, and with every input in |+⟩ that sign splits into a separate minus sign on each qubit where sᵢ = 1.",
+    "After the oracle the inputs are in the product state ⊗ᵢ (|0⟩ + (−1)^{sᵢ}|1⟩)/√2, and H on each one returns exactly |s⟩. A classical algorithm needs n queries for an n-bit secret; this needs one. The oracle is simple too: one CNOT from input i into the answer qubit for every 1 in s."
+   ],
+   "equation": "H^n U_f H^n |0...0>|-> = |s>|->,   f(x) = s.x mod 2",
+   "takeaway": "Phase kickback on every input at once: one query reveals the whole secret string.",
+   "objectives": [
+    "Describe the secret-string problem and what it costs classically.",
+    "Use phase kickback on several input qubits at once.",
+    "Build Bernstein–Vazirani in Qiskit for any secret."
+   ],
+   "key_ideas": [
+    {
+     "idea": "Inputs in |+⟩, answer qubit in |−⟩",
+     "terms": [
+      "|+",
+      "|-",
+      "|−",
+      "plus",
+      "minus",
+      "superposition",
+      "hadamard"
+     ],
+     "hint": "say how the inputs and the answer qubit are prepared."
+    },
+    {
+     "idea": "Each 1 in the secret kicks back a sign",
+     "terms": [
+      "kick",
+      "sign",
+      "phase",
+      "(-1)",
+      "flip"
+     ],
+     "hint": "explain that every 1 in the secret puts a minus sign on its own input qubit."
+    },
+    {
+     "idea": "The final H turns those signs into bits",
+     "terms": [
+      "final h",
+      "hadamard",
+      "read",
+      "bits",
+      "each qubit"
+     ],
+     "hint": "connect the final H gates to reading out every bit at once."
+    }
+   ],
+   "checkpoint": "How does one query reveal every bit of the secret, when a classical query reveals only one bit of information?",
+   "widget": {
+    "type": "secret_string",
+    "caption": "Set the secret in the box. Watch each input qubit pick up a minus sign where the secret has a 1. Then one round of H gates reads the whole string."
+   },
+   "quiz": {
+    "question": "The secret is s = 10 (q1 = 1, q0 = 0). After one query and the final H gates, what do the input qubits read (q1 q0)?",
+    "options": [
+     "00",
+     "01",
+     "10",
+     "A random string: you need more queries"
+    ],
+    "answer": 2,
+    "explanations": [
+     "00 would mean no sign was kicked back at all: a secret of 00.",
+     "That's the secret in the wrong order: Qiskit writes q0 on the right.",
+     "Right. Only q1 received a kicked-back minus sign, so only q1 reads 1.",
+     "The result is certain: before the final H, every input qubit is exactly |+⟩ or |−⟩."
+    ]
+   },
+   "try_this": [
+    "The example hides s = 11 with one CNOT from each input into the answer qubit q2 (which is reset to 0 afterwards). The inputs read 11.",
+    "Remove the CNOT from **q0**. The secret is now 10. Check that the inputs read 10.",
+    "Remove the last two gates (the final H on q0 and q1) and look at the input arrows: each sits at |+⟩ or |−⟩, the secret written in phase."
+   ]
+  },
+  {
+   "id": "grover",
+   "number": 17,
+   "unit": "algorithms",
+   "title": "Your first algorithm: Grover search",
+   "eyebrow": "Algorithms",
+   "summary": "Mark the answer with a phase, then use interference to amplify it. With 4 items, one round finds it with certainty.",
+   "intuition": [
+    "Imagine four sealed boxes, one hiding a prize, and a helper who won't say which box it is but will quietly mark it. Start with every box equally likely (H on every qubit). Measuring now would be a blind guess.",
+    "The **oracle** secretly flips the sign of the correct answer's amplitude. The odds don't change yet: it's a phase, like Lesson 7.",
+    "The **diffuser** reflects every amplitude around the average. The marked one, now below average, gets flung far above it; the others shrink. Repeat about √N times and the answer dominates."
+   ],
+   "analogy": {
+    "title": "Pushing a swing",
+    "picture": "Each well-timed push makes the swing go a little higher. Keep pushing at the right rhythm and it soars; keep going too long and it starts coming back down.",
+    "captures": "Each oracle-plus-diffuser round adds a bit more amplitude to the answer, and about √N rounds is the sweet spot. More overshoots.",
+    "breaks": "A swing gains energy. Grover's state never grows: total probability stays 1, and the answer's share rises only because every other answer's share falls."
+   },
+   "misconception": "A quantum computer doesn't check all answers at once and read them out. It reshapes amplitudes so one measurement is likely to give the right answer.",
+   "explanation": [
+    "With N items, the uniform state has every amplitude 1/√N. The oracle flips the sign of the marked item; the diffuser 2|s⟩⟨s| − I reflects all amplitudes about their mean.",
+    "Each round rotates the state about 2/√N radians toward the answer, so roughly (π/4)√N rounds are needed: a quadratic speed-up over checking items one by one. For N = 4, exactly one round lands on the answer."
+   ],
+   "equation": "rounds ~ (pi/4) sqrt(N)",
+   "takeaway": "Mark the answer with a sign, reflect about the average, repeat about (π/4)√N times.",
+   "objectives": [
+    "Identify state preparation, oracle, diffusion and readout.",
+    "Explain amplitude amplification without 'trying every answer at once'.",
+    "Build a 2-qubit Grover circuit in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The oracle marks the answer with a sign",
+     "terms": [
+      "oracle",
+      "mark",
+      "sign",
+      "phase",
+      "flip"
+     ],
+     "hint": "say what the oracle does."
+    },
+    {
+     "idea": "The diffuser reflects about the average",
+     "terms": [
+      "diffus",
+      "mean",
+      "average",
+      "reflect",
+      "amplif"
+     ],
+     "hint": "say what the diffuser does."
+    },
+    {
+     "idea": "Interference grows the answer and shrinks the rest",
+     "terms": [
+      "interfer",
+      "grow",
+      "shrink",
+      "cancel",
+      "constructive"
+     ],
+     "hint": "connect the phase to the change in odds."
+    }
+   ],
+   "checkpoint": "What job does interference perform between the oracle and the measurement?",
+   "widget": {
+    "type": "grover",
+    "caption": "Alternate the oracle (flip the answer's sign) and the diffuser (reflect every bar about the average) and watch the answer's bar grow."
+   },
+   "quiz": {
+    "question": "Right after the oracle marks the answer (and before the diffuser), what does a measurement show?",
+    "options": [
+     "The marked answer with certainty",
+     "The same uniform odds as before",
+     "The marked answer is now impossible",
+     "Only the unmarked answers"
+    ],
+    "answer": 1,
+    "explanations": [
+     "The oracle only changes a sign; it takes the diffuser to turn that into probability.",
+     "Right. A sign flip is a phase, invisible to measurement until interference converts it.",
+     "Its amplitude is −½ instead of +½; the probability (−½)² = ¼ is unchanged.",
+     "Every outcome still has probability ¼."
+    ]
+   },
+   "try_this": [
+    "The worked example searches 4 items for `11`: H on both, an oracle (CZ), then the diffuser. The bars show 100% on 11.",
+    "Undo gates from the end, one at a time, to see the state right after the oracle.",
+    "To search for a different item, the oracle's CZ gets wrapped in X gates. That's exactly the step 5 exercise, where you can edit every line."
+   ]
+  },
+  {
+   "id": "qft",
+   "number": 18,
+   "unit": "algorithms",
+   "title": "The quantum Fourier transform",
+   "eyebrow": "Algorithms",
+   "summary": "Your ear splits a chord into notes. The quantum Fourier transform splits a repeating pattern in the amplitudes into its rhythms. That's the step at the heart of Shor's factoring algorithm.",
+   "intuition": [
+    "Play a chord and your ear hears separate notes: it turns one wave into the list of frequencies inside it. That's a **Fourier transform**.",
+    "The **quantum Fourier transform (QFT)** does the same to amplitudes. Feed it a state with a regular rhythm (equal weight on |0⟩ and |2⟩, a pattern that repeats every 2 steps) and the output peaks at the matching frequencies, here 0 and 2.",
+    "Inside, it works like a row of clock hands. Each output qubit sits on the equator and turns at its own speed: half a turn per step, a quarter, an eighth… The whole circuit is H gates plus controlled phase turns. Finding hidden rhythms this way is how Shor's algorithm factors numbers."
+   ],
+   "analogy": {
+    "title": "Hearing the notes in a chord",
+    "picture": "Strike a chord on a piano and your ear doesn't hear one messy wave. It hears three notes. Your inner ear is doing a Fourier transform: turning a wave into the list of frequencies inside it.",
+    "captures": "The QFT turns a repeating pattern in the amplitudes into peaks at its frequencies.",
+    "breaks": "Your ear hears every note at once. A measurement after the QFT gives one frequency per run, picked at random from the peaks. That's plenty for algorithms that need one rhythm, but useless for reading a whole spectrum."
+   },
+   "misconception": "The QFT isn't a faster way to Fourier-transform your data. Its outputs are amplitudes you can only sample, so it helps algorithms that need one rhythm, not a whole spectrum.",
+   "explanation": [
+    "On n qubits (N = 2ⁿ outcomes) the QFT maps |x⟩ to (1/√N) Σₖ e^{2πi·xk/N}|k⟩: every output gets equal weight, with a phase that turns at a rate set by x. Applied to a superposition, those phases interfere, and a pattern with period r piles up on multiples of N/r.",
+    "The circuit is short: on each qubit an H, then controlled phase turns of π/2, π/4, … from the qubits below it, then SWAPs to reverse the bit order. That's about n²/2 gates. The catch is that the results are amplitudes you can only sample, so the QFT shines inside algorithms like phase estimation and Shor's, not as a faster FFT for your data."
+   ],
+   "equation": "QFT|x> = (1/sqrt(N)) sum_k exp(2 pi i x k / N) |k>",
+   "takeaway": "The QFT turns rhythm into position: a pattern with period r lands on multiples of N/r.",
+   "objectives": [
+    "Describe a Fourier transform as finding the rhythms in a pattern.",
+    "Predict the QFT of a periodic state.",
+    "Build the QFT from H and controlled-phase gates in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The input repeats every 2 steps",
+     "terms": [
+      "period",
+      "repeat",
+      "rhythm",
+      "pattern",
+      "every 2",
+      "every two"
+     ],
+     "hint": "say what's special about the input: it repeats every 2 steps."
+    },
+    {
+     "idea": "The output peaks at the matching frequencies",
+     "terms": [
+      "frequenc",
+      "peak",
+      "multiple",
+      "0 and 2",
+      "two outcomes"
+     ],
+     "hint": "name the peaks: 0 and 2, the multiples of 4/2."
+    },
+    {
+     "idea": "The other outcomes cancel by interference",
+     "terms": [
+      "interfer",
+      "cancel",
+      "phase",
+      "add up"
+     ],
+     "hint": "explain why 1 and 3 disappear: their amplitudes cancel."
+    }
+   ],
+   "checkpoint": "Why does a pattern that repeats every 2 steps come out of the QFT as just two peaks?",
+   "widget": {
+    "type": "qft_clocks",
+    "caption": "Change x and watch three clock hands turn at different speeds. Then feed in a repeating pattern and see it collapse into a few sharp peaks."
+   },
+   "quiz": {
+    "question": "A 2-qubit register holds equal amplitudes on |0⟩ and |2⟩, a pattern that repeats every 2 steps. After the QFT, which outcomes can you measure?",
+    "options": [
+     "Only 0",
+     "0 and 2, 50% each",
+     "All four, 25% each",
+     "1 and 3, 50% each"
+    ],
+    "answer": 1,
+    "explanations": [
+     "Only 0 needs a completely flat input, with all four amplitudes equal.",
+     "Right. A rhythm of period 2 in 4 steps shows up at multiples of 4/2 = 2: outcomes 0 and 2.",
+     "A flat output comes from an input with no rhythm at all, such as a single basis state.",
+     "Those odd frequencies cancel for a pattern that repeats every 2 steps."
+    ]
+   },
+   "try_this": [
+    "The first H spreads q1, so the input is |0⟩ + |2⟩: a pattern with period 2. After the QFT the bars peak at 00 and 10 (outcomes 0 and 2).",
+    "Remove the first gate so the input is plain |0⟩. The QFT spreads it evenly over all four outcomes: a single point contains every frequency.",
+    "The builder spells out the controlled quarter turn with T, RZ and two CNOTs, and the final three CNOTs swap the qubits. In step 5, Qiskit's `cp` and `swap` do the same in two lines."
+   ]
+  },
+  {
+   "id": "phase-estimation",
+   "number": 19,
+   "unit": "algorithms",
+   "title": "Phase estimation: reading a hidden angle",
+   "eyebrow": "Algorithms",
+   "summary": "A gate secretly turns a special state by some fraction of a turn. Phase estimation kicks that turn onto a register of qubits and reads it out as binary digits.",
+   "intuition": [
+    "Some gates leave a special state alone except for turning its phase: U|ψ⟩ = e^{2πiφ}|ψ⟩. The fraction of a turn, φ, is hidden, and in chemistry and factoring it's exactly the number you're after.",
+    "Phase kickback from Lesson 15 moves that turn onto a control qubit. Control U once and the control's clock hand turns by φ; control U² and it turns by 2φ; U⁴, by 4φ. Each **counting qubit** looks at the hand after a different number of ticks.",
+    "Together the counting qubits hold the phase as a rhythm, and the inverse of the QFT from Lesson 18 turns that rhythm into binary digits. In the example U = S, a quarter turn: φ = 0.01 in binary, so the counting register reads 01."
+   ],
+   "analogy": {
+    "title": "Timing a clock hand with snapshots",
+    "picture": "To find how far a clock hand moves per tick, take photos after 1 tick, 2 ticks and 4 ticks. The 1-tick photo gives a rough idea; the 4-tick photo magnifies small differences. Put together, the photos pin the speed down digit by digit.",
+    "captures": "Each counting qubit sees the phase after a different power of U, and together they spell out its binary digits.",
+    "breaks": "You can't simply look at a qubit's hand: the \"photos\" are phases that only the inverse QFT can combine into a readable number, and only if the target is in a state that U merely turns."
+   },
+   "misconception": "Phase estimation can't read the phase of any qubit you hand it. The target has to be in a state U only turns (an eigenstate, here |1⟩ for S); otherwise you get a random one of U's phases.",
+   "explanation": [
+    "If U|ψ⟩ = e^{2πiφ}|ψ⟩, a controlled-U^{2ʲ} kicks the phase e^{2πi·2ʲφ} onto its control. With t counting qubits in |+⟩ controlling U, U², U⁴, …, the counting register ends up in (1/√2ᵗ) Σₖ e^{2πiφk}|k⟩, which is exactly the QFT of the number 2ᵗφ.",
+    "So the inverse QFT returns |2ᵗφ⟩: the first t binary digits of φ. If φ has more digits than you have counting qubits, you get the nearest t-digit value with high probability. Shor's algorithm uses this to find the period of modular multiplication, and chemistry algorithms use it to read off energy levels."
+   ],
+   "equation": "U|psi> = e^{2 pi i phi}|psi>;  after the inverse QFT the counting register reads 2^t phi",
+   "takeaway": "Kick U, U², U⁴… onto counting qubits; the inverse QFT reads off φ's binary digits.",
+   "objectives": [
+    "Describe an eigenphase as a hidden fraction of a turn.",
+    "Explain how controlled powers of U write the phase onto counting qubits.",
+    "Build phase estimation with Qiskit's controlled phase gate and inverse QFT."
+   ],
+   "key_ideas": [
+    {
+     "idea": "U² turns the hand twice as far",
+     "terms": [
+      "twice",
+      "2φ",
+      "double",
+      "u²",
+      "u^2",
+      "power",
+      "two ticks"
+     ],
+     "hint": "say that controlling U² kicks back twice the phase."
+    },
+    {
+     "idea": "Doubling shifts the binary digits",
+     "terms": [
+      "digit",
+      "binary",
+      "bit",
+      "next",
+      "finer",
+      "shift"
+     ],
+     "hint": "connect doubling the phase to moving to the next binary digit."
+    },
+    {
+     "idea": "The turn is kicked back onto the counting qubit",
+     "terms": [
+      "kick",
+      "control",
+      "phase",
+      "counting"
+     ],
+     "hint": "explain how the phase ends up on the counting qubit."
+    }
+   ],
+   "checkpoint": "Why does controlling U² on the second counting qubit give you the next binary digit of the phase?",
+   "widget": {
+    "type": "phase_clock",
+    "caption": "Pick the hidden turn φ. The counting qubits see it after 1, 2 and 4 ticks; the inverse QFT reads off its binary digits. Try 0.3, which doesn't fit in three digits."
+   },
+   "quiz": {
+    "question": "Now the hidden gate is U = Z, which turns |1⟩ by half a turn (φ = ½ = 0.1 in binary). With two counting qubits, what do they read (q1 q0)?",
+    "options": [
+     "00",
+     "01",
+     "10",
+     "11"
+    ],
+    "answer": 2,
+    "explanations": [
+     "That would mean no turn at all (φ = 0).",
+     "That's a quarter turn, φ = 0.01 in binary: the S gate from the example.",
+     "Right. Half a turn is 0.10 in binary, and two counting qubits read those two digits as 10.",
+     "That would be three quarters of a turn."
+    ]
+   },
+   "try_this": [
+    "Three parts: q2 is prepared in |1⟩ (the state S turns); q0 and q1 control S and S² = Z; the inverse QFT reads the result. The bars show 101: counting register 01, so φ = 0.01 in binary = ¼.",
+    "Remove the last gate (the final H on q1). The readout blurs: the inverse QFT is what turns phases into digits.",
+    "Compare with the Qiskit version in step 5, where `cp` does each controlled turn in a single line."
+   ]
+  },
+  {
+   "id": "hardware",
+   "number": 20,
+   "unit": "real-world",
+   "title": "Noise and real hardware",
+   "eyebrow": "Execution",
+   "summary": "Real qubits are fragile, and your circuit gets rewritten before it runs. Learn to separate ideal results from noise.",
+   "intuition": [
+    "Every real gate is slightly imperfect, and qubits slowly lose their state to the environment. On the Bloch sphere, noise **shrinks the arrow** toward the center, toward pure randomness.",
+    "Before running, your circuit is **transpiled**: rewritten into the few gates the chip actually supports and routed around its wiring. A tidy 2-gate circuit can become 10 native gates, each one a chance for error.",
+    "Good practice: always compare hardware results against the ideal simulation of the same circuit."
+   ],
+   "analogy": {
+    "title": "Whispering down a long line",
+    "picture": "Pass a message down a line of people and every whisper adds a small mistake. A short line gets it through; a long line turns it into mush.",
+    "captures": "Every gate adds a little error, so deeper circuits drift further from the ideal result.",
+    "breaks": "In the whispering game the message changes into a different message. Quantum noise mostly shrinks the arrow toward the centre: the state gets less definite and the results drift toward random."
+   },
+   "misconception": "Error mitigation estimates a better answer from noisy data; it doesn't protect the quantum information the way fault-tolerant error correction does.",
+   "explanation": [
+    "Noise is modelled with channels such as depolarizing noise, which replaces the state with a random one with probability λ: ρ → (1 − λ)ρ + λ I/d. On the Bloch sphere this shrinks the vector by (1 − λ).",
+    "Transpilation maps your gates to the device's basis (for example rz, sx, cx) and inserts swaps for qubits that aren't physically connected. Deeper circuits accumulate more noise."
+   ],
+   "equation": "rho -> (1 - lambda) rho + lambda I/d",
+   "takeaway": "Every gate adds a little noise; the arrow shrinks and results drift toward random.",
+   "objectives": [
+    "Distinguish exact simulation, shot noise, and device noise.",
+    "Explain what transpilation does and why depth matters.",
+    "Transpile a circuit to a native gate set in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The ideal simulation is the baseline",
+     "terms": [
+      "ideal",
+      "baseline",
+      "simulat",
+      "compare",
+      "expected"
+     ],
+     "hint": "the ideal result tells you what the circuit should do."
+    },
+    {
+     "idea": "Differences come from device noise",
+     "terms": [
+      "noise",
+      "error",
+      "readout",
+      "decoher",
+      "imperfect"
+     ],
+     "hint": "name a noise source."
+    },
+    {
+     "idea": "Some wobble is just shot noise",
+     "terms": [
+      "shot",
+      "sampling",
+      "statistic",
+      "random"
+     ],
+     "hint": "separate sampling variation from device errors."
+    }
+   ],
+   "checkpoint": "Why should you compare noisy results with an ideal simulation of the same circuit?",
+   "widget": {
+    "type": "noise",
+    "caption": "Turn up the noise on a Bell-state experiment and watch the 'impossible' outcomes appear."
+   },
+   "quiz": {
+    "question": "An ideal Bell circuit never gives 01 or 10. On hardware you see 4% of shots on 01. What is the most likely cause?",
+    "options": [
+     "The circuit is wrong",
+     "Gate and readout noise",
+     "Too many shots",
+     "Entanglement is breaking the laws of physics"
+    ],
+    "answer": 1,
+    "explanations": [
+     "The ideal simulation shows the circuit is right. The extra outcomes come from the device.",
+     "Right. Imperfect gates and readout leak probability into outcomes the ideal circuit forbids.",
+     "More shots reduce statistical wobble; they don't create new outcomes.",
+     "No physics was harmed: this is ordinary device noise."
+    ]
+   },
+   "try_this": [
+    "Switch on **Include device noise** below the builder. Compare the bars with the ideal result.",
+    "Add more gates that cancel out (X, X on q0). The ideal answer is unchanged. What does noise do?"
+   ]
+  },
+  {
+   "id": "real-chip",
+   "number": 21,
+   "unit": "real-world",
+   "title": "Running on a real chip",
+   "eyebrow": "Execution",
+   "summary": "Real chips only connect some qubits to each other. See how Qiskit maps and routes your circuit, then run it on a simulated IBM-style backend.",
+   "intuition": [
+    "On a chip, qubits are physical objects laid out on a grid, and a two-qubit gate only works between **neighbours**. The wiring diagram is called the **coupling map**.",
+    "If your circuit needs a CNOT between qubits that aren't neighbours, the transpiler inserts **SWAPs** to shuffle states next to each other. Each SWAP costs three CNOTs, and every CNOT adds noise.",
+    "So writing good hardware circuits means thinking like the chip: keep interacting qubits close, keep circuits shallow, and always compare with the ideal result."
+   ],
+   "analogy": {
+    "title": "Seating guests at a long dinner table",
+    "picture": "Guests can only chat with their neighbours. To talk to someone at the far end, people have to swap seats, and every swap takes time and risks spilled drinks.",
+    "captures": "The coupling map decides who can interact; the transpiler adds SWAPs, and each SWAP adds noise.",
+    "breaks": "Guests could always shout down the table. On a chip there's no shortcut: a two-qubit gate between non-neighbours simply can't happen until the states are moved next to each other."
+   },
+   "misconception": "A transpiled circuit that looks different isn't a different computation. Layout and routing permute and rewrite, but the ideal output is the same. Only the noise budget changes.",
+   "explanation": [
+    "A backend describes its native gates, coupling map and error rates. `transpile` chooses a layout (which physical qubit plays each of your qubits), routes with SWAPs where needed, and rewrites gates into the native set.",
+    "On IBM hardware you'd load a real backend with `QiskitRuntimeService` and run with `SamplerV2`. Locally, `GenericBackendV2` is a realistic stand-in, and `AerSimulator.from_backend` imitates its noise."
+   ],
+   "equation": "SWAP = CNOT(1,2) CNOT(2,1) CNOT(1,2)",
+   "takeaway": "Chips connect only neighbours; routing adds SWAPs, and every SWAP adds noise.",
+   "objectives": [
+    "Read a coupling map.",
+    "Explain why routing adds SWAPs and noise.",
+    "Transpile for a backend and run a noisy simulation in Qiskit."
+   ],
+   "key_ideas": [
+    {
+     "idea": "Wiring decides which qubits can interact",
+     "terms": [
+      "coupling",
+      "connect",
+      "wiring",
+      "neighbour",
+      "neighbor",
+      "layout"
+     ],
+     "hint": "different chips connect qubits differently."
+    },
+    {
+     "idea": "Routing adds SWAPs",
+     "terms": [
+      "swap",
+      "rout",
+      "extra cnot",
+      "more cnot",
+      "more gates"
+     ],
+     "hint": "far-apart qubits need SWAPs to interact."
+    },
+    {
+     "idea": "More gates means more noise",
+     "terms": [
+      "noise",
+      "error",
+      "deeper",
+      "depth"
+     ],
+     "hint": "every extra gate is another chance for error."
+    }
+   ],
+   "checkpoint": "Why can the same circuit be noisier on one chip than on another, even if every gate is equally good?",
+   "widget": {
+    "type": "routing",
+    "caption": "Pick a circuit and a wiring diagram. These numbers come from Qiskit's real transpiler."
+   },
+   "quiz": {
+    "question": "Your circuit has one CNOT between q0 and q3, but the chip is wired in a line: q0–q1–q2–q3. What happens when you transpile?",
+    "options": [
+     "It fails: those qubits can't interact",
+     "SWAPs are added, so the chip runs several extra CNOTs",
+     "Nothing changes",
+     "The CNOT is replaced by a measurement"
+    ],
+    "answer": 1,
+    "explanations": [
+     "The transpiler handles this for you by routing.",
+     "Right. States are swapped along the line until the qubits are neighbours, which adds several CNOTs.",
+     "A CNOT can't be applied directly between qubits that aren't connected.",
+     "Routing never changes what the circuit computes."
+    ]
+   },
+   "try_this": [
+    "The GHZ example chains CNOTs between neighbours, which is friendly to a line-shaped chip.",
+    "Switch on **Include device noise**: the CNOTs' noise shows up as 'impossible' outcomes like 010.",
+    "Add a CNOT from q0 to q2 (not neighbours on a line). In the widget above, see what that would cost on a real chip."
+   ]
+  },
+  {
+   "id": "qml",
+   "number": 22,
+   "unit": "real-world",
+   "title": "Trainable circuits and quantum ML",
+   "eyebrow": "Machine learning",
+   "summary": "Give a circuit adjustable knobs, measure how wrong it is, and turn the knobs to do better. That's a variational algorithm.",
+   "intuition": [
+    "Think of a circuit with knobs. In Lesson 6 you turned an RY knob by hand until the probability hit a target. Now let a computer turn the knobs for you.",
+    "A **parameterized circuit** has rotation angles left as variables. A classical optimizer runs the circuit, measures a **cost** (how far the output is from what you want), nudges the angles downhill, and repeats.",
+    "This loop powers variational chemistry solvers and quantum machine-learning models. It's the same idea as training a neural network. The model just happens to be a circuit."
+   ],
+   "analogy": {
+    "title": "Tuning a guitar by ear",
+    "picture": "Pluck the string, hear how far off it is, nudge the peg the right way, and pluck again, until it's in tune.",
+    "captures": "The rotation angles are pegs, the cost is how far off it sounds, and the gradient says which way to turn.",
+    "breaks": "You hear a guitar's pitch at once. A circuit's cost is estimated from noisy shots, and even the gradient has to be measured (the parameter-shift rule), so every \"listen\" costs many runs."
+   },
+   "misconception": "Quantum ML is not automatically better than classical ML. At today's scales it often ties or loses; the point is to understand the mechanism and where it might help.",
+   "explanation": [
+    "A variational circuit U(θ) prepares |ψ(θ)⟩. A cost C(θ), such as the distance between measured and target probabilities, is estimated from shots and minimized by a classical optimizer.",
+    "Gradients can be measured on the quantum device itself with the parameter-shift rule: ∂C/∂θ = [C(θ + π/2) − C(θ − π/2)]/2 for rotation gates.",
+    "Where to go next: you now have every building block (states, gates, measurement, entanglement, interference, algorithms, noise and training). Create a free IBM Quantum account and run one of your circuits on a real chip with the qiskit-ibm-runtime package, work through IBM's Qiskit tutorials, or try the qiskit-machine-learning package for larger trainable circuits."
+   ],
+   "equation": "theta <- theta - eta * dC/dtheta",
+   "takeaway": "A variational circuit has knobs; an optimizer turns them downhill on a measured cost.",
+   "objectives": [
+    "Explain what makes a circuit parameterized.",
+    "Describe the train loop: run, measure cost, adjust.",
+    "Use Qiskit `Parameter`s and bind values to them."
+   ],
+   "key_ideas": [
+    {
+     "idea": "The rotation angles change",
+     "terms": [
+      "angle",
+      "parameter",
+      "θ",
+      "theta",
+      "weight",
+      "knob"
+     ],
+     "hint": "say what training adjusts."
+    },
+    {
+     "idea": "A cost measures how wrong it is",
+     "terms": [
+      "cost",
+      "loss",
+      "error",
+      "distance",
+      "target"
+     ],
+     "hint": "say how the optimizer knows how wrong it is."
+    },
+    {
+     "idea": "The gradient says which way to turn",
+     "terms": [
+      "gradient",
+      "downhill",
+      "slope",
+      "derivative",
+      "parameter shift",
+      "optimi"
+     ],
+     "hint": "the gradient (e.g. from the parameter-shift rule) points the way."
+    }
+   ],
+   "checkpoint": "In a variational circuit, what changes during training, and what tells the optimizer which way to change it?",
+   "widget": {
+    "type": "variational",
+    "caption": "Pick a target P(1), then train the angle θ by gradient descent. Amber dots trace the path downhill."
+   },
+   "quiz": {
+    "question": "During training of a variational circuit, what actually changes?",
+    "options": [
+     "The number of qubits",
+     "The rotation angles (parameters)",
+     "The order of the gates",
+     "The measurement results of past shots"
+    ],
+    "answer": 1,
+    "explanations": [
+     "The circuit's size is fixed when you design it.",
+     "Right. The structure stays the same; the optimizer tunes the angles.",
+     "The layout (the 'ansatz') is fixed; only its parameters move.",
+     "Past data is fixed; training changes the circuit that produces future data."
+    ]
+   },
+   "try_this": [
+    "The example is a tiny 2-qubit model: RY on each qubit, a CNOT, then another RY.",
+    "Change the first RY angle in small steps and watch the outputs move smoothly. That smoothness is what gradients rely on."
+   ]
+  }
+ ]
+}

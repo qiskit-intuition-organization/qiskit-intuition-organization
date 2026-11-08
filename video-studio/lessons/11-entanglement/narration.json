@@ -1,0 +1,20 @@
+{
+  "lines": [
+    { "say": "Here's our goal. We want two qubits whose answers always match, even though each one alone is a fair coin flip." },
+    { "say": "Picture two dancers sharing one routine. Watch either one alone, and the moves look made up." },
+    { "say": "Watch both, and every step lines up. The routine belongs to the pair, not to either dancer." },
+    { "say": "For qubits, we use a gate called C NOT. If the control qubit is one, it flips the target." },
+    { "say": "Start with both qubits at zero, and use H to put the control in a fifty fifty superposition." },
+    { "say": "Now apply C NOT. It acts on both parts. Zero zero stays zero zero, and one zero becomes one one." },
+    { "say": "Measure the pair, and half the time you get zero zero, half the time one one." },
+    { "say": "Never zero one, never one zero. The two answers always agree." },
+    { "say": "Yet either qubit alone is a fair coin flip, with no arrow of its own." },
+    { "say": "That's entanglement. The pair has one shared state, and the information lives in the pair." },
+    { "say": "Here the dancers mislead us, because dancers follow steps written down in advance." },
+    { "say": "Experiments called Bell tests show entangled qubits can't be carrying answers settled in advance." },
+    { "say": "And entanglement alone can't send a message. Each side on its own just sees random results." },
+    { "say": "The match only shows up when the two lists of results are compared." },
+    { "say": "This pair is called a Bell state. In symbols, it's ket zero zero plus ket one one, over root two." },
+    { "say": "So entangled qubits share one state. Each one alone is random, but together they always agree." }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "lines": [
+    {
+      "say": "Here's a puzzle. Alice has a qubit whose state, drawn as an arrow, points some way nobody knows."
+    },
+    {
+      "say": "She wants Bob, far away, to get that exact state, but she can't copy it, and measuring destroys it."
+    },
+    {
+      "say": "Picture a fax machine that shreds the original as it sends."
+    },
+    {
+      "say": "The page appears at Bob's end, the original is destroyed at Alice's, and it needs the phone line."
+    },
+    {
+      "say": "The quantum version starts with a Bell pair, two entangled qubits whose readings always match."
+    },
+    {
+      "say": "Alice keeps one, and Bob takes the other."
+    },
+    {
+      "say": "She links her mystery qubit to her half with a C NOT and an H gate, then measures both."
+    },
+    {
+      "say": "She gets two bits, and each of the four outcomes comes up one time in four."
+    },
+    {
+      "say": "She sends them to Bob the ordinary way, like a phone call."
+    },
+    {
+      "say": "They tell him which of four fixes to make: nothing, an X, a Z, or both."
+    },
+    {
+      "say": "Now Bob's qubit points exactly where Alice's started."
+    },
+    {
+      "say": "Her original was wiped out by measuring, so the state moved. It wasn't copied."
+    },
+    {
+      "say": "Here's where the fax breaks. A fax reads the page, but Alice never learns her state."
+    },
+    {
+      "say": "It rides on the shared entanglement and the two bits together, never on the bits alone."
+    },
+    {
+      "say": "And it can't beat light. Until the bits arrive, Bob's qubit is a fifty fifty coin flip, whatever Alice sent."
+    },
+    {
+      "say": "So Bob must wait for the call, and no atoms fly across, only the state."
+    },
+    {
+      "say": "Shared entanglement plus two ordinary bits move a state. Nothing is copied, and nothing outruns light."
+    }
+  ]
+}

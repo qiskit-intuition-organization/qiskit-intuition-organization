@@ -1,0 +1,22 @@
+{
+  "note": "One teacher talking to a complete beginner. Each line is spoken as it is written (Kokoro reads R Y, theta, pi, sine squared) and shown as the caption with math notation. 'at' is the moment in the animation (silent-cut seconds) where the line begins; the animation is stretched so each line lands on its moment. No em dashes.",
+  "lines": [
+    { "at": 0.3, "say": "Let's start with a small goal." },
+    { "at": 2.6, "say": "We want a qubit that reads one, exactly one time out of every four." },
+    { "at": 7.0, "say": "The X gate can't do that, because X works like a light switch." },
+    { "at": 10.2, "say": "It's either off or on, and it can never stop somewhere in between." },
+    { "at": 13.4, "say": "The H gate is just another switch, with its own fixed position." },
+    { "at": 16.0, "say": "What we need instead is a dimmer, the kind of knob that slowly brightens a lamp." },
+    { "at": 18.8, "say": "In quantum computing, that knob is a gate called R Y. You turn it by an angle called theta, and you can stop anywhere you like." },
+    { "at": 22.8, "say": "Let's turn the knob, and watch the chance of reading one." },
+    { "at": 25.3, "say": "When theta is zero, nothing happens, and the qubit always reads zero." },
+    { "at": 29.0, "say": "Turn it to pi over two, and it reads one half of the time. Fifty fifty, just like H." },
+    { "at": 33.8, "say": "Turn it all the way to pi, and it reads one every single time, just like X." },
+    { "at": 38.8, "say": "But here's the surprise. The chance doesn't grow evenly." },
+    { "at": 41.0, "say": "The first small turn adds only about fifteen percent." },
+    { "at": 43.7, "say": "The same turn again adds thirty five percent. It moves slowly near the ends, and fastest in the middle." },
+    { "at": 47.9, "say": "So for our goal, turn the knob to pi over three. Now the chance of reading one is exactly one in four." },
+    { "at": 52.9, "say": "And remember, every time you measure, you get a whole one or a whole zero. The bulb is never half bright." },
+    { "at": 58.0, "say": "So R Y is a dial for probability. The chance of reading one is sine squared of theta over two." }
+  ]
+}

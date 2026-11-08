@@ -1,0 +1,17 @@
+Lesson 6, Rotations: narration script (v2)
+
+One teacher talking to a complete beginner. The captions show these same words, a few at a time (math written as θ, π/2, sin²(θ/2)).
+
+Let's start with a small goal. We want a qubit that reads one, exactly one time out of every four.
+
+The X gate can't do that, because X works like a light switch. It's either off or on, and it can never stop somewhere in between. The H gate is just another switch, with its own fixed position.
+
+What we need instead is a dimmer, the kind of knob that slowly brightens a lamp. In quantum computing, that knob is a gate called R Y. You turn it by an angle called theta, and you can stop anywhere you like.
+
+Let's turn the knob, and watch the chance of reading one. When theta is zero, nothing happens, and the qubit always reads zero. Turn it to pi over two, and it reads one half of the time. Fifty fifty, just like H. Turn it all the way to pi, and it reads one every single time, just like X.
+
+But here's the surprise. The chance doesn't grow evenly. The first small turn adds only about fifteen percent. The same turn again adds thirty five percent. It moves slowly near the ends, and fastest in the middle.
+
+So for our goal, turn the knob to pi over three. Now the chance of reading one is exactly one in four. And remember, every time you measure, you get a whole one or a whole zero. The bulb is never half bright.
+
+So R Y is a dial for probability. The chance of reading one is sine squared of theta over two.

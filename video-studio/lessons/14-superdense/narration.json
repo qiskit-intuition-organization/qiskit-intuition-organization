@@ -1,0 +1,22 @@
+{
+  "lines": [
+    { "say": "Here's a challenge. Alice wants to send Bob two bits, but may post him only one qubit." },
+    { "say": "Measure a qubit and you get one zero or one, just a single bit." },
+    { "say": "Their trick is set up in advance. Picture a safe that opens with two keys." },
+    { "say": "Bob already holds one key. Alice turns hers to one of four positions and posts it." },
+    { "say": "With both keys, Bob can tell which position she chose." },
+    { "say": "For qubits, the keys are a Bell pair, two entangled qubits whose readings always match. Alice holds one, Bob the other." },
+    { "say": "To turn her key, Alice applies nothing, an X, a Z, or both to her qubit." },
+    { "say": "Each choice stands for a message: zero zero, zero one, one zero, or one one." },
+    { "say": "Every twist turns the pair into a different Bell state, and the four can be told apart perfectly." },
+    { "say": "But only by looking at both qubits together." },
+    { "say": "So Alice posts her qubit, and Bob holds both halves." },
+    { "say": "He runs the pair's circuit backwards, a C NOT and then an H, undoing the link." },
+    { "say": "Then he measures both, and reads Alice's two bits with certainty." },
+    { "say": "Here's where the safe breaks. Peek at a posted key, and you see its position." },
+    { "say": "Alice's qubit alone looks completely random, so a spy who grabs it learns nothing." },
+    { "say": "The message lives only in the pair." },
+    { "say": "But it's not magic. The pair was shared beforehand, and Alice's qubit must still travel, so nothing beats light." },
+    { "say": "That's superdense coding. With a shared Bell pair, one qubit delivers two bits. The second rides on the entanglement." }
+  ]
+}

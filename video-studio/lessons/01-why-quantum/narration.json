@@ -1,0 +1,23 @@
+{
+  "lines": [
+    { "say": "Why build a quantum computer, when your laptop is so fast?" },
+    { "say": "You may have heard it tries every answer at once." },
+    { "say": "But looking, which we call measuring, gives you one answer, picked at random." },
+    { "say": "The real trick is something waves do, called interference." },
+    { "say": "Picture waves passing through two gaps in a harbour wall, and spreading out." },
+    { "say": "Where a high crest meets a low trough, the water stays flat." },
+    { "say": "Where two crests meet, the wave grows. Move the gaps, and the calm spots move." },
+    { "say": "Quantum computers also reach each answer by several paths, each carrying a number called an amplitude." },
+    { "say": "Like a wave's height, it can be positive or negative, and paths to the same answer add up." },
+    { "say": "The chance of that answer is the size of the total, squared." },
+    { "say": "Let's try one qubit, a quantum bit, starting at zero." },
+    { "say": "After one step called H, measuring gives a fifty fifty coin toss." },
+    { "say": "Now do H twice. Each H splits every path in two, giving four paths." },
+    { "say": "The two paths ending at one carry plus a half and minus a half, so they cancel." },
+    { "say": "The two paths to zero each carry a half, adding to one, so it always reads zero." },
+    { "say": "Unlike water, you never see this wave. Each run shows one answer." },
+    { "say": "So quantum algorithms put the calm spots on wrong answers, making the right one likely." },
+    { "say": "This only helps on problems with hidden structure, like factoring or simulating molecules. For everyday jobs, your laptop wins." },
+    { "say": "Quantum speed ups come from interference, where wrong answers cancel and right ones reinforce." }
+  ]
+}

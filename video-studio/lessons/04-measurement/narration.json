@@ -1,0 +1,23 @@
+{
+  "lines": [
+    { "say": "Suppose a friend prepares a qubit, and you want to know how they set it." },
+    { "say": "You measure it once, which means you look, and it reads zero. What did you learn?" },
+    { "say": "Almost nothing. One measurement only gives one bit, a single zero or a single one." },
+    { "say": "That zero could come from a qubit that nearly always reads zero, or rarely does." },
+    { "say": "It's like an opinion poll. One voter can't tell you who will win." },
+    { "say": "But ask a thousand, and the percentages come into focus." },
+    { "say": "Quantum programs do the same. They prepare the same qubit again and again, measuring each copy." },
+    { "say": "Each run is called a shot, and each shot is one vote." },
+    { "say": "Say your friend's qubit reads zero three times out of four." },
+    { "say": "Ten shots might give six zeros, which is sixty percent, not seventy five." },
+    { "say": "A hundred shots give seventy one zeros. A thousand give seven hundred and forty eight." },
+    { "say": "The fraction wobbles at first, then settles toward the true odds." },
+    { "say": "To halve the wobble, you need four times as many shots." },
+    { "say": "So when a fifty fifty qubit gives five hundred and twelve zeros and four hundred and eighty eight ones, relax." },
+    { "say": "Nothing is broken. That gap is called shot noise, the normal wobble of any poll." },
+    { "say": "Here's where the poll breaks. A voter already had an opinion before you asked." },
+    { "say": "But our qubit has no answer waiting. Measuring creates one, and leaves the qubit sitting on it." },
+    { "say": "That's why every vote needs a freshly prepared qubit." },
+    { "say": "One shot is one vote, and many shots reveal the odds." }
+  ]
+}
