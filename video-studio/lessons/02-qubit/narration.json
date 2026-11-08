@@ -7,7 +7,7 @@
       "say": "So what's a qubit, a quantum bit? Picture a weather vane instead."
     },
     {
-      "say": "It can point any way, but you may ask it just one question: north or south?"
+      "say": "It can point any way, but you may ask it one question: north or south?"
     },
     {
       "say": "It answers with one word, then instantly swings to point exactly that way."
@@ -16,10 +16,10 @@
       "say": "A qubit is similar. Its state, everything about it, is an arrow on a globe."
     },
     {
-      "say": "Straight up, the north pole, is ket zero, written as zero in a bracket called a ket."
+      "say": "Straight up, the north pole, is ket zero: a zero in a bracket called a ket."
     },
     {
-      "say": "Straight down is ket one, and every direction in between is a perfectly good state too."
+      "say": "Straight down is ket one, and every direction in between is a perfectly good state."
     },
     {
       "say": "Here's the catch: you never see the arrow, and measuring only ever gives zero or one."
@@ -31,7 +31,7 @@
       "say": "On the equator it's fifty fifty, and below it, one is more likely."
     },
     {
-      "say": "And just like the vane, once it answers, the arrow snaps to that pole."
+      "say": "Just like the vane, once it answers, the arrow snaps to that pole."
     },
     {
       "say": "Here the vane breaks down, though. You could walk up and look at a real one."
@@ -43,7 +43,7 @@
       "say": "Those counts tell us how far the arrow tilts from the north pole."
     },
     {
-      "say": "And a tilted arrow isn't secretly zero or one. It truly points in between."
+      "say": "And a tilted arrow isn't secretly zero or one, waiting to be found out. It truly points in between."
     },
     {
       "say": "In symbols, the state is alpha ket zero plus beta ket one, two numbers whose squared sizes give the odds."

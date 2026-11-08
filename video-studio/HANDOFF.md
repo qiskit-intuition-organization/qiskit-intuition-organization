@@ -38,6 +38,21 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 - Lessons 01 to 03 were in script review when work stopped, so their `narration.json` may be
   partly edited. Run the review again.
 
+## If usage runs out (Dhruv's rule)
+Dhruv switches between Claude accounts when one runs out of usage. So:
+- Check the plan's usage before each batch and when one ends. At about 85 to 90% of the 5-hour or
+  weekly limit, start nothing new: commit and push this branch, and update this file.
+- The workflow commits and pushes each lesson as soon as it passes visual QA, and adds a line to
+  the progress log below. A lesson with **uncommitted** changes in its folder was cut off mid-way:
+  start it again from its build stage (`scriptDone: true`) if the log says its script review is
+  done, otherwise from script review.
+- Never commit renders or audio (`project/assets/vo`, `review/`, `Videos/`).
+
+## Progress log
+Newest at the bottom. One line per lesson when it is committed.
+- 2026-11-08: batch 1 (lessons 01 to 03) started. 02's script review is done and committed; 01
+  and 03 were mid-review when the batch was restarted to add per-lesson commits.
+
 ## First-time setup (macOS, from the repo root)
 ```bash
 git fetch origin && git switch video-lessons
