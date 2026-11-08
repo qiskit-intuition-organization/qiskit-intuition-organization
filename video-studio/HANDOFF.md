@@ -77,11 +77,14 @@ node kit/narrate.mjs lessons/01-why-quantum
 3. **Build:** writes `scene.mjs`, builds, checks and snapshots, with at least three rounds of
    looking and fixing.
 4. **Visual QA:** fresh eyes on every frame, fixed in place; a second round if needed.
+5. **Save:** after the build and again after QA, a small agent commits that lesson's source files,
+   adds a line to the progress log above and pushes `video-lessons`.
 
 Run it in batches of about 3 lessons. Pass it the Workflow args below; set `scriptDone: true` to
-skip the script stage for lessons 01 to 13.
+skip the script stage for lessons 01 to 13. If the Workflow tool won't load the file by path,
+paste its contents inline as the `script` input.
 ```json
-{ "studio": "<absolute path to video-studio>",
+{ "studio": "<absolute path to video-studio>", "date": "YYYY-MM-DD",
   "lessons": [ { "dir": "01-why-quantum", "id": "why-quantum", "number": 1, "title": "Why quantum computers?", "scriptDone": true } ] }
 ```
 `dir`, `id`, `number` and `title` for every lesson come from `course.json`; the folder is

@@ -6,10 +6,11 @@ export const meta = {
     { title: 'Script review', detail: 'independent check of accuracy, clarity and fluency' },
     { title: 'Build', detail: 'voice, draw and animate the scene' },
     { title: 'Visual QA', detail: 'fresh eyes on every frame, fix in place' },
+    { title: 'Save', detail: 'commit and push each lesson to video-lessons', model: 'haiku' },
   ],
 }
 
-// Pass { studio: '<absolute path to video-studio>', lessons: [...] } as the Workflow args.
+// Pass { studio: "<absolute path to video-studio>", date: "YYYY-MM-DD", lessons: [...] } as the Workflow args.
 const STUDIO = args.studio
 
 const ctx = (L) => `You are making one short hand-drawn explainer video for lesson ${L.number} of the Qiskit Intuition course: "${L.title}" (lesson id "${L.id}").
@@ -83,18 +84,45 @@ Return verdict "pass" (nothing needed fixing), "fixed" (you fixed things and it'
 const lessons = args.lessons
 log(`making ${lessons.length} lessons`)
 
+// Save progress so another account can continue if usage runs out.
+// Commits run one at a time (a promise chain) so lessons never clash in git.
+const REPO = STUDIO.replace(/\/video-studio\/?$/, '')
+const COMMIT_SCHEMA = { type: 'object', properties: {
+  sha: { type: 'string' }, pushed: { type: 'boolean' }, files: { type: 'array', items: { type: 'string' } } }, required: ['pushed'] }
+let gitQueue = Promise.resolve()
+const checkpoint = (L, stage, note) => {
+  const run = () => agent(`Commit and push one lesson's progress in a git worktree. Do exactly this and nothing else.
+Repository worktree: ${REPO} (branch video-lessons). Run every command with git -C ${REPO}.
+1. Stage ONLY these files if they exist and changed: video-studio/lessons/${L.dir}/narration.json, video-studio/lessons/${L.dir}/plan.md, video-studio/lessons/${L.dir}/scene.mjs. Never stage anything else (no audio, renders, review/, project/, other lessons, nothing outside video-studio/).
+2. In ${STUDIO}/HANDOFF.md, under "## Progress log", append this line at the bottom of that list (before the next "## " heading), then stage HANDOFF.md too:
+- ${args.date}: lesson ${L.dir}: ${stage}. ${note}
+3. Commit with: git -C ${REPO} -c user.name="Dhruv Sachdeva" -c user.email="109058006+LuCiFeR041205@users.noreply.github.com" commit -m "chore(video): ${L.dir} ${stage}" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+4. git -C ${REPO} push origin video-lessons. If it is rejected, run git -C ${REPO} pull --rebase origin video-lessons, then push again.
+If git reports index.lock, wait 5 seconds and retry. Return the commit sha, whether the push succeeded, and the files committed.`,
+    { label: `commit:${L.dir}:${stage}`, phase: 'Save', schema: COMMIT_SCHEMA, model: 'haiku', effort: 'low' })
+  const p = gitQueue.then(run, run)
+  gitQueue = p.catch(() => null)
+  return p
+}
+const brief = (o) => JSON.stringify(o ?? {}).slice(0, 400)
+
 const results = await pipeline(
   lessons,
   (L) => (L.scriptDone ? { skipped: 'script already written' } : agent(scriptPrompt(L), { label: `script:${L.dir}`, phase: 'Script', schema: SCRIPT_SCHEMA, effort: 'high' })),
   (s, L) => agent(reviewPrompt(L), { label: `review:${L.dir}`, phase: 'Script review', schema: REVIEW_SCHEMA, effort: 'high' }).then((r) => ({ script: s, review: r })),
-  (prev, L) => agent(buildPrompt(L), { label: `build:${L.dir}`, phase: 'Build', schema: BUILD_SCHEMA, effort: 'high' }).then((b) => ({ ...prev, build: b })),
+  async (prev, L) => {
+    const b = await agent(buildPrompt(L), { label: `build:${L.dir}`, phase: 'Build', schema: BUILD_SCHEMA, effort: 'high' })
+    await checkpoint(L, 'script reviewed and scene built, visual QA next', `Build notes: ${brief({ seconds: b?.seconds, checkErrors: b?.checkErrors, knownIssues: b?.knownIssues })}`)
+    return { ...prev, build: b }
+  },
   async (prev, L) => {
     let qa = await agent(qaPrompt(L, prev.build), { label: `qa:${L.dir}`, phase: 'Visual QA', schema: QA_SCHEMA, effort: 'high' })
     if (qa && qa.verdict === 'needs_work') {
       log(`${L.dir}: second QA round for ${qa.remaining.length} remaining issue(s)`)
       qa = await agent(qaPrompt(L, { previousQaRemaining: qa.remaining, previousQaFixed: qa.fixed }), { label: `qa2:${L.dir}`, phase: 'Visual QA', schema: QA_SCHEMA, effort: 'high' })
     }
-    return { lesson: L.dir, ...prev, qa }
+    const save = await checkpoint(L, 'visual QA done, ready to render', `QA: ${brief({ verdict: qa?.verdict, seconds: qa?.seconds, remaining: qa?.remaining })}`)
+    return { lesson: L.dir, ...prev, qa, save }
   },
 )
 
