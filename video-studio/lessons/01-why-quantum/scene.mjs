@@ -31,7 +31,7 @@ export default function scene(k) {
     crest: w(5, "crest", 0, -0.08), trough: w(5, "trough", 0, -0.08), water: w(5, "water", 0, -0.05),
     flat: lines[5].end - 0.15,
     l6: lines[6].start, crests: w(6, "crests", 0, -0.1), meet: w(6, "meet", 0, -0.05), grows: w(6, "grows", 0, -0.2),
-    move: w(6, "move", 0, 0), spots: w(6, "spots", 0, -0.05), sceneB2: lines[7].start,
+    move: w(6, "move", 0, 0), spots: w(6, "spots", 0, -0.05), sceneB2: w(7, "quantum", 0, -0.35),
     // C1
     start: w(7, "quantum", 0, -0.08), answers: w(7, "answers", 0, -0.1), paths: w(7, "paths", 0, -0.08),
     number: w(7, "number", 0, -0.08), amplitude: w(7, "amplitude", 0, -0.08),
@@ -39,7 +39,7 @@ export default function scene(k) {
     addup: w(8, "add", 0, -0.1),
     chance: w(9, "chance", 0, -0.08), size: w(9, "size", 0, -0.08), squared: 41.1, sceneC1: 42.55,
     // C2
-    qubit: w(10, "qubit", 0, -0.1), reads: w(10, "reads", 0, -0.08), zero: lines[10].end - 0.55,
+    qubit: w(10, "qubit", 0, -0.1), reads: w(10, "reads", 0, -0.08), rz: w(10, "zero", 0, -0.08), ro: w(10, "one", 1, -0.08), starting: w(10, "starting", 0, -0.05), zero: lines[10].end - 0.55,
     step: w(11, "step", 0, -0.08), H1: w(11, "makes", 0, -0.15), makes: w(11, "makes", 0, 0.05), fifty: w(11, "50", 0, -0.05),
     coin: w(11, "coin", 0, -0.15), coinOut: w(12, "twice", 0, -0.15),
     twice: w(12, "twice", 0, -0.1), splits: w(12, "splits", 0, 0.0), four: w(12, "four", 0, -0.1),
@@ -209,7 +209,7 @@ export default function scene(k) {
     fade("#b-addc", 1, ${T.add}, 0.3);
     write("#b-addlbl", ${T.add + 0.6}, 0.4);
     fade("#b-canc", 1, ${T.cancel}, 0.3);
-    write("#b-canlbl", ${T.cancel + 0.6}, 0.5);
+    write("#b-canlbl", ${T.cancel + 0.45}, 0.5);
     blurOut("#b-sB1", ${T.sceneB1});
     // Two bumps on a baseline slide together; the line drawn is their sum.
     function bumps(cx, d, sign, t) {
@@ -225,7 +225,7 @@ export default function scene(k) {
     onFrame((t) => {
       if (t < ${T.add - 0.5} || t > ${T.sceneB1 + 0.5}) return;
       $("b-addc").setAttribute("d", bumps(620, 130 * (1 - sched([[${T.add + 0.2}, ${T.add + 0.95}, 0, 1]], t)), 1, t));
-      $("b-canc").setAttribute("d", bumps(1300, 130 * (1 - sched([[${T.cancel + 0.25}, ${T.cancel + 1.0}, 0, 1]], t)), -1, t));
+      $("b-canc").setAttribute("d", bumps(1300, 130 * (1 - sched([[${T.cancel + 0.1}, ${T.cancel + 0.75}, 0, 1]], t)), -1, t));
     });
   `;
 
@@ -463,9 +463,10 @@ export default function scene(k) {
     write("#b-plus", ${T.positive + 0.2}, 0.2);
     draw("#b-legdn", ${T.negative}, 0.4);
     write("#b-minus", ${T.negative + 0.2}, 0.2);
+    fade("#b-amparr", 0, ${T.addup}, 0.25);
     fade(["#b-tagTg", "#b-tagBg"], 1, ${T.addup + 0.85}, 0.3);
     fade(["#b-tagTi", "#b-tagBi"], 0, ${T.addup + 0.85}, 0.3);
-    fade(["#b-amplbl", "#b-amparr", "#b-squig", "#b-legbase", "#b-legup", "#b-legdn", "#b-plus", "#b-minus"], 0, ${T.chance - 0.9}, 0.35);
+    fade(["#b-amplbl", "#b-squig", "#b-legbase", "#b-legup", "#b-legdn", "#b-plus", "#b-minus"], 0, ${T.chance - 0.9}, 0.35);
     write("#b-chance", ${T.chance}, 0.5);
     draw("#b-brk", ${T.size}, 0.4);
     write("#b-sizelbl", ${T.size + 0.15}, 0.3);
@@ -520,7 +521,7 @@ export default function scene(k) {
       `<g id="b-midout">${seg(...MIDOUT[0])}${seg(...MIDOUT[1])}</g>` +
       Object.entries(OUT2).map(([kk, [a, b]]) => `<g id="b-o${kk}">${seg(a, b)}</g>`).join("") +
       `<g id="b-end0">${node(...END[0])}</g><g id="b-end1">${node(...END[1])}</g>` +
-      `<g id="b-e0fill">${r.circle(END[0][0], END[0][1], NODE_D - 8, pen({ stroke: "none", fill: GOLD, fillStyle: "hachure", hachureGap: 8, fillWeight: 1.8 }))}${r.circle(END[0][0], END[0][1], NODE_D, goldPen({ strokeWidth: 3.6 }))}</g>` +
+      `<g id="b-e0fill">${r.circle(END[0][0], END[0][1], NODE_D - 8, pen({ stroke: "none", fill: "rgba(217,180,99,0.28)", fillStyle: "solid" }))}${r.circle(END[0][0], END[0][1], NODE_D, goldPen({ strokeWidth: 3.6 }))}</g>` +
       `<g id="b-hl01">${hl([IN1, MIDOUT[0], OUT2["01"]])}</g><g id="b-hl11">${hl([IN1b, MIDOUT[1], OUT2["11"]])}</g>` +
       `<g id="b-hl00">${hl([IN1, MIDOUT[0], OUT2["00"]])}</g><g id="b-hl10">${hl([IN1b, MIDOUT[1], OUT2["10"]])}</g>` +
       mbar("b-m1") + mbar("b-m2", true) + mbar("b-m3") + mbar("b-m4")
@@ -528,6 +529,7 @@ export default function scene(k) {
     clbl("b-q0lbl", Q0[0], 514, 160, 46, "qubit") +
     clbl("b-q0read", Q0[0], 572, 280, 46, "reads 0 or 1") +
     clbl("b-q0v", Q0[0], 422, 80, 64, "0") +
+    clbl("b-q0one", Q0[0], 422, 80, 64, "1") +
     clbl("b-h1lbl", H1.x + H1.w / 2, 420, 80, 76, "H") +
     clbl("b-steplbl", H1.x + H1.w / 2, 160, 180, 44, "a step") +
     clbl("b-mid0", MID[0][0], 252, 70, 52, "0") + clbl("b-mid1", MID[1][0], 612, 70, 52, "1") +
@@ -550,7 +552,12 @@ export default function scene(k) {
     draw("#b-q0", ${T.qubit}, 0.5);
     write("#b-q0lbl", ${T.qubit + 0.2}, 0.35);
     write("#b-q0read", ${T.reads}, 0.7);
-    write("#b-q0v", ${T.zero}, 0.25);
+    hide("#b-q0one");
+    write("#b-q0v", ${T.rz}, 0.2);
+    fade("#b-q0v", 0, ${T.ro - 0.05}, 0.12);
+    fade("#b-q0one", 1, ${T.ro}, 0.12);
+    fade("#b-q0one", 0, ${T.zero}, 0.2);
+    fade("#b-q0v", 1, ${T.zero}, 0.25);
     draw("#b-h1", ${T.step}, 0.6);
     write("#b-steplbl", ${T.step + 0.15}, 0.4);
     write("#b-h1lbl", ${T.H1}, 0.2);
@@ -707,7 +714,7 @@ export default function scene(k) {
     lbl("b-alg", 418, 168, 240, 58, "algorithm", "text-align:left") +
     lbl("b-rec", 640, 168, 520, 58, "= a recipe of steps", "text-align:left") +
     CXD.map((cx, i) => cardNum(`b-nD${i}`, cx, CYD, i + 1)).join("") +
-    lbl("b-chlbl", 144, CH_BASE - 64, 120, 44, "chance", "text-align:left")
+    lbl("b-chlbl", 168, CH_BASE - 64, 110, 44, "chance", "text-align:left")
   );
   const scriptD2 = `
     // ---- Scene D2: calm spots on wrong answers ----
