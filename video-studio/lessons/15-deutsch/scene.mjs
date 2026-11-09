@@ -196,7 +196,7 @@ export default function scene(k) {
     G("b-oracle", crate(OX, OY, OW, OH, OD, 3.4)) +
     G("b-curl", cc(curveArrow(arcPts(1150, 616, 34, 200, 520, 24), { strokeWidth: 3.4 }, 15)), ` style="color:${GOLD}"`) +
     G("b-hgate", gateBox(380, 375, 100, 90)) +
-    G("b-trace", cc(curveArrow([[1030, 730], [1046, 600], [1040, 450], [1032, 300]], { strokeWidth: 3.6 }, 18)), ` style="color:${GOLD}"`) +
+    G("b-trace", cc(curveArrow([[1030, 730], [1046, 600], [1040, 450], [1032, 314]], { strokeWidth: 3.6 }, 18)), ` style="color:${GOLD}"`) +
     G("b-tick", r.linear([[1092, 772], [1106, 790], [1134, 752]], pen({ strokeWidth: 3.6, roughness: 0.6 })));
   const circHtml =
     C("b-inl", 250, 378, 160, 44, "input") + C("b-hel", 256, 598, 170, 44, "helper") +
@@ -445,8 +445,7 @@ export default function scene(k) {
     write("#b-oneq", T.once + 0.5, 0.55);
     write("#b-pk", T.phase4, 0.8);
     write("#b-note", T.answer4, 0.6);
-    draw("#b-sgn", T.sign4, 0.35);
-    fade(["#b-note", "#b-sgn"], 0, T.sign4 + 0.45, 0.3);
+    draw("#b-sgn", T.sign4 - 0.25, 0.3);
     move("#b-pk", { y: 0, scale: 1, color: GOLD }, { y: -630, scale: 0.667, color: INK }, T.l4Out + 0.15, 0.8);
     blurOut(["#b-coins", "#b-q", "#b-bub2"], T.l4Out);
 
@@ -459,7 +458,7 @@ export default function scene(k) {
 
     // ===== Line 6: the helper is set to minus =====
     hide(["#b-hgate", "#b-hl", "#b-supl", "#b-tag1", "#b-tag2", "#b-stillm", "#b-tick", "#b-trace", "#b-token"]);
-    fade("#b-circ", 0.12, T.l6, 0.35); fade("#b-circ", 0, T.still, 0.35); fade("#b-pk", 0.6, T.l6, 0.35);
+    fade("#b-circ", 0, T.l6, 0.35); fade("#b-pk", 0.6, T.l6, 0.35);
     write("#b-bigt", T.minus6, 0.6);
     draw("#b-bg-base", T.arrow6, 0.5); write(["#b-bg-s0", "#b-bg-s1"], T.arrow6 + 0.2, 0.25);
     draw("#b-bg-a0", T.up6, 0.4); draw("#b-bg-a1", T.down6, 0.4);
@@ -490,7 +489,7 @@ export default function scene(k) {
 
     // ===== Line 9: the minus one kicks back onto the input =====
     fade("#b-supl", 0, T.l9 - 0.05, 0.3);
-    move("#b-icard", { x: 0, y: 0 }, { x: 310, y: -100 }, T.wherever, 0.9);
+    move("#b-icard", { x: 0, y: 0 }, { x: 310, y: -114 }, T.wherever, 0.9);
     move("#b-hcard", { x: 0, y: 0 }, { x: 590, y: 0 }, T.wherever, 0.9);
     show(["#b-tag1", "#b-tag2"], T.wherever + 0.5); write("#b-tag1", T.wherever + 0.5, 0.5); write("#b-tag2", T.wherever + 0.9, 0.6);
     show("#b-trace", T.that9); draw("#b-trace", T.that9, 0.8);
@@ -513,6 +512,7 @@ export default function scene(k) {
     show("#b-sbr", T.same10); draw("#b-sbr", T.same10, 0.4); show("#b-sbl", T.same10 + 0.1); write("#b-sbl", T.same10 + 0.1, 0.5);
     show("#b-ghost", T.keeps); draw("#b-ghost", T.keeps, 0.5); show("#b-shape", T.keeps + 0.2); write("#b-shape", T.keeps + 0.2, 0.6);
     tl.to(["#b-pL-a0", "#b-pL-a1", "#b-sbr", "#b-sbl"], { color: INK, duration: 0.35 }, T.l11);
+    fade("#b-shape", 0, T.bal11 - 0.1, 0.3);
 
     // ===== Line 11: balanced: only one arrow turns, the input becomes minus =====
     write("#b-pR-t", T.bal11, 0.6);
