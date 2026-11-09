@@ -257,7 +257,7 @@ export default function scene(k) {
     G("b-gO", solidBox(480, 196, 260, 228)) +
     G("b-gD", solidBox(900, 196, 280, 228) + r.line(1040, 300, 1040, 400, pen({ strokeWidth: 2.4, strokeLineDash: [6, 8] })) +
       curveArrow([[1000, 330], [1040, 308], [1080, 330]], { strokeWidth: 2.6 }, 11) + curveArrow([[1080, 372], [1040, 394], [1000, 372]], { strokeWidth: 2.6 }, 11)) +
-    G("b-gM", eye(1440, 310, 124)) +
+    G("b-gM", eye(1440, 310, 124), ` style="color:${INK}"`) +
     `<g id="b-gm">${r.line(574, 350, 646, 348, goldPen({ strokeWidth: 8, roughness: 0.7 }))}</g>` +
     G("b-gloop", r.path(loopD, goldPen({ strokeWidth: 4 })) + r.line(488, 182, 492, 160, goldPen({ strokeWidth: 3.4 })) + r.line(488, 182, 510, 172, goldPen({ strokeWidth: 3.4 }))) +
     `<path id="b-gloopP" d="${loopD}" fill="none" stroke="none"/>` +
@@ -509,6 +509,7 @@ export default function scene(k) {
 
     // ===== Line 11: interference =====
     write("#b-intf", T.intf, 0.8);
+    tl.to(["#b-avg", "#b-avgl"], { opacity: 0.3, duration: 0.4 }, T.intf);
     hide("#b-plus");
     fade("#b-plus", 1, T.combine, 0.2);
     tl.to("#b-plus", { scale: 1.4, duration: 0.2, yoyo: true, repeat: 1 }, T.combine);
