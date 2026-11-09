@@ -47,7 +47,7 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 | Lessons | State | Next step |
 |---|---|---|
 | 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved. On the live site since 2026-11-09 | None |
-| 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/` | Web export |
+| 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/`. On the live site since 2026-11-09 | None |
 | 08 to 14 | Done: script reviewed, built, visual QA passed, rendered (84 to 89 s), 2026-11-09. On the live site since 2026-11-09 | None |
 | 15 to 21 | Draft `narration.json` only (no `plan.md`) | Script stage again, then review, build, visual QA. A full lesson costs about 25 to 30% of the 5-hour limit |
 | 22 | Nothing yet | All stages |
