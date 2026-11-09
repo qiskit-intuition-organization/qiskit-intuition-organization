@@ -1,10 +1,10 @@
 {
   "lines": [
     {
-      "say": "Here's a question. Can you make a perfect copy of a qubit?"
+      "say": "Here's a question. Can you perfectly copy a qubit, the quantum version of a bit?"
     },
     {
-      "say": "C NOT does it for plain zeros and ones, with a blank qubit set to zero."
+      "say": "For plain zeros and ones, yes, using a gate called C NOT and a blank qubit set to zero."
     },
     {
       "say": "It flips the blank only when the original is one, so zero gives zero zero, and one gives one one."
@@ -13,16 +13,16 @@
       "say": "It's like a photocopier that only understands black and white."
     },
     {
-      "say": "A white page gives two white pages, and a black page gives two black ones."
+      "say": "A white page gives two white pages, and a black page two black ones."
     },
     {
       "say": "But feed it a grey page, and it doesn't make a grey copy."
     },
     {
-      "say": "It binds the two pages together, so whenever anyone looks, both are black or both are white."
+      "say": "It binds the pages together, so whenever anyone looks, both are black or both are white."
     },
     {
-      "say": "Now feed C NOT the plus state, an arrow lying flat on the equator."
+      "say": "Now feed C NOT our grey page, the plus state, whose arrow lies on the equator."
     },
     {
       "say": "Two true copies would give all four results, one time in four each."
@@ -37,16 +37,16 @@
       "say": "That's not C NOT's fault. The no cloning theorem says no circuit can copy an unknown state."
     },
     {
-      "say": "With lots of copies, you could measure each along a different direction and work out the arrow."
+      "say": "Why? With many copies, you could measure each along a different direction and work out the arrow."
     },
     {
-      "say": "But measuring one qubit only ever gives you one bit. Copying would sneak past that."
+      "say": "But measuring a qubit gives just one bit, and copying would sneak past that."
     },
     {
       "say": "That's where the photocopier breaks. Anyone can see grey, but nobody can see a qubit's shade."
     },
     {
-      "say": "You can still make many qubits in a known state, though. Just repeat the recipe."
+      "say": "You can still make many qubits in a known state: just repeat the recipe."
     },
     {
       "say": "So no circuit copies an unknown state. C NOT copies zero and one, but entangles everything in between."
