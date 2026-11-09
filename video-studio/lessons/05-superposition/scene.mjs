@@ -112,12 +112,15 @@ export default function scene(k) {
   const C = { x: 700, y: 480 }, RB = 250, EQY = 72, LEN = 240;
   const FX = -Math.SQRT1_2 * RB, FY = Math.SQRT1_2 * EQY; // "facing you": front-left point of the equator
   const tipAt = (deg, s = 1) => [C.x + s * Math.sin(rad(deg)) * FX, C.y + s * (Math.sin(rad(deg)) * FY - Math.cos(rad(deg)) * LEN)];
-  const bandTop = Array.from({ length: 25 }, (_, i) => { const a = PI - (i / 24) * PI; return [C.x + 243 * Math.cos(a), 420 + 70 * Math.sin(a)]; });
-  const bandBot = Array.from({ length: 25 }, (_, i) => { const a = (i / 24) * PI; return [C.x + 243 * Math.cos(a), 540 + 70 * Math.sin(a)]; });
   const arcPts = (s, a0, a1) => Array.from({ length: 9 }, (_, i) => tipAt(a0 + ((a1 - a0) * i) / 8, s));
   const [tx90, ty90] = tipAt(90);
   const ballSvg =
-    g("b-band", r.poly([...bandTop, ...bandBot], hatch(GOLD, { hachureGap: 13, fillWeight: 1.6, hachureAngle: -40 })), `style="opacity:0.55"`) +
+    // Every arrow between the poles gives random answers: the hatch is strongest at the equator
+    // and fades to nothing at the two poles, where the answer is certain.
+    `<defs><linearGradient id="b-bandgrad" gradientUnits="userSpaceOnUse" x1="0" y1="${C.y - RB}" x2="0" y2="${C.y + RB}">` +
+    `<stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+    `<mask id="b-bandmask" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="1080"><rect x="0" y="0" width="1920" height="1080" fill="url(#b-bandgrad)"/></mask></defs>` +
+    g("b-band", `<g mask="url(#b-bandmask)">${r.circle(C.x, C.y, RB * 2 - 14, hatch(GOLD, { hachureGap: 13, fillWeight: 1.6, hachureAngle: -40 }))}</g>`, `style="opacity:0.7"`) +
     g("b-ballbody",
       r.circle(C.x, C.y, RB * 2, pen({ strokeWidth: 3.2, roughness: 0.8, seed: 4242 })) +
       r.arc(C.x, C.y, RB * 2, EQY * 2, PI, 2 * PI, false, dim({ strokeWidth: 2.2 })) +
@@ -141,7 +144,7 @@ export default function scene(k) {
     L("b-hl2", tipAt(44, 0.48)[0] + 4, tipAt(44, 0.48)[1] + 6, 50, "H", 60) +
     LL("b-hh1", 170, 660, 56, "H then H:", 300) + LL("b-hh2", 170, 726, 56, "back home", 300, G) +
     LR("b-randans", 434, 478, 44, "random answers", 300, G) +
-    LL("b-cert0", 742, 226, 44, "certain", 160) + LL("b-cert1", 742, 740, 44, "certain", 160),
+    LL("b-cert0", 748, 188, 44, "certain", 160) + LL("b-cert1", 748, 780, 44, "certain", 160),
     `transform-origin:${C.x}px ${C.y}px`);
 
   // ---------- Bars: chance of reading 0 and 1 (follow the arrow) ----------
@@ -254,7 +257,7 @@ export default function scene(k) {
   const sp = (id, html, extra = "") => `<span id="${id}" class="fp" style="${extra}">${k.hand(html)}</span>`;
   const eqHtml =
     `<div class="lbl hand" id="b-eq" style="left:${EQ.x}px;top:${EQ.y}px;width:1100px;font-size:${EQ.size}px;text-align:left">` +
-    sp("b-e1", "H") + sp("b-e2", "|0⟩") + sp("b-e3", "=", "margin:0 0.25em") + sp("b-e4", "|+⟩", G) + sp("b-e5", "=", "margin:0 0.25em") +
+    sp("b-e1", "H", "margin-right:0.1em") + sp("b-e2", "|0⟩") + sp("b-e3", "=", "margin:0 0.25em") + sp("b-e4", "|+⟩", G) + sp("b-e5", "=", "margin:0 0.25em") +
     sp("b-e6", "(") + sp("b-e7", "|0⟩") + sp("b-e8", "+", "margin:0 0.22em") + sp("b-e9", "|1⟩") + sp("b-e10", ")") + sp("b-e11", "/√2") + `</div>`;
   const upArrow = (id) => `<svg class="sk" width="140" height="56" viewBox="0 0 140 56" style="position:relative;display:block;margin:0 auto">${g(id, arrow(70, 52, 70, 8, { stroke: GOLD, strokeWidth: 2.8 }, 12))}</svg>`;
   const wNote = (id, aid) =>
@@ -262,7 +265,7 @@ export default function scene(k) {
   const sqNote = (id, align) =>
     `<div class="lbl hand" id="${id}" style="left:0;top:${EQ.y + 270}px;width:320px;font-size:54px;text-align:${align}">${k.hand("(1/√2)²")} = ½</div>`;
   const eqLayer = eqHtml + wNote("b-w0", "b-wa0") + wNote("b-w1", "b-wa1") + sqNote("b-q0", "right") + sqNote("b-q1", "left");
-  const plusTip = LR("b-plustip", 434, 708, 52, "|+⟩", 120, G);
+  const plusTip = LR("b-plustip", 398, 708, 52, "|+⟩", 120, G);
 
   // Small bars (line 15)
   const SB = { x: [1440, 1590], w: 100, base: 770, h: 240 };
@@ -407,14 +410,14 @@ export default function scene(k) {
     fade("#b-h1gold", 1, T.turn10 - 0.05, 0.15); fade("#b-h1gold", 0, T.turn10 + 0.75, 0.25);
     draw("#b-carc2", T.same - 0.05, 0.9); write("#b-hl2", T.same + 0.4, 0.2);
     fade("#b-h2gold", 1, T.same - 0.05, 0.15); fade("#b-h2gold", 0, T.same + 1.1, 0.25);
-    write("#b-hh1", T.undoes - 0.15, 0.5); write("#b-hh2", T.undoes + 0.3, 0.5);
+    write("#b-hh1", T.undoes - 0.35, 0.45); write("#b-hh2", T.undoes + 0.05, 0.45);
     blurOut(["#b-coin2", "#b-strip"], T.l11 - 0.05);
     fade(["#b-carc1", "#b-carc2", "#b-hl1", "#b-hl2", "#b-hh1", "#b-hh2"], 0, T.l11 + 0.7, 0.3);
 
     // 11. Randomness only appears when you measure an arrow between the poles
     write("#b-randomlbl", T.l11 + 0.1, 0.45);
     draw("#b-m2-body", T.measure11 - 0.1, 0.45); draw("#b-m2-n", T.measure11 + 0.2, 0.2);
-    fade("#b-band", 0.55, T.between - 0.05, 0.4);
+    fade("#b-band", 0.75, T.between - 0.05, 0.4);
     write("#b-randans", T.between + 0.05, 0.55);
     write("#b-cert0", T.up11 - 0.05, 0.35); write("#b-cert1", T.down11 - 0.05, 0.35);
     blurOut(["#b-ball", "#b-bars", "#b-meas2"], T.compass12 - 0.15);
@@ -425,11 +428,11 @@ export default function scene(k) {
     back("#b-compass", T.compass12 - 0.1, 0.4);
     draw("#b-crack", T.breaks - 0.05, 0.45);
     draw("#b-bub", T.answer12 - 0.1, 0.5);
-    write("#b-neither", T.neither - 0.05, 0.5);
+    write("#b-neither", T.neither - 0.2, 0.4);
 
     // 13. A qubit must answer 0 or 1, and becomes that answer
-    blurOut(["#b-compass", "#b-bubble"], T.qubit13 - 0.1);
-    back(["#b-ball", "#b-bars"], T.qubit13 + 0.05);
+    blurOut(["#b-compass", "#b-bubble"], T.qubit13 + 0.15);
+    back(["#b-ball", "#b-bars"], T.qubit13 + 0.3);
     pulse(["#b-bl0", "#b-pct0"], T.zero13 - 0.05);
     pulse(["#b-bl1", "#b-pct1"], T.one13 - 0.05);
     toGold("#b-p1", T.becomes + 0.1, 0.15);
