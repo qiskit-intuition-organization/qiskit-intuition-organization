@@ -128,7 +128,7 @@ export default function scene(k) {
     gl("b-k0", 620, 100, 200, 66, "|0⟩") + gl("b-k1", 620, 748, 200, 66, "|1⟩") +
     gl("b-aket", 860, 76, 170, 50, "a ket", "text-align:left") +
     gl("b-tiltlbl", 752, 268, 120, 56, "tilt", `color:${GOLD};text-align:left`) +
-    gl("b-qmark", 660, 380, 120, 130, "?", "color:rgba(232,232,232,0.5)"),
+    gl("b-qmark", 660, 262, 120, 130, "?", "color:rgba(232,232,232,0.5)"),
     `transform-origin:${G.x - GB.x}px ${G.y - GB.y}px`);
 
   // ---------- 4. Hidden arrow: cloud, eye, measurement ----------
@@ -172,7 +172,7 @@ export default function scene(k) {
   const seeHtml = box("b-see", 1440, 340, 340, 200,
     g("b-eye2g", eyeOpen(1690, 400, 0.9)) +
     `<line id="b-sight" x1="1626" y1="404" x2="1460" y2="420" stroke="${INK}" stroke-opacity=".6" stroke-width="3" stroke-dasharray="10 12" stroke-linecap="round"/>`,
-    lbl("b-canSee", 30, 92, 300, 48, "you can see it", "text-align:right"));
+    lbl("b-canSee", 0, 92, 300, 48, "you can see it", "text-align:right"));
 
   // ---------- 7. Many copies and a tally ----------
   const shut2Html = box("b-eye3", 190, 400, 280, 140,
@@ -251,7 +251,7 @@ export default function scene(k) {
     crackHtml, seeHtml,
     shut2Html, manyHtml,
     cupHtml,
-    lbl("b-between", 990, 262, 400, 54, "really in between", `color:${GOLD};text-align:left`),
+    lbl("b-between", 990, 262, 400, 54, "truly in between", `color:${GOLD};text-align:left`),
     formulaHtml, miniHtml,
     closeHtml,
   ].join("\n");
@@ -440,13 +440,13 @@ export default function scene(k) {
       for (const [a, b, f, to, e] of list) { if (t <= a) break; v = t >= b ? to : f + (to - f) * EASE[e || "io"]((t - a) / (b - a)); }
       return v;
     }
-    const VANE = [[9.0, 10.6, 60, 500], [10.6, 12.5, 500, 410], [T.swings, T.swings + 0.5, 410, 360, "o2"], [T.vane10, T.vane10 + 0.7, 360, 540]];
+    const VANE = [[9.0, 10.6, 60, 500], [10.6, 12.5, 500, 410], [T.swings, T.swings + 0.5, 410, 360, "o2"], [T.answers10 - 0.1, T.answers10 + 0.5, 360, 540, "o2"]];
     const TILT = [[T.straight5, T.straight5 + 0.8, 40, 0], [T.straight6, T.straight6 + 1.0, 0, 180], [T.direction, 30.9, 180, 60],
       [T.north8, 39.3, 60, 15], [T.equator, T.fifty + 0.1, 15, 90], [T.below, 43.5, 90, 135], [T.snaps, T.snaps + 0.25, 135, 180, "o3"],
       [T.l11 + 1, T.l11 + 1.05, 180, 60]];
     const ARCVIS = [[T.north8, T.north8 + 0.5, 0, 1], [40.4, 40.75, 1, 0], [T.tilts, T.tilts + 0.6, 0, 1], [T.l14 + 0.1, T.l14 + 0.5, 1, 0]];
     const GROW = [[T.closer + 0.2, T.closer + 0.9, 0, 1]];
-    const COLLAPSE = [[T.answers10, T.answers10 + 0.3, 0, 1, "o2"]];
+    const COLLAPSE = [[T.snaps, T.snaps + 0.25, 0, 1, "o3"]];
     const ARCFRAC = ${JSON.stringify(tiltArc.frac)};
     const BAR = ${JSON.stringify(BAR)};
     const vrot = $("b-vrot"), arot = $("b-arot"), arc = $("b-tiltarc");
