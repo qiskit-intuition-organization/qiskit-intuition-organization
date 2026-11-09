@@ -179,8 +179,8 @@ export default function scene(k) {
   const stage1 =
     obj("b-floor1", 340, 740, 1240, 50, `<g id="b-fl1">${r.line(360, 762, 1560, 760, pen({ strokeWidth: 3, seed: 80 }))}</g>`) +
     obj("b-lamp", 880, 60, 160, 60, `<g id="b-lampg">${r.rect(930, 78, 60, 34, pen({ strokeWidth: 2.8, seed: 82 }))}${r.line(960, 62, 960, 78, pen({ strokeWidth: 2.4, seed: 83 }))}</g>`) +
-    obj("b-cone1", 520, 100, 500, 680, coneSvg("b-cn1", 560, 880)) +
-    obj("b-cone2", 440, 100, 1040, 680, coneSvg("b-cn2", 480, 1440)) +
+    obj("b-cone1", 340, 100, 660, 680, coneSvg("b-cn1", 360, 940)) +
+    obj("b-cone2", 340, 100, 1240, 680, coneSvg("b-cn2", 360, 1560)) +
     dancer("b-d1", D1.l, D1.floor, 1, 100, false) + dancer("b-d2", D1.r, D1.floor, 1, 140, true) +
     `<svg id="b-ties" class="sk" width="1920" height="1080" viewBox="0 0 1920 1080" style="opacity:0">` +
     `<line id="b-tie1" x1="0" y1="0" x2="0" y2="0" stroke="${GOLD}" stroke-width="3.4" stroke-dasharray="12 10" stroke-linecap="round"/>` +
@@ -202,7 +202,7 @@ export default function scene(k) {
   const plusT = (cx, cy, d, o) => r.circle(cx, cy, d, pen(o)) + r.line(cx - d / 2 + 4, cy, cx + d / 2 - 4, cy, pen(o)) + r.line(cx, cy - d / 2 + 4, cx, cy + d / 2 - 4, pen(o));
   const cnot = (o) => r.circle(CNX, WY.c, 30, pen({ fill: o.stroke ?? INK, fillStyle: "solid", strokeWidth: 2, ...o })) + r.line(CNX, WY.c, CNX, WY.t + 38, pen({ strokeWidth: 3.2, ...o })) + plusT(CNX, WY.t, 76, { strokeWidth: 3.2, ...o });
   const circSvg =
-    `<g id="b-wc">${r.line(540, WY.c, 1500, WY.c, pen({ strokeWidth: 3, seed: 120 }))}</g>` +
+    `<g id="b-wc">${r.line(540, WY.c, HX - 46, WY.c, pen({ strokeWidth: 3, seed: 120 }))}${r.line(HX + 46, WY.c, 1500, WY.c, pen({ strokeWidth: 3, seed: 123 }))}<g id="b-wcm">${r.line(HX - 50, WY.c, HX + 50, WY.c, pen({ strokeWidth: 3, seed: 124 }))}</g></g>` +
     `<g id="b-wt">${r.line(540, WY.t, 1500, WY.t, pen({ strokeWidth: 3, seed: 121 }))}</g>` +
     `<g id="b-cx">${cnot({ seed: 122 })}</g>` +
     `<g id="b-cxg" style="opacity:0">${cnot({ stroke: GOLD, strokeWidth: 4.2, seed: 130 })}</g>` +
@@ -252,8 +252,8 @@ export default function scene(k) {
     CH.X.map((x, i) => `<div id="b-bar${i}" class="obj" style="left:${fx(x - CH.bw / 2 - CH.x)}px;top:${fx(CH.base - CH.H - CH.y)}px;width:${CH.bw}px;height:${CH.H}px;clip-path:inset(100% 0 0 0)">` +
       `<svg class="sk" width="${CH.bw}" height="${CH.H}" viewBox="0 0 ${CH.bw} ${CH.H}">${hatch(4, 2, CH.bw - 8, CH.H - 4, GOLD, 220 + i, 10)}</svg></div>`).join("") +
     ["00", "01", "10", "11"].map((s, i) => lbl(`b-sl${i}`, ...chl(CH.X[i] - 80, CH.base + 6), 160, 56, s)).join("") +
-    lbl("b-shots", ...chl(440, 150), 420, 52, `shots: <span id="b-shotn">0</span>`, "text-align:left") +
-    lbl("b-half0", ...chl(CH.X[0] - 80, half - 84), 160, 52, "half") + lbl("b-half3", ...chl(CH.X[3] - 80, half - 84), 160, 52, "half") +
+    lbl("b-shots", ...chl(440, 146), 420, 56, `shots: <span id="b-shotn">0</span>`, "text-align:left") +
+    lbl("b-half0", ...chl(CH.X[0] - 80, half - 88), 160, 56, "half") + lbl("b-half3", ...chl(CH.X[3] - 80, half - 88), 160, 56, "half") +
     [1, 2].map((i) => lbl(`b-zero${i}`, ...chl(CH.X[i] - 50, CH.base - 90), 100, 56, "0")).join("");
   const chartHtml = obj("b-chart", CH.x, CH.y, 1300, 760, chartSvg, chartInner, `transform-origin:${420 - CH.x}px ${CH.base - CH.y}px`) +
     obj("b-tick", 1010, 140, 90, 100, `<g id="b-tk">${r.linear([[1024, 196], [1046, 222], [1088, 154]], goldPen({ strokeWidth: 5 }))}</g>`) +
@@ -338,7 +338,7 @@ export default function scene(k) {
   const F3 = { c: 540, t: 680, cx: 610, hx: 400 };
   const closeHtml =
     obj("b-circ3", 190, 470, 600, 290,
-      `<g id="b-w3">${r.line(270, F3.c, 760, F3.c, pen({ seed: 600 }))}${r.line(270, F3.t, 760, F3.t, pen({ seed: 601 }))}</g>` +
+      `<g id="b-w3">${r.line(270, F3.c, F3.hx - 40, F3.c, pen({ seed: 600 }))}${r.line(F3.hx + 40, F3.c, 760, F3.c, pen({ seed: 606 }))}${r.line(270, F3.t, 760, F3.t, pen({ seed: 601 }))}</g>` +
       `<g id="b-h3">${r.rect(F3.hx - 40, F3.c - 40, 80, 80, pen({ strokeWidth: 3, seed: 602 }))}</g>` +
       `<g id="b-cx3">${r.circle(F3.cx, F3.c, 26, pen({ fill: INK, fillStyle: "solid", strokeWidth: 2, seed: 603 }))}${r.line(F3.cx, F3.c, F3.cx, F3.t + 32, pen({ strokeWidth: 3, seed: 604 }))}${plusT(F3.cx, F3.t, 64, { strokeWidth: 3, seed: 605 })}</g>`,
       lbl("b-h3l", F3.hx - 40 - 190, F3.c - ctr(54) - 470, 80, 54, "H") +
@@ -460,7 +460,7 @@ export default function scene(k) {
     tl.fromTo("#b-rflip", { color: "${INK}" }, { color: "${GOLD}", duration: 0.25 }, T.flips3);
     // 4. start at zero, H gives a 50/50 control
     write(["#b-z0c", "#b-z0t"], T.zero4, 0.25);
-    draw("#b-hb", T.h4, 0.45); write("#b-hl", T.h4 + 0.3, 0.2);
+    draw("#b-hb", T.h4, 0.45); fade("#b-wcm", 0, T.h4, 0.25); write("#b-hl", T.h4 + 0.3, 0.2);
     draw("#b-cc-rim", T.fifty4 - 0.1, 0.5); write("#b-ff4", T.fifty4 + 0.1, 0.4);
     fade("#b-rule", 0.35, T.fifty4 + 0.2, 0.4);
     // 5. CNOT acts on each part
@@ -496,7 +496,7 @@ export default function scene(k) {
 
     // 8. each qubit alone
     fade(["#b-tick", "#b-agree7", "#b-zero1", "#b-zero2", "#b-x1", "#b-x2"], 0, T.off7, 0.3);
-    move("#b-chart", { x: 0, scale: 1 }, { x: -260, scale: 0.66 }, T.either8 - 0.1, 0.9);
+    move("#b-chart", { x: 0, scale: 1 }, { x: -260, scale: 0.72 }, T.either8 - 0.1, 0.9);
     write("#b-alone8", T.either8 + 0.3, 0.7);
     draw("#b-c8-rim", T.either8 - 0.05, 0.4);
     draw("#b-tax", T.either8 + 0.3, 0.4); write(["#b-tl0", "#b-tl1"], T.either8 + 0.5, 0.25);
