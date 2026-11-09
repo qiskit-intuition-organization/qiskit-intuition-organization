@@ -110,7 +110,7 @@ export default function scene(k) {
     s10: cue(10), measure10: cue(10, "measure"), fifty10: lines[10].words.find((w) => w.w.startsWith("50")).start, hides10: cue(10, "hides"),
     s11: cue(11), more11: cue(11, "more"), turns11: cue(11, "turns"), back11: cue(11, "back"), zero11: cue(11, "zero"), minus11: cue(11, "minus"), one11: cue(11, "one", 1),
     s12: cue(12), measure12: lines[12].words[0].start, d1: lines[12].words[4].start, d2: lines[12].words[5].start, d3: lines[12].words[6].start, every12: cue(12, "every"), single12: cue(12, "single"),
-    s13: cue(13), every13: cue(13, "every"), collect13: cue(13, "collect"),
+    s13: cue(13), secretly13: cue(13, "secretly"), try13: cue(13, "try"), every13: cue(13, "every"), collect13: cue(13, "collect"),
     s14: cue(14), interference14: cue(14, "interference"), add14: cue(14, "add"), ripples14: cue(14, "ripples"), only14: cue(14, "only"), secret14: cue(14, "secret"),
     s15: cue(15), switch15: cue(15, "switch"), on15: cue(15, "on"), off15: cue(15, "off"), never15: cue(15, "never"),
     s16: cue(16), odd16: cue(16, "odd"), rule16: cue(16, "rule"), unpick16: cue(16, "unpick"), most16: cue(16, "most"),
@@ -214,14 +214,14 @@ export default function scene(k) {
       `<svg class="sk" width="180" height="100" viewBox="0 0 180 100">${g("b-cr" + i, r.rect(6, 6, 168, 88, pen({ strokeWidth: 2.8, roughness: 1 })))}</svg>` +
       lc("b-ct" + i, 90, 50, 150, 56, s) + (i === 5 ? lc("b-ctg", 90, 50, 150, 56, s, G) : "") + `</div>`;
   }).join("");
-  const ripple = (cx, cy) => [56, 100, 144].map((rad) => r.arc(cx, cy, rad * 2, rad * 2, 0.15, Math.PI - 0.15, false, pen({ stroke: DIM, strokeWidth: 3 }))).join("");
+  const ripple = (cx, cy) => [60, 130, 200].map((d) => r.circle(cx, cy, d, pen({ stroke: DIM, strokeWidth: 3, roughness: 0.8 }))).join("");
   const chartSvg =
     g("b-ticks", SETS.map((_, i) => { const [cx, cy] = gridPos(i); return tick(cx + 116, cy, 13); }).join("")) +
     g("b-bigx", cross(940, 470, 560, 190)) +
     g("b-base", r.line(300, BASE, 1620, BASE, pen({ strokeWidth: 2.4 }))) +
     SETS.map((_, i) => g("b-ib" + i, r.rect(rowX(i) - 35, BASE - 120, 70, 120, hach({ hachureGap: 9 })))).join("") +
     g("b-gb", r.rect(rowX(5) - 35, BASE - 380, 70, 380, ghach({ hachureGap: 9 }))) +
-    g("b-rip0", ripple(720, 250)) + g("b-rip1", ripple(1160, 250));
+    g("b-rip0", ripple(560, 220)) + g("b-rip1", ripple(740, 220));
   const html13 = layer("b-s13", chartSvg, ll("b-only", rowX(5), 225, 280, 64, "only 101", G)) + cards;
 
   // ================= 15-16: where the analogy breaks =================
@@ -238,7 +238,7 @@ export default function scene(k) {
   const breakLabels =
     ll("b-on", 630, 255, 90, 56, "on") + ll("b-off", 630, 748, 100, 56, "off") +
     ll("b-bl0", 1190, 600, 40, 44, "0") + ll("b-bl1", 1290, 600, 40, 44, "1") + ll("b-bk", 1240, 395, 110, 64, "|+⟩") +
-    ll("b-noreal", 1290, 720, 480, 44, "no real switch does this") +
+    ll("b-noreal", 1290, 725, 600, 52, "no real switch does this") +
     ll("b-pt", 590, 560, 230, 48, "ODD / EVEN") + ll("b-prule", 600, 690, 420, 56, "odd or even rule", G) +
     ll("b-qm", 1275, 455, 80, 96, "?") + ll("b-other", 1275, 665, 300, 56, "other rules");
   const html15 = layer("b-s15", breakSvg, breakLabels);
@@ -296,7 +296,7 @@ export default function scene(k) {
     write("#b-cnt", T.odd2 - 0.1, 0.6); write("#b-cnt1", T.odd2 + 0.15, 0.2);
     fade(["#b-odd", "#b-cnt1"], 0, T.wired2, 0.2);
     write(["#b-even", "#b-cnt2"], T.wired2 + 0.1, 0.4);
-    fade(["#b-even", "#b-cnt", "#b-cnt2", "#b-hidden"], 0, T.s3 - 0.15, 0.3);
+    fade(["#b-even", "#b-cnt", "#b-cnt2", "#b-hidden", "#b-sign"], 0, T.s3 - 0.15, 0.3);
     // tests one at a time
     draw("#b-arcsB", RINGS[1][0], 0.2); fade("#b-arcsB", 0, RINGS[1][1], 0.2);
     draw("#b-arcsC", RINGS[2][0], 0.2); fade("#b-arcsC", 0, RINGS[2][1], 0.2);
@@ -304,7 +304,7 @@ export default function scene(k) {
     write("#b-qs", T.one3 - 0.1, 0.5);
     [0, 1, 2].forEach((i) => draw("#b-tm" + i, T.one3 + 0.15 + 0.7 * i, 0.2));
     write("#b-q3", T.three3 + 0.05, 0.3);
-    fade(["#b-qs", "#b-q3", "#b-tm0", "#b-tm1", "#b-tm2", "#b-sign"], 0, T.s4 - 0.6, 0.3);
+    fade(["#b-qs", "#b-q3", "#b-tm0", "#b-tm1", "#b-tm2"], 0, T.s4 - 0.6, 0.3);
     move("#b-wall", { x: 0, y: 0, scale: 1, transformOrigin: "0px 0px" }, { x: -68, y: -62, scale: 0.4, transformOrigin: "0px 0px" }, T.s4 - 0.4, 1.0);
 
     // ---- 4: three questions vs one ----
@@ -368,13 +368,13 @@ export default function scene(k) {
     draw("#b-brk", T.every12 - 0.1, 0.5); write("#b-s101", T.every12 + 0.25, 0.5);
     tl.to("#b-once", { scale: 1.18, duration: 0.25, ease: "power2.out" }, T.single12 - 0.05);
     tl.to("#b-once", { scale: 1, duration: 0.35, ease: "power2.in" }, T.single12 + 0.25);
-    blurOut("#b-circ", T.s13 - 0.1);
+    blurOut("#b-circ", T.secretly13 - 0.15);
 
     // ---- 13: no secret trial of every setting ----
-    [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => { draw("#b-cr" + i, T.every13 - 0.1 + 0.08 * i, 0.3); write("#b-ct" + i, T.every13 + 0.08 * i, 0.25); });
+    [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => { draw("#b-cr" + i, T.try13 - 0.15 + 0.08 * i, 0.3); write("#b-ct" + i, T.try13 - 0.05 + 0.08 * i, 0.25); });
     draw("#b-ticks", T.collect13 - 0.1, 0.5);
     draw("#b-bigx", T.s14 - 0.65, 0.5);
-    blurOut(["#b-ticks", "#b-bigx"], T.s14 + 0.05);
+    blurOut(["#b-ticks", "#b-bigx"], T.interference14 - 0.45);
 
     // ---- 14: interference leaves only 101 ----
     [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => {
@@ -392,8 +392,8 @@ export default function scene(k) {
     fade("#b-ib5", 0, T.add14 - 0.05, 0.5);
     fade("#b-gb", 1, T.add14 - 0.05, 0.5);
     fade("#b-ctg", 1, T.only14 - 0.2, 0.4); fade("#b-ct5", 0, T.only14 - 0.2, 0.4);
-    draw("#b-rip0", T.ripples14 - 0.25, 0.7); draw("#b-rip1", T.ripples14 - 0.05, 0.7);
-    fade(["#b-rip0", "#b-rip1"], 0, T.only14 - 0.1, 0.5);
+    draw("#b-rip0", T.ripples14 - 0.3, 0.5); draw("#b-rip1", T.ripples14 - 0.15, 0.5);
+    fade(["#b-rip0", "#b-rip1"], 0, T.only14 + 0.1, 0.5);
     write("#b-only", T.only14 - 0.05, 0.5);
     blurOut(["#b-s13", "#b-card0", "#b-card1", "#b-card2", "#b-card3", "#b-card4", "#b-card5", "#b-card6", "#b-card7"], T.s15 - 0.1);
 
@@ -402,8 +402,8 @@ export default function scene(k) {
     write("#b-on", T.switch15 + 0.6, 0.25); write("#b-off", T.switch15 + 0.8, 0.3);
     draw("#b-bp", T.never15 - 0.15, 0.5); write(["#b-bl0", "#b-bl1"], T.never15 + 0.15, 0.2); write("#b-bk", T.never15 + 0.25, 0.3);
     draw("#b-bx", T.never15 + 0.35, 0.35);
-    write("#b-noreal", T.never15 + 0.45, 0.6);
-    blurOut(["#b-bsw", "#b-blev", "#b-bp", "#b-bx", "#b-on", "#b-off", "#b-bl0", "#b-bl1", "#b-bk", "#b-noreal"], T.s16 + 0.35);
+    write("#b-noreal", T.never15 + 0.35, 0.6);
+    blurOut(["#b-bsw", "#b-blev", "#b-bp", "#b-bx", "#b-on", "#b-off", "#b-bl0", "#b-bl1", "#b-bk", "#b-noreal"], T.odd16 - 0.45);
 
     // ---- 16: only a parity rule ----
     draw("#b-pbell", T.odd16 - 0.25, 0.6); draw("#b-psign", T.odd16 + 0.1, 0.3);
