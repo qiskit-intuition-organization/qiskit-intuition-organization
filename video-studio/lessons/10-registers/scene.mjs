@@ -161,14 +161,14 @@ export default function scene(k) {
     `<g id="b-sframe">${r.rect(14, 8, 1392, 184, pen({ strokeWidth: 3.4, seed: 300 }))}${r.rect(26, 18, 1368, 164, pen({ strokeWidth: 1.4, stroke: DIM, roughness: 1.8, seed: 301 }))}</g>` +
     Array.from({ length: 10 }, (_, i) => `<g id="b-sd${i}">${drumBox(ROWX(i), 100, 100, 156, 310 + i * 30)}</g>`).join("") +
     `<g id="b-sweep">${r.rect(ROWX(0) - 58, 14, 116, 172, goldPen({ strokeWidth: 4, seed: 330 }))}</g>`;
-  const stripHtml = obj("b-strip", 180, 360, 1440, 210, stripSvg,
+  const stripHtml = obj("b-strip", 250, 360, 1440, 210, stripSvg,
     Array.from({ length: 10 }, (_, i) => drum(`b-sw${i}`, ROWX(i), 100, 96, 150, 64, 70, stripSegs[i], [], 21, 26.5)).join(""));
-  const twosHtml = obj("b-twos", 180, 562, 1440, 80, "",
+  const twosHtml = obj("b-twos", 250, 562, 1440, 80, "",
     Array.from({ length: 10 }, (_, i) => lbl(`b-two${i}`, ROWX(i) - 30, 0, 60, 56, "2")).join("") +
     Array.from({ length: 9 }, (_, i) => lbl(`b-tim${i}`, ROWX(i) + 50, 4, 40, 48, "×")).join(""));
   const cntHtml = lbl("b-cnt", 660, 632, 600, 96, `<span id="b-cntn">2</span>`) + lbl("b-poss", 940, 660, 520, 60, "possible results", "text-align:left");
   const qrowSvg = Array.from({ length: 10 }, (_, i) => `<g id="b-qr${i}">${qubit(`b-qrq${i}`, ROWX(i), 80, 96, 360 + i * 3)}</g>`).join("");
-  const qrowHtml = obj("b-qrow", 180, 380, 1440, 160, qrowSvg, "", "transform-origin:780px 80px");
+  const qrowHtml = obj("b-qrow", 250, 380, 1440, 160, qrowSvg, "", "transform-origin:710px 80px");
 
   // ---------- 7 to 8. the amplitude ledger (div at 520,262) ----------
   const LG = { x: 520, y: 262, w: 880, h: 530, rowH: 62, top: 66, slots: 7, barX: 330, barW: 500 };
@@ -207,10 +207,10 @@ export default function scene(k) {
   const blocksSvg = P.map(([c, rr], i) => `<g id="b-blk${i}" class="b-blk">${r.rect(c * CELL + 2, rr * CELL + 2, BLK, BLK, { ...goldPen({ seed: 500 + i, strokeWidth: 2.8 }), fill: GOLD, fillStyle: "hachure", hachureGap: 10, fillWeight: 1.6 })}</g>`).join("");
   const GW = 8 * CELL - 8, GH = 4 * CELL - 8;
   const blockOff = STEPS.map(([c, rr]) => [fx((GW - (c * CELL - 8)) / 2), fx((GH - (rr * CELL - 8)) / 2)]);
-  const blocksHtml = obj("b-blocks", 700, 400, GW + 8, GH + 8, blocksSvg) +
-    lbl("b-blab", 620, 646, 600, 60, `<span id="b-blabt">1 qubit: 2</span>`) +
-    obj("b-room", 1140, 290, 180, 130, `<g id="b-roomg">${dashed(bez([20, 120], [40, 30], [150, 26]), 14, 10, { strokeWidth: 2.8 })}${headAt([[130, 26], [150, 26]], { strokeWidth: 2.8 }, 16)}</g>`) +
-    lbl("b-roomt", 1300, 282, 460, 50, "and on to 1,024 at ten", "text-align:left");
+  const blocksHtml = obj("b-blocks", 520, 400, GW + 8, GH + 8, blocksSvg) +
+    lbl("b-blab", 440, 646, 600, 60, `<span id="b-blabt">1 qubit: 2</span>`) +
+    obj("b-room", 960, 290, 180, 130, `<g id="b-roomg">${dashed(bez([20, 120], [40, 30], [150, 26]), 14, 10, { strokeWidth: 2.8 })}${headAt([[130, 26], [150, 26]], { strokeWidth: 2.8 }, 16)}</g>`) +
+    lbl("b-roomt", 1120, 282, 460, 50, "and on to 1,024 at ten", "text-align:left");
 
   // ---------- 10 to 12. the lock again, one string out ----------
   const L2D = Array.from({ length: 10 }, (_, i) => 74 + 48 * i);
@@ -247,8 +247,8 @@ export default function scene(k) {
     lbl("b-readt", 0, 10, 560, 64, "read all 1,024?"));
 
   // ---------- 13 to 17. bit order ----------
-  const qkHtml = lbl("b-qk", 760, 140, 400, 72, "Qiskit") +
-    obj("b-qkb", 1160, 150, 120, 80, `<g id="b-qkbg">${r.linear([[34, 14], [12, 40], [34, 66]], pen({ strokeWidth: 3, seed: 760 }))}${r.line(70, 10, 52, 70, pen({ strokeWidth: 3, seed: 761 }))}${r.linear([[86, 14], [108, 40], [86, 66]], pen({ strokeWidth: 3, seed: 762 }))}</g>`) +
+  const qkHtml = lbl("b-qk", 680, 140, 400, 72, "Qiskit") +
+    obj("b-qkb", 1000, 150, 120, 80, `<g id="b-qkbg">${r.linear([[34, 14], [12, 40], [34, 66]], pen({ strokeWidth: 3, seed: 760 }))}${r.line(70, 10, 52, 70, pen({ strokeWidth: 3, seed: 761 }))}${r.linear([[86, 14], [108, 40], [86, 66]], pen({ strokeWidth: 3, seed: 762 }))}</g>`) +
     lbl("b-qksub", 660, 236, 600, 44, "our coding toolkit");
   const pairSvg =
     `<g id="b-pw">${r.line(292, 100, 640, 100, pen({ strokeWidth: 2.6, seed: 770 }))}${r.line(292, 300, 640, 300, pen({ strokeWidth: 2.6, seed: 771 }))}</g>` +
@@ -397,7 +397,7 @@ export default function scene(k) {
     const hash = (i, s) => { const x = Math.sin(i * 12.9898 + s * 78.233) * 43758.5453; return x - Math.floor(x); };
     const amp1 = (i) => A1[i] ?? 0.2 + 0.6 * hash(i, 1);
     const amp2 = (i) => A2[i] ?? 0.15 + 0.7 * hash(i, 2);
-    const SCROLL = [[T.carry8, T.carry8 + 1.6, 0, 1023]];
+    const SCROLL = [[T.carry8, T.carry8 + 1.6, 0, 1017]];
     const PRE = [0, 1, 2, 3, 4, -1, 1023];
     const VD = ${JSON.stringify(VDOTS)};
     const binStr = (i) => i.toString(2).padStart(10, "0").split("").map((c) => "<span>" + c + "</span>").join("");
@@ -418,9 +418,9 @@ export default function scene(k) {
         $("b-lbar" + j).style.clipPath = "inset(0 " + (100 - len * 100).toFixed(2) + "% 0 0)";
         $("b-lbg" + j).style.opacity = idx === 3 && t > T.likely8 + 0.3 && t < T.carry8 + 0.1 ? "1" : "0";
       }
-      const row = fmt(scrolling ? Math.min(1024, base + 1) : 1);
+      const row = fmt(scrolling ? Math.min(1024, Math.round(1 + (v * 1023) / 1017)) : 1);
       if (row !== lastRow) { $("b-rowcn").textContent = row; lastRow = row; }
-      $("b-rowc").style.color = v >= 1023 ? GOLD : INK;
+      $("b-rowc").style.color = v >= 1017 ? GOLD : INK;
     });
     blurOut(["#b-ledger", "#b-amp", "#b-rowc", "#b-qrow"], T.off8);
 
