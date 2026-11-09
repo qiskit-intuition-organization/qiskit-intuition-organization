@@ -16,6 +16,24 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 - **Look:** hand-drawn rough.js: #e8e8e8 ink and gold #d9b463 on #17191c, Caveat labels and TASA
   Orbiter titles.
 - **Punctuation:** no em dashes anywhere.
+- **Hosting (2026-11-09): free, on our own Vercel site.** No YouTube and nothing paid.
+  - Web copies of each MP4: H.264, `-crf 30 -preset slow -tune animation`, AAC 64 kb/s mono,
+    `-movflags +faststart`. Lesson 01 went from 29 MB to 3.5 MB with no visible loss, so all 44
+    cuts are roughly 150 MB. Vercel Hobby is free and never bills (about 100 GB a month of
+    transfer, roughly 30,000 plays); check its current file and deployment limits before the
+    first push.
+  - Files go in `web/public/videos/` (both cuts plus a small poster JPG per lesson, and a list of
+    which lessons have videos). A small export script in `kit/` should produce them.
+  - Player: the browser's own `<video>` in a new `web/src/components/lesson-video.tsx`, at the top
+    of each lesson ("Watch the 90-second explainer"), phone cut on narrow screens, loads only on
+    play, shown only for lessons that have a video. Captions are already burned into the video.
+  - The uncommitted design work in Dhruv's local `main` checkout also edits `web/src/app/page.tsx`,
+    so the player keeps its change there to **one line**. Build it on its own branch cut from
+    `origin/main` (never in that checkout), run all CI checks, and ship it by PR. Merging to `main`
+    deploys. Dhruv asked to start this after the usage reset, so ask him before starting.
+- **Merging this branch (2026-11-09):** when all 22 videos are done, open a PR from
+  `video-lessons` to `main` and squash and merge it on GitHub. It only adds `video-studio/` (no
+  Python, so CI is unaffected), so it merges cleanly. Renders and audio stay out of git.
 
 ## How Dhruv likes to work
 - Keep answers short, with bullets.
@@ -25,18 +43,21 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 - Don't touch the rest of the repository. The app's design work on `main` belongs to someone else.
   Keep everything in `video-studio/` on this branch, and don't merge to `main` unless he asks.
 
-## Status at hand-over (2026-11-08)
+## Status (updated 2026-11-09)
 | Lessons | State | Next step |
 |---|---|---|
-| 01 to 13 (no 06) | Script and beat plan (`narration.json`, `plan.md`) written | Script review, build, visual QA |
+| 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved | Web export when the player is built |
+| 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/` | Web export |
+| 08 to 13 | Script and beat plan written, **not yet reviewed** | Next batch: script review, build, visual QA (`scriptDone: true`) |
 | 14 to 21 | Draft `narration.json` only. The writer was stopped before `plan.md` | Script stage again, then the rest |
 | 22 | Nothing yet | All stages |
-| 06 | Done (pilot). Source in `pilot/`, finished MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/` | None |
 
-- No lesson has a `scene.mjs` yet.
+- Renders of 01 to 05 and 07 are on Dhruv's Mac in `video-studio/Videos/16x9` and
+  `Videos/Phone 9x16` (git-ignored). `node kit/render.mjs lessons/NN-id` remakes them.
 - Voice files are not in git; `narrate.mjs` regenerates them in about a minute per lesson.
-- Lessons 01 to 03 were in script review when work stopped, so their `narration.json` may be
-  partly edited. Run the review again.
+- Workflow notes from the builders: `kit/look.mjs` writes `contact-sheet-1.jpg`, `-2.jpg` and so
+  on when there are more than 9 frames; `cue(line, word)` prefix-matches words longer than 3
+  letters and words at line edges can land in the next line's word list, so check cue times.
 
 ## If usage runs out (Dhruv's rule)
 Dhruv switches between Claude accounts when one runs out of usage. So:
