@@ -48,7 +48,7 @@ export default function scene(k) {
       const y0 = C - R + 14 + i * 26.5;
       return r.line(C, y0, C, y0 + 13, pen({ strokeWidth: 2, roughness: 0.4, stroke: DIMINK }));
     }).join("");
-    const shell = `<g id="${id}-shell">${r.circle(C, C, 2 * R, pen({ strokeWidth: 3.2 }))}${dashes}</g>`;
+    const shell = `<g id="${id}-shell">${r.circle(C, C, 2 * R, pen({ strokeWidth: 3.2, curveFitting: 1 }))}${dashes}</g>`;
     const grid =
       `<g id="${id}-grid">` +
       r.arc(C, C, 2 * R, 2 * K * R, 0, PI, false, pen({ strokeWidth: 2.6 })) +
@@ -132,12 +132,12 @@ export default function scene(k) {
     `<line id="b-mt-n" x1="${MT.cx}" y1="${MT.cy}" x2="${MT.cx}" y2="${MT.cy - 70}" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><circle cx="${MT.cx}" cy="${MT.cy}" r="8" fill="${INK}"/></g>`;
 
   // Formula with underline and circle hooks (line 16)
-  const ul = (id) => `<svg style="position:absolute;left:-0.08em;top:0.92em;width:0.7em;height:0.2em;overflow:visible" viewBox="0 0 70 20"><g id="${id}">${r.line(2, 8, 68, 11, pen({ strokeWidth: 4.5, roughness: 0.8 }))}</g></svg>`;
-  const phiRing = `<svg style="position:absolute;left:-0.42em;top:-0.18em;width:1.3em;height:1.25em;overflow:visible" viewBox="0 0 130 125"><g id="b-phic">${r.ellipse(65, 64, 120, 112, goldPen({ strokeWidth: 5, roughness: 1.2 }))}</g></svg>`;
+  const ul = (id) => `<svg style="position:absolute;left:0.02em;top:0.92em;width:0.52em;height:0.2em;overflow:visible" viewBox="0 0 70 20"><g id="${id}">${r.line(2, 8, 68, 11, pen({ strokeWidth: 4.5, roughness: 0.8 }))}</g></svg>`;
+  const phiRing = `<svg style="position:absolute;left:-0.1em;top:-0.1em;width:0.86em;height:1.08em;overflow:visible" viewBox="0 0 130 125"><g id="b-phic">${r.ellipse(65, 64, 120, 112, goldPen({ strokeWidth: 5, roughness: 1.2 }))}</g></svg>`;
   const formula =
     `|ψ⟩ = cos(<span class="b-w">θ${ul("b-ul1")}</span>/2)|0⟩ + e<sup>i<span class="b-w">φ${phiRing}</span></sup> sin(<span class="b-w">θ${ul("b-ul2")}</span>/2)|1⟩`;
 
-  const fUnder = r.curve([[4, 14], [180, 8], [380, 15], [540, 8]], goldPen({ strokeWidth: 4.6, roughness: 1 }));
+  const fUnder = r.curve([[4, 14], [130, 8], [270, 15], [372, 8]], goldPen({ strokeWidth: 4.6, roughness: 1 }));
 
   // ---------- Board svg (board coordinates) ----------
   const boardSvg =
@@ -219,12 +219,12 @@ export default function scene(k) {
     ${lbl("b-hll", 478, 162, 84, 56, "H", `color:${GOLD}`)}
     ${lbl("b-zrl", 1298, 162, 84, 56, "Z")}
     ${lbl("b-hrl", 1418, 162, 84, 56, "H", `color:${GOLD}`)}
-    ${lbl("b-p2t", 490, 250, 60, 40, "0")}${lbl("b-p2b", 490, 676, 60, 40, "1")}
-    ${lbl("b-p1t", 1370, 250, 60, 40, "0")}${lbl("b-p1b", 1370, 676, 60, 40, "1")}
+    ${lbl("b-p2t", 490, 236, 60, 40, "0")}${lbl("b-p2b", 490, 676, 60, 40, "1")}
+    ${lbl("b-p1t", 1370, 236, 60, 40, "0")}${lbl("b-p1b", 1370, 676, 60, 40, "1")}
     ${lbl("b-al0", 360, 728, 320, 56, "always 0", `color:${GOLD}`)}
     ${lbl("b-al1", 1240, 728, 320, 56, "always 1", `color:${GOLD}`)}
     ${lbl("b-same13", 700, 160, 520, 48, "50/50 = 50/50")}
-    ${[["0°", 360], ["30°E", 500], ["60°E", 640]].map(([s, x], i) => lbl(`b-mp${i}`, x - 70, 208, 140, 40, s)).join("")}
+    ${[["0°", 360], ['30°<span style="margin-left:.16em">E</span>', 500], ['60°<span style="margin-left:.16em">E</span>', 640]].map(([s, x], i) => lbl(`b-mp${i}`, x - 70, 208, 140, 40, s)).join("")}
     ${lbl("b-mt0", MT.cx - 140, MT.cy - 6, 80, 40, "0")}${lbl("b-mt1", MT.cx + 60, MT.cy - 6, 80, 40, "1")}
     ${lbl("b-mtl", MT.cx - 140, MT.cy + 50, 280, 40, "reads 0 or 1")}
     ${lbl("b-phq", 1200, 100, 320, 64, "phase: ?")}
@@ -233,10 +233,10 @@ export default function scene(k) {
     ${lbl("b-formula", 140, 300, 1640, 96, formula, "padding:40px 0")}
     ${lbl("b-nth", 360, 548, 1200, 52, "θ: latitude, the odds")}
     ${lbl("b-nph", 360, 628, 1200, 52, "φ: longitude, the phase", `color:${GOLD}`)}
-    ${lbl("b-c1", 880, 330, 900, 64, "Phase is the arrow's longitude.", "text-align:left")}
+    ${lbl("b-c1", 880, 330, 900, 64, "Phase is the arrow's longitude:", "text-align:left")}
     ${lbl("b-c2", 880, 438, 900, 60, "invisible now,", "text-align:left")}
     ${lbl("b-c3", 880, 540, 900, 76, "decisive later.", `color:${GOLD};text-align:left`)}
-    <div class="obj" id="b-c3u" style="left:884px;top:650px;width:560px;height:30px"><svg class="sk" width="560" height="30" viewBox="0 0 560 30"><g id="b-c3ug">${fUnder}</g></svg></div>
+    <div class="obj" id="b-c3u" style="left:884px;top:650px;width:380px;height:30px"><svg class="sk" width="380" height="30" viewBox="0 0 380 30"><g id="b-c3ug">${fUnder}</g></svg></div>
   `;
 
   const css = `
