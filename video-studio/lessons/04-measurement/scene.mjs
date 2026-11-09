@@ -100,22 +100,22 @@ export default function scene(k) {
     friend: cue(0, "friend") - 0.1, sets: cue(0, "sets") - 0.1, qubit0: cue(0, "qubit") - 0.1,
     zero0: cue(0, "zero"), one0: cue(0, "one"), can: cue(0, "Can") - 0.1,
     l1: cue(1), measure: cue(1, "measure") - 0.15, look: cue(1, "look"), zero1: cue(1, "zero") - 0.1, what: cue(1, "What") - 0.1,
-    nothing: cue(2, "nothing"), bit: cue(2, "bit") - 0.1, zero2: cue(2, "zero") - 0.1, one2: cue(2, "or") + 0.15,
+    nothing: cue(2, "nothing"), bit: cue(2, "bit") - 0.1, zero2: cue(2, "zero") - 0.1, one2: cue(2, "or") - 0.1,
     that3: cue(3, "That") - 0.1, nearly: cue(3, "nearly") - 0.15, rarely: cue(3, "rarely") - 0.15,
     its: cue(4, "It's") - 0.05, opinion: cue(4, "opinion") - 0.1, poll4: cue(4, "poll"), voter4: cue(4, "voter") - 0.2, who: cue(4, "who") - 0.1,
-    thousand5: cue(5, "thousand") - 0.1, pct: cue(5, "percentages"), focus: cue(5, "focus") - 0.1,
-    quantum: cue(6, "Quantum"), set6: cue(6, "set") - 0.1, again1: cue(6, "again") - 0.05, again2: cue(6, "again", 1) - 0.05, measuring: cue(6, "measuring"),
-    run7: cue(7, "run"), shot7: cue(7, "shot") - 0.1, vote7: cue(7, "vote") - 0.25,
+    thousand5: cue(5, "thousand") - 0.1, pct: cue(5, "percentages"), focus: cue(5, "come") - 0.1,
+    quantum: cue(6, "same") - 0.1, set6: cue(6, "set") - 0.1, again1: cue(6, "again") - 0.05, again2: cue(6, "again", 1) - 0.05, measuring: cue(6, "measuring"),
+    run7: cue(7, "run"), shot7: cue(7, "shot") - 0.1, vote7: cue(7, "each", 1) + 0.25,
     say: cue(8, "Say") - 0.05, zero8: cue(8, "zero") - 0.1, three: cue(8, "three") - 0.1, times8: cue(8, "times"),
     ten: cue(9, "Ten"), six: cue(9, "six"), sixty: cue(9, "six") + 0.85,
     hundred: cue(10, "hundred") - 0.05, thousand10: cue(10, "thousand") - 0.25,
     l11: cue(11), wobbles: cue(11, "wobbles") - 0.1, settles: cue(11, "settles") - 0.1, trueT: cue(11, "true") - 0.1,
     l12: cue(12), halve: cue(12, "halve") - 0.1, wobble12: cue(12, "wobble"), four: cue(12, "four") - 0.1,
     so: cue(13, "So"), fifty: cue(13, "qubit") - 0.9, twelve: cue(13, "gives") + 0.1, eighty: cue(13, "and") + 0.4, relax: cue(14) - 0.55,
-    broken: cue(14, "broken") - 0.1, gap: cue(14, "gap") - 0.1, shot14: cue(14, "shot") - 0.1, poll14: cue(14, "poll") - 0.2,
+    broken: cue(14, "broken") - 0.1, gap: cue(14, "gap") - 0.1, shot14: cue(14, "shot") - 0.1, poll14: cue(14, "normal") - 0.1,
     heres: cue(15), breaks: cue(15, "breaks") - 0.1, voter15: cue(15, "voter") - 0.15, opinion15: cue(15, "opinion") - 0.2, asked: cue(15, "asked") - 0.3,
     qubit16: cue(16, "qubit") - 0.1, no16: cue(16, "no") - 0.05, measuring16: cue(16, "Measuring") - 0.1, creates: cue(16, "creates") - 0.05,
-    sitting: cue(16, "sitting") - 0.15,
+    sitting: cue(16, "sitting") - 0.15, leaves: cue(16, "leaves") - 0.1,
     thats: cue(17) - 0.05, freshly: cue(17, "freshly") - 0.3,
     one18: cue(18) - 0.05, vote18: cue(18, "vote") - 0.1, many: cue(18, "many") - 0.1, reveal: cue(18, "reveal") - 0.1,
   };
@@ -363,7 +363,7 @@ export default function scene(k) {
     `<g id="b-f-crack">${r.linear(crack, pen({ strokeWidth: 3.4, roughness: 1 }))}</g>` +
       `<g id="b-f-voter">${stick(440, 560, 1.3)}</g>` +
       `<g id="b-f-think">${r.circle(470, 500, 14, pen({ strokeWidth: 2.4 }))}${r.circle(500, 466, 22, pen({ strokeWidth: 2.4 }))}${r.ellipse(600, 360, 250, 150, pen({ strokeWidth: 3 }))}</g>` +
-      `<g id="b-f-say">${r.path(rrPath(160, 300, 190, 104, 26), pen({ strokeWidth: 3 }))}${r.linear([[300, 404], [338, 446], [262, 404]], pen({ strokeWidth: 3 }))}</g>`,
+      `<g id="b-f-say">${r.path(rrPath(160, 300, 190, 104, 26), pen({ strokeWidth: 3 }))}${r.linear([[236, 404], [168, 446], [196, 404]], pen({ strokeWidth: 3 }))}</g>`,
     L("b-f-B", 600, 364, 80, "B", 100) + L("b-f-who", 255, 354, 56, "who?", 160)
   );
   const sFr = board(
@@ -455,8 +455,8 @@ export default function scene(k) {
     draw("#b-a-g0", ${t(T.zero2)}, 0.35); write("#b-a-g0l", ${t(T.zero2 + 0.1)}, 0.2);
     draw("#b-a-g1", ${t(T.one2)}, 0.35); write("#b-a-g1l", ${t(T.one2 + 0.1)}, 0.2);
     // line 3: the same zero, two very different qubits
-    blurOut(["#b-a-row", "#b-a-ghosts"], ${t(T.that3)});
-    mv("#b-a-card", { x: -150, y: 0, scale: 1 }, ${t(T.that3 + 0.1)}, 0.8);
+    blurOut(["#b-a-row", "#b-a-ghosts"], ${t(T.that3 + 0.25)});
+    mv("#b-a-card", { x: -150, y: 0, scale: 1 }, ${t(T.that3 + 0.3)}, 0.8);
     draw(["#b-a-qa-c", "#b-a-qa-a"], ${t(T.nearly)}, 0.9);
     fade(["#b-a-qa-l0", "#b-a-qa-l1"], 1, ${t(T.nearly + 0.5)}, 0.3);
     write("#b-a-nl", ${t(T.nearly + 0.4)}, 0.8);
@@ -483,9 +483,9 @@ export default function scene(k) {
     blurOut(["#b-b-voter", "#b-b-voterl"], ${t(T.thousand5 - 0.25)});
     for (let c = 11; c >= 0; c--) draw("#b-b-col" + c, ${t(T.thousand5)} + (11 - c) * 0.08, 0.35);
     write("#b-b-crowdl", ${t(T.thousand5 + 0.3)}, 0.7);
-    tl.fromTo("#b-b-res", { opacity: 0, scaleY: 0.15, filter: "blur(12px)" }, { opacity: 1, scaleY: 1, filter: "blur(9px)", duration: 0.8, ease: "power2.out" }, ${t(T.pct)});
+    tl.fromTo("#b-b-res", { opacity: 0, scaleY: 0.15, filter: "blur(12px)" }, { opacity: 1, scaleY: 1, filter: "blur(9px)", duration: 0.55, ease: "power2.out" }, ${t(T.pct)});
     tl.set("#b-b-res", { transformOrigin: "1480px ${bBase}px" }, 0);
-    tl.to("#b-b-res", { filter: "blur(0px)", duration: 0.8, ease: "power2.inOut" }, ${t(T.focus)});
+    tl.to("#b-b-res", { filter: "blur(0px)", duration: 0.75, ease: "power2.inOut" }, ${t(T.focus)});
 
     // ===== Scene C =====
     blurOut(["#b-sB", "#b-b-res"], ${t(T.quantum)});
@@ -501,7 +501,7 @@ export default function scene(k) {
     fade("#b-c-dots", 1, ${t(T.measuring + 0.9)}, 0.5);
     draw("#b-c-brk", ${t(T.run7 - 0.1)}, 0.8);
     write("#b-c-shot", ${t(T.shot7)}, 0.75);
-    ${[0, 1, 2].map((i) => `draw("#b-c-bal${i}", ${t(T.vote7 - 0.6 + i * 0.15)}, 0.4);`).join(" ")}
+    ${[0, 1, 2].map((i) => `draw("#b-c-bal${i}", ${t(T.vote7 - 0.3 + i * 0.15)}, 0.4);`).join(" ")}
     write("#b-c-vote", ${t(T.vote7)}, 0.75);
 
     // ===== Scene D =====
@@ -532,9 +532,9 @@ export default function scene(k) {
     write("#b-d-setl", ${t(T.settles + 0.3)}, 0.45);
     fade("#b-d-c75g", 1, ${t(T.trueT)}, 0.35);
     tl.to("#b-d-y75", { color: "${GOLD}", duration: 0.3 }, ${t(T.trueT)});
-    write("#b-d-truel2", ${t(T.trueT + 0.1)}, 0.7);
+    write("#b-d-truel2", ${t(T.trueT - 0.15)}, 0.55);
     // line 12: four times the shots halves the wobble
-    fade(["#b-d-wob", "#b-d-setl", "#b-d-settle", "#b-d-truel2"], 0, ${t(T.l12 - 0.1)}, 0.3);
+    fade(["#b-d-wob", "#b-d-setl", "#b-d-settle", "#b-d-truel2"], 0, ${t(T.halve - 0.3)}, 0.3);
     draw("#b-d-band", ${t(T.halve)}, 0.9);
     draw("#b-d-ib100", ${t(T.wobble12)}, 0.4);
     write("#b-d-l100", ${t(T.wobble12 + 0.3)}, 0.3);
@@ -585,7 +585,7 @@ export default function scene(k) {
     tl.set("#b-f-card", { transformOrigin: "1690px 600px" }, 0);
     tl.fromTo("#b-f-card", { opacity: 0, scale: 0.6, x: -60 }, { opacity: 1, scale: 1, x: 0, duration: 0.45, ease: "back.out(1.8)" }, ${t(T.creates)});
     blurOut("#b-f-bub", ${t(T.creates + 0.5)});
-    tl.to("#b-f-q-l0", { color: "${GOLD}", duration: 0.3 }, ${t(T.sitting + 0.7)});
+    tl.to("#b-f-q-l0", { color: "${GOLD}", duration: 0.3 }, ${t(T.sitting)});
     // line 17: every vote needs a fresh qubit
     blurOut("#b-f-left", ${t(T.thats)});
     fade(["#b-f-right", "#b-f-card"], 0.35, ${t(T.thats + 0.3)}, 0.4);
@@ -644,7 +644,7 @@ export default function scene(k) {
       setBar("b-e-bar0", ${EB.base}, sched([[T.twelve, T.twelve + 0.7, 0, ${eH(512)}]], t, 0));
       setBar("b-e-bar1", ${EB.base}, sched([[T.eighty, T.eighty + 0.7, 0, ${eH(488)}]], t, 0));
       // Scene F: measuring leaves the arrow on the answer it gave
-      qArrow("b-f-q-a", 1230, 600, sched([[T.sitting, T.sitting + 0.8, 60, 0]], t, 60));
+      qArrow("b-f-q-a", 1230, 600, sched([[T.leaves, T.leaves + 0.8, 60, 0]], t, 60));
       // Scene G: the counts grow, then settle with a small damped wobble in the hold
       const g = sched([[T.many, T.many + 0.9, 0, 1]], t, 0);
       const te = ${t(cue(18, "odds"))};
