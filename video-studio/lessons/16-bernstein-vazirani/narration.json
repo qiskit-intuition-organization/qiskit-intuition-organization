@@ -1,52 +1,22 @@
 {
- "lines": [
-  {
-   "say": "Here's a puzzle. A box hides a secret string of bits, like one zero one."
-  },
-  {
-   "say": "Picture a wall of switches, some secretly wired to a buzzer."
-  },
-  {
-   "say": "The buzzer only says whether an odd or an even number of wired switches are on."
-  },
-  {
-   "say": "Normally you test one switch at a time, so three switches take three questions, and a hundred take a hundred."
-  },
-  {
-   "say": "A quantum computer needs just one question."
-  },
-  {
-   "say": "Each switch gets its own qubit, a quantum bit, set by an H gate to a state called plus."
-  },
-  {
-   "say": "One extra answer qubit is set to minus. Then we ask the box, once."
-  },
-  {
-   "say": "Each wired switch kicks a minus sign, called a phase, back onto its own qubit, turning plus into minus."
-  },
-  {
-   "say": "Measure now, and plus and minus look the same, half and half. The secret hides in the signs."
-  },
-  {
-   "say": "So one more H on each qubit turns plus back into zero, and minus into one."
-  },
-  {
-   "say": "Measure, and we read one zero one. The whole secret, from a single question."
-  },
-  {
-   "say": "This isn't the computer quietly trying every input and collecting answers."
-  },
-  {
-   "say": "It asks once, and interference, where possibilities add or cancel like ripples, leaves the secret as the only possible reading."
-  },
-  {
-   "say": "Here's where the switch wall breaks. No real panel can be tested all at once like this."
-  },
-  {
-   "say": "It only works because the hidden rule is odd or even, a parity, which interference can unpick. Most rules aren't."
-  },
-  {
-   "say": "So that's Bernstein Vazirani. Phase kickback on every input at once, and one question reveals the whole secret string."
-  }
- ]
+  "lines": [
+    { "say": "A box hides a secret string of bits, like one zero one. How many questions will it take?" },
+    { "say": "Picture a wall of three switches, some secretly wired to a buzzer." },
+    { "say": "The buzzer only tells you if an odd or even number of wired switches are on." },
+    { "say": "Test them one at a time, and three switches take three questions." },
+    { "say": "A quantum computer needs just one question." },
+    { "say": "Each switch gets a qubit, a quantum bit, starting at zero." },
+    { "say": "A step called an H gate makes it plus, an even blend of zero and one." },
+    { "say": "An extra buzzer qubit is set to minus, the same blend with a minus sign. Then we ask once." },
+    { "say": "Each wired switch kicks a minus sign back onto its own qubit, turning plus into minus." },
+    { "say": "That sign is called a phase, so this is phase kickback." },
+    { "say": "Measure now, and plus and minus both give fifty fifty. The secret hides in the signs." },
+    { "say": "One more H on each qubit turns plus back into zero, and minus into one." },
+    { "say": "Measure, and we read one zero one, every time, from a single question." },
+    { "say": "But the computer didn't secretly try every setting and collect the answers." },
+    { "say": "It asked once, and interference, where possibilities add or cancel like ripples, left only the secret." },
+    { "say": "Here's where the switch wall breaks. A real switch is only on or off, never plus." },
+    { "say": "It only works for an odd or even rule, which interference can unpick. Most rules aren't." },
+    { "say": "That's Bernstein Vazirani: phase kickback on every input at once, so one question reveals the whole secret string." }
+  ]
 }
