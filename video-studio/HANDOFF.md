@@ -87,8 +87,11 @@ node kit/narrate.mjs lessons/01-why-quantum
 5. **Save:** after the build and again after QA, a small agent commits that lesson's source files,
    adds a line to the progress log above and pushes `video-lessons`.
 
-Run it in batches of about 3 lessons. Pass it the Workflow args below; set `scriptDone: true` to
-skip the script stage for lessons 01 to 13. If the Workflow tool won't load the file by path,
+Pass it the Workflow args below. It runs `parallel` lessons at a time (default 3) in the order
+given, so each lesson finishes before the next starts. Per-lesson flags pick up where an earlier
+run stopped (read the progress log above): `scriptDone: true` skips the script stage,
+`reviewDone: true` skips script review, `buildDone: true` skips the build (add `buildNotes` with
+the builder's known issues if you have them). A partial `scene.mjs` is finished, not restarted. If the Workflow tool won't load the file by path,
 paste its contents inline as the `script` input.
 ```json
 { "studio": "<absolute path to video-studio>", "date": "YYYY-MM-DD",

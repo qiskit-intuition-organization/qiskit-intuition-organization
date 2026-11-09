@@ -10,7 +10,7 @@ export const meta = {
   ],
 }
 
-// Pass { studio: "<absolute path to video-studio>", date: "YYYY-MM-DD", lessons: [...] } as the Workflow args.
+// Pass { studio: "<absolute path to video-studio>", date: "YYYY-MM-DD", parallel: 3, lessons: [...] } as the Workflow args.
 const STUDIO = args.studio
 
 const ctx = (L) => `You are making one short hand-drawn explainer video for lesson ${L.number} of the Qiskit Intuition course: "${L.title}" (lesson id "${L.id}").
@@ -60,7 +60,7 @@ const buildPrompt = (L) => `${ctx(L)}
 
 YOUR JOB: build the video. The script (narration.json) and beat plan (plan.md) in your lesson folder are reviewed and final; change a script line only if it is truly needed, and then re-run narrate.
 1. Run node kit/narrate.mjs lessons/${L.dir} if project/assets/vo/timing.json is missing or out of date. Read timing.json to see when each word is spoken.
-2. Write scene.mjs per KIT.md's API so the drawings follow plan.md, each cued to its word with cue(). Aim for the pilot's level of craft: rich, clear hand-drawn sketches, gold only on what matters, smooth moves, continuous values driven with onFrame/sched, nothing static for more than about 5 s, old scenes cleared before new ones, a closing picture that holds to the end. Study the pilot's build.mjs (${STUDIO}/pilot/tools/build.mjs) for how its knob, chart and bulbs were drawn and animated.
+2. If scene.mjs already exists, an earlier build was cut off part-way: read it alongside plan.md and timing.json, keep what is sound and finish it rather than starting over. Otherwise write scene.mjs per KIT.md's API so the drawings follow plan.md, each cued to its word with cue(). Aim for the pilot's level of craft: rich, clear hand-drawn sketches, gold only on what matters, smooth moves, continuous values driven with onFrame/sched, nothing static for more than about 5 s, old scenes cleared before new ones, a closing picture that holds to the end. Study the pilot's build.mjs (${STUDIO}/pilot/tools/build.mjs) for how its knob, chart and bulbs were drawn and animated.
 3. node kit/build.mjs lessons/${L.dir}, then (cd lessons/${L.dir}/project && npx hyperframes check) until 0 errors, and fix real layout warnings.
 4. node kit/look.mjs lessons/${L.dir}, then open review/wide/contact-sheet.jpg and review/phone/contact-sheet.jpg and several single frames with the Read tool. Look hard: overlaps, clipping, text under 40 px, things outside x 140 to 1780 or below y 860, labels colliding with captions, a drawing that doesn't match what the voice says at that moment, leftover objects, empty or static frames. Also snapshot moments in the middle of moves (--at) to check motion. Fix and look again. Do at least three look-and-fix rounds.
 Return the length in seconds, the check error count, the number of look rounds, a list of the scenes in order, known issues you could not fix, and any kit problems.`
@@ -96,7 +96,7 @@ Repository worktree: ${REPO} (branch video-lessons). Run every command with git 
 1. Stage ONLY these files if they exist and changed: video-studio/lessons/${L.dir}/narration.json, video-studio/lessons/${L.dir}/plan.md, video-studio/lessons/${L.dir}/scene.mjs. Never stage anything else (no audio, renders, review/, project/, other lessons, nothing outside video-studio/).
 2. In ${STUDIO}/HANDOFF.md, under "## Progress log", append this line at the bottom of that list (before the next "## " heading), then stage HANDOFF.md too:
 - ${args.date}: lesson ${L.dir}: ${stage}. ${note}
-3. Commit with: git -C ${REPO} -c user.name="Dhruv Sachdeva" -c user.email="109058006+LuCiFeR041205@users.noreply.github.com" commit -m "chore(video): ${L.dir} ${stage}" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+3. Commit with: git -C ${REPO} -c user.name="Dhruv Sachdeva" -c user.email="109058006+LuCiFeR041205@users.noreply.github.com" commit -m "chore(video): ${L.dir} ${stage}" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- video-studio/HANDOFF.md followed by only those of the three lesson files that exist (this path list makes the commit hold only these files, even if another batch staged something else)
 4. git -C ${REPO} push origin video-lessons. If it is rejected, run git -C ${REPO} pull --rebase origin video-lessons, then push again.
 If git reports index.lock, wait 5 seconds and retry. Return the commit sha, whether the push succeeded, and the files committed.`,
     { label: `commit:${L.dir}:${stage}`, phase: 'Save', schema: COMMIT_SCHEMA, model: 'haiku', effort: 'low' })
@@ -106,24 +106,40 @@ If git reports index.lock, wait 5 seconds and retry. Return the commit sha, whet
 }
 const brief = (o) => JSON.stringify(o ?? {}).slice(0, 400)
 
-const results = await pipeline(
-  lessons,
-  (L) => (L.scriptDone ? { skipped: 'script already written' } : agent(scriptPrompt(L), { label: `script:${L.dir}`, phase: 'Script', schema: SCRIPT_SCHEMA, effort: 'high' })),
-  (s, L) => agent(reviewPrompt(L), { label: `review:${L.dir}`, phase: 'Script review', schema: REVIEW_SCHEMA, effort: 'high' }).then((r) => ({ script: s, review: r })),
-  async (prev, L) => {
-    const b = await agent(buildPrompt(L), { label: `build:${L.dir}`, phase: 'Build', schema: BUILD_SCHEMA, effort: 'high' })
-    await checkpoint(L, 'script reviewed and scene built, visual QA next', `Build notes: ${brief({ seconds: b?.seconds, checkErrors: b?.checkErrors, knownIssues: b?.knownIssues })}`)
-    return { ...prev, build: b }
-  },
-  async (prev, L) => {
-    let qa = await agent(qaPrompt(L, prev.build), { label: `qa:${L.dir}`, phase: 'Visual QA', schema: QA_SCHEMA, effort: 'high' })
-    if (qa && qa.verdict === 'needs_work') {
-      log(`${L.dir}: second QA round for ${qa.remaining.length} remaining issue(s)`)
-      qa = await agent(qaPrompt(L, { previousQaRemaining: qa.remaining, previousQaFixed: qa.fixed }), { label: `qa2:${L.dir}`, phase: 'Visual QA', schema: QA_SCHEMA, effort: 'high' })
-    }
-    const save = await checkpoint(L, 'visual QA done, ready to render', `QA: ${brief({ verdict: qa?.verdict, seconds: qa?.seconds, remaining: qa?.remaining })}`)
-    return { lesson: L.dir, ...prev, qa, save }
-  },
-)
+// Per-lesson flags let a run pick up where an earlier one stopped:
+// scriptDone skips the script stage, reviewDone skips script review, buildDone skips the build
+// (pass buildNotes so visual QA knows what the builder said).
+const runLesson = async (L) => {
+  const script = L.scriptDone ? { skipped: 'script already written' }
+    : await agent(scriptPrompt(L), { label: `script:${L.dir}`, phase: 'Script', schema: SCRIPT_SCHEMA, effort: 'high' })
+  const review = L.reviewDone ? { skipped: 'script review already done' }
+    : await agent(reviewPrompt(L), { label: `review:${L.dir}`, phase: 'Script review', schema: REVIEW_SCHEMA, effort: 'high' })
+  let build = L.buildNotes ?? { skipped: 'build already done' }
+  if (!L.buildDone) {
+    build = await agent(buildPrompt(L), { label: `build:${L.dir}`, phase: 'Build', schema: BUILD_SCHEMA, effort: 'high' })
+    if (!build) return { lesson: L.dir, script, review, failed: 'build' }
+    await checkpoint(L, 'script reviewed and scene built, visual QA next', `Build notes: ${brief({ seconds: build.seconds, checkErrors: build.checkErrors, knownIssues: build.knownIssues })}`)
+  }
+  let qa = await agent(qaPrompt(L, build), { label: `qa:${L.dir}`, phase: 'Visual QA', schema: QA_SCHEMA, effort: 'high' })
+  if (qa && qa.verdict === 'needs_work') {
+    log(`${L.dir}: second QA round for ${qa.remaining.length} remaining issue(s)`)
+    qa = await agent(qaPrompt(L, { previousQaRemaining: qa.remaining, previousQaFixed: qa.fixed }), { label: `qa2:${L.dir}`, phase: 'Visual QA', schema: QA_SCHEMA, effort: 'high' })
+  }
+  if (!qa) return { lesson: L.dir, script, review, build, failed: 'qa' }
+  const save = await checkpoint(L, 'visual QA done, ready to render', `QA: ${brief({ verdict: qa.verdict, seconds: qa.seconds, remaining: qa.remaining })}`)
+  return { lesson: L.dir, script, review, build, qa, save }
+}
 
+// At most args.parallel lessons (default 3) at once, in the order given, so lessons finish
+// completely instead of all stopping half-built when usage runs out.
+const LIMIT = args.parallel ?? 3
+let active = 0
+const waiting = []
+const limited = async (fn) => {
+  while (active >= LIMIT) await new Promise((wake) => waiting.push(wake))
+  active++
+  try { return await fn() } finally { active--; const next = waiting.shift(); if (next) next() }
+}
+
+const results = await parallel(lessons.map((L) => () => limited(() => runLesson(L))))
 return results.map((r, i) => r ?? { lesson: lessons[i].dir, failed: true })
