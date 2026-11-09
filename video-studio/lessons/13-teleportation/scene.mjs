@@ -104,7 +104,7 @@ export default function scene(k) {
   const T = {
     alice0: cue(0, "alice"), qubit0: cue(0, "qubit"), arrow0: cue(0, "arrow"), some0: cue(0, "some"), nobody0: cue(0, "nobody"),
     start1: cue(1, null), bob1: cue(1, "bob"), far1: cue(1, "far"), exact1: cue(1, "exact"), copy1: cue(1, "copy"), meas1: cue(1, "measuring"),
-    off1: cue(2, null, 0, -0.1),
+    off1: cue(2, "picture", 0, -0.15),
     picture2: cue(2, "picture"), fax2: cue(2, "fax"), machine2: cue(2, "machine"), shreds2: cue(2, "shreds"), sends2: cue(2, "sends"),
     comes3: cue(3, "comes"), original3: cue(3, "original"), shredded3: cue(3, "shredded"), needs3: cue(3, "needs"), phone3: cue(3, "phone"),
     off3: cue(4, null, 0, -0.12),
@@ -120,7 +120,7 @@ export default function scene(k) {
     fax12: cue(12, "fax"), breaks12: cue(12, "breaks"), fax12b: cue(12, "fax", 1), reads12: cue(12, "reads"), alice12: cue(12, "alice"), never12: cue(12, "never"), learns12: cue(12, "learns"),
     off12: cue(13, null, 0, -0.12),
     state13: cue(13, "state"), ent13: cue(13, "entanglement"), bits13: cue(13, "bits"), together13: cue(13, "together"), alone13: cue(13, "alone"), say13: cue(13, "say"), nothing13: cue(13, "nothing"),
-    off13: cue(14, null, 0, -0.12),
+    off13: cue(14, "no", 0, -0.45),
     no14: cue(14, "no"), light14: cue(14, "light"), until14: cue(14, "until"), qubit14: cue(14, "qubit"), fifty14: wd(14, "50"), coin14: cue(14, "coin"), whatever14: cue(14, "whatever"),
     off14: cue(15, null, 0, -0.1), wait15: cue(15, "wait"), her15: cue(15, "her"), never15: cue(15, "never"), only15: cue(15, "only"),
     off15: cue(16, null, 0, -0.12),
@@ -326,7 +326,7 @@ export default function scene(k) {
     lc("b-nfl", 990, 200, 560, 56, "no faster than light") +
     lc("b-fhA", FA.x, 365, 180, 56, "Alice") + lc("b-fhB", FB.x, 365, 180, 56, "Bob") +
     bar14(0, 1280) + bar14(1, 1400) +
-    lc("b-fb0", 1280, 822, 60, 40, "0") + lc("b-fb1", 1400, 822, 60, 40, "1") +
+    lc("b-fb0", 1280, 822, 60, 40, "0") + lc("b-fb1", 1400, 822, 60, 40, "1") + lc("b-f50", 1570, 755, 170, 48, "50/50") +
     `<div id="b-coin" class="obj" style="left:${CK.x - coinD / 2}px;top:${FB.y - coinD / 2}px;width:${coinD}px;height:${coinD}px">` +
     `<div id="b-coinS" class="obj" style="left:0;top:0;width:${coinD}px;height:${coinD}px;transform-origin:50% 50%">` +
     `<svg class="sk" width="${coinD}" height="${coinD}" viewBox="0 0 ${coinD} ${coinD}"><g id="b-coinr">${r.circle(60, 60, 110, pen({ strokeWidth: 3.2 }))}${r.circle(60, 60, 88, pen({ strokeWidth: 1.6, stroke: DIM }))}</g></svg>` +
@@ -557,11 +557,11 @@ export default function scene(k) {
     write("#b-nocopy", T.copy1 + 0.4, 0.55);
     draw("#b-met", T.meas1 - 0.25, 0.4);
     draw("#b-x2", T.meas1 + 0.35, 0.3);
-    write("#b-destroys", T.meas1 + 0.4, 0.5);
+    write("#b-destroys", T.meas1 + 0.1, 0.5);
     blurOut(["#b-st", "#b-alice0", "#b-a0", "#b-a1", "#b-qm0", "#b-bob0", "#b-b0", "#b-b1", "#b-far", "#b-goal", "#b-nocopy", "#b-destroys"], T.off1);
 
     // ---- 2. the fax that shreds the original ----
-    draw("#b-faxL", T.picture2 - 0.05, 1.1);
+    draw("#b-faxL", T.picture2 + 0.05, 1.1);
     draw("#b-faxR", T.fax2 + 0.1, 1.0);
     draw("#b-pageL", T.machine2 + 0.05, 0.45);
     draw(["#b-bin", "#b-exit"], T.shreds2 - 0.25, 0.4);
@@ -592,12 +592,11 @@ export default function scene(k) {
     fade("#b-myq", 0, T.cnot6 - 0.3, 0.3);
     draw("#b-wires", T.half6 - 0.1, 0.7);
     write("#b-gate", T.gates6 - 0.05, 0.9);
-    fade("#b-gate", 0, T.gates6 + 1.15, 0.3);
     draw("#b-cx6", T.cnot6 - 0.1, 0.5);
     draw("#b-h6", T.h6 - 0.25, 0.3); write("#b-h6l", T.h6 - 0.05, 0.15);
     draw("#b-m6", T.measures6 - 0.1, 0.45);
     // ---- 7. two bits, four outcomes, one time in four each ----
-    blurOut(["#b-circ", "#b-h6l"], T.four7 - 0.1);
+    blurOut(["#b-circ", "#b-h6l", "#b-gate"], T.four7 - 0.1);
     ${CARDS.map((_, i) => `draw("#b-card${i}", ${fx(T.four7 + i * 0.16)}, 0.3); write("#b-cd${i}", ${fx(T.four7 + 0.15 + i * 0.16)}, 0.15);`).join("\n    ")}
     draw("#b-base7", T.outcomes7, 0.4);
     ${CARDS.map((_, i) => `draw("#b-bar${i}", ${fx(T.outcomes7 + 0.25 + i * 0.12)}, 0.35);`).join("\n    ")}
@@ -667,7 +666,7 @@ export default function scene(k) {
     write("#b-a10", T.alone13 - 0.25, 0.25);
     draw("#b-sto2", T.alone13 + 0.05, 0.3);
     write("#b-aq", T.say13 - 0.1, 0.2);
-    write("#b-anoth", T.nothing13 - 0.1, 0.9);
+    write("#b-anoth", T.alone13 + 0.15, 0.8);
     blurOut(["#b-sum", "#b-sent", "#b-splus", "#b-s10", "#b-sbits", "#b-sstate", "#b-a10", "#b-aq", "#b-anoth"], T.off13);
 
     // ---- 14. no faster than light; Bob's 50/50 until the bits arrive ----
@@ -677,7 +676,7 @@ export default function scene(k) {
     draw("#b-fB", T.until14 + 0.1, 0.3);
     draw("#b-coinr", T.qubit14 - 0.25, 0.35);
     draw("#b-base14", T.fifty14 - 0.3, 0.3);
-    write(["#b-fb0", "#b-fb1"], T.fifty14 + 0.1, 0.2);
+    write(["#b-fb0", "#b-fb1"], T.fifty14 + 0.1, 0.2); write("#b-f50", T.fifty14 - 0.05, 0.3);
     draw("#b-fQA", T.whatever14 - 0.35, 0.45); write("#b-fhA", T.whatever14 - 0.2, 0.3);
     draw("#b-fA", T.whatever14 - 0.1, 0.25);
     // ---- 15. Bob must wait; her qubit never travels, only its state ----
@@ -690,7 +689,7 @@ export default function scene(k) {
     draw("#b-path15", T.never15 - 0.2, 0.45);
     draw("#b-x15", T.never15 + 0.25, 0.3);
     write("#b-stays", T.never15 + 0.3, 0.8);
-    fade(["#b-fbar0", "#b-fbar1", "#b-fb0", "#b-fb1", "#b-base14"], 0, T.only15 - 0.15, 0.35);
+    fade(["#b-fbar0", "#b-fbar1", "#b-fb0", "#b-fb1", "#b-f50", "#b-base14"], 0, T.only15 - 0.15, 0.35);
     draw("#b-fG", T.only15 + 0.05, 0.5);
     blurOut(["#b-ftl", "#b-fhA", "#b-fhB", "#b-ten15", "#b-stays"], T.off15);
 
