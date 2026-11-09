@@ -282,8 +282,8 @@ export default function scene(k) {
       LR("b-d-truel", 368, dTop(0.75) - 30, 44, "true: 3 in 4", 230, G)
   );
   // Error band: half width sqrt(0.75 x 0.25 / n), clamped to the chart.
-  const bandN = Array.from({ length: 41 }, (_, i) => Math.round(10 ** (Math.log10(2) + (i / 40) * (3 - Math.log10(2)))));
-  const hw = (n) => CH.h * Math.sqrt((0.75 * 0.25) / n);
+  const bandN = Array.from({ length: 41 }, (_, i) => Math.round(10 ** (Math.log10(3) + (i / 40) * (3 - Math.log10(3)))));
+  const hw = (n) => 2 * CH.h * Math.sqrt((0.75 * 0.25) / n);
   const clampY = (y) => Math.min(CH.y0 - 2, Math.max(CH.y0 - CH.h + 2, y));
   const bandPts = [...bandN.map((n) => [cxN(n), clampY(cyF(0.75) - hw(n))]), ...bandN.slice().reverse().map((n) => [cxN(n), clampY(cyF(0.75) + hw(n))])];
   const ibar = (n, gold) => {
@@ -298,7 +298,7 @@ export default function scene(k) {
       [1, 10, 100, 1000].map((n) => r.line(cxN(n), CH.y0 - 9, cxN(n), CH.y0 + 9, pen({ strokeWidth: 2.4, roughness: 0.5 }))).join("") +
       [0.5, 0.75, 1].map((f) => r.line(CH.x0 - 9, cyF(f), CH.x0 + 9, cyF(f), pen({ strokeWidth: 2.4, roughness: 0.5 }))).join("") +
       `</g>` +
-      `<g id="b-d-band" style="opacity:.32">${r.poly(bandPts, pen({ fill: INK, fillStyle: "hachure", hachureGap: 9, fillWeight: 1.6, stroke: INK, strokeWidth: 1.4, roughness: 0.7 }))}</g>` +
+      `<g id="b-d-band" style="opacity:.2">${r.poly(bandPts, pen({ fill: INK, fillStyle: "hachure", hachureGap: 9, fillWeight: 1.6, stroke: INK, strokeWidth: 1.4, roughness: 0.7 }))}</g>` +
       dash("b-d-c75", CH.x0 + 6, cyF(0.75), CH.x0 + CH.w + 20, cyF(0.75), DIM, 2.4) +
       dash("b-d-c75g", CH.x0 + 6, cyF(0.75), CH.x0 + CH.w + 20, cyF(0.75), GOLD, 3.2) +
       `<path id="b-d-trace" d="${trace.d}" pathLength="1" fill="none" stroke="${INK}" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:1 2;stroke-dashoffset:1"/>` +
@@ -310,10 +310,10 @@ export default function scene(k) {
     L("b-d-x1", cxN(1), 818, 40, "1", 60) + L("b-d-x10", cxN(10), 818, 40, "10", 80) + L("b-d-x100", cxN(100), 818, 40, "100", 90) + L("b-d-x1000", cxN(1000), 818, 40, "1000", 110) +
       LR("b-d-y50", 925, cyF(0.5), 40, "50%", 100) + LR("b-d-y75", 925, cyF(0.75), 40, "75%", 100) + LR("b-d-y100", 925, cyF(1), 40, "100%", 110) +
       LL("b-d-ytl", 965, 165, 44, "fraction of zeros", 360) + L("b-d-xtl", 1690, 735, 44, "shots", 140) +
-      L("b-d-wob", 1100, 600, 44, "wobbles", 200, G) + L("b-d-setl", 1560, 248, 44, "settles", 180, G) +
-      L("b-d-truel2", 1590, 412, 44, "true odds 75%", 300, G) +
-      L("b-d-l100", cxN(100), 430, 44, "100", 90) + L("b-d-l400", cxN(400), 430, 44, "400", 90, G) +
-      L("b-d-half", cxN(400), 480, 44, "half the wobble", 300, G) +
+      L("b-d-wob", 1100, 560, 44, "wobbles", 200, G) + L("b-d-setl", 1560, 248, 44, "settles", 180, G) +
+      L("b-d-truel2", 1590, 470, 44, "true odds 75%", 300, G) +
+      L("b-d-l100", cxN(100), cyF(0.75) + hw(100) + 36, 44, "100", 90) + L("b-d-l400", cxN(400), cyF(0.75) + hw(100) + 36, 44, "400", 90, G) +
+      L("b-d-half", cxN(400), cyF(0.75) + hw(100) + 90, 44, "half the wobble", 300, G) +
       L("b-d-x4l", (cxN(100) + cxN(400)) / 2, cyF(0.75) - hw(100) - 92, 44, "×4", 90)
   );
 
@@ -324,18 +324,25 @@ export default function scene(k) {
   const eY = (c) => 700 - (c - 400) * 3; // axis starts at 400 (the zigzag break shows it)
   const eH = (c) => EB.base - eY(c);
   const qe = qubit("b-e-q", 400, 380, 80, 90, { labelSize: 40 });
-  const zig = (x) => r.linear([[x - 14, 744], [x + 12, 736], [x - 12, 728], [x + 14, 720]], pen({ strokeWidth: 2.6, roughness: 0.6 }));
+  // Axis break: a wavy gap cut across each bar, since the counts start at 400.
+  const brk = (x, w) => {
+    const wave = (y) => Array.from({ length: 7 }, (_, i) => [x - 10 + (i * (w + 20)) / 6, y + (i % 2 ? -5 : 5)]);
+    const top = wave(722), bot = wave(742);
+    return `<path d="M${top.map((p) => p.join(" ")).join(" L")} L${bot.slice().reverse().map((p) => p.join(" ")).join(" L")} Z" fill="${GROUND}"/>` +
+      r.linear(top, pen({ strokeWidth: 2.4, roughness: 0.5 })) + r.linear(bot, pen({ strokeWidth: 2.4, roughness: 0.5 }));
+  };
   const bracket = (x, y1, y2) => goldPen({ strokeWidth: 3.4 }) && r.line(x, y1, x, y2, goldPen({ strokeWidth: 3.6, roughness: 0.5 })) + r.line(x - 10, y1, x + 2, y1, goldPen({ strokeWidth: 3, roughness: 0.4 })) + r.line(x - 10, y2, x + 2, y2, goldPen({ strokeWidth: 3, roughness: 0.4 }));
   const sE = board(
     "b-sE",
     qe.svg +
-      `<g id="b-e-axes">${r.line(740, EB.base, 1300, EB.base, pen({ strokeWidth: 3.2 }))}${zig(860)}${zig(1160)}</g>` +
+      `<g id="b-e-axes">${r.line(740, EB.base, 1300, EB.base, pen({ strokeWidth: 3.2 }))}</g>` +
       bar("b-e-bar0", EB.x0, EB.w, EB.base, eH(560)) +
       bar("b-e-bar1", EB.x1, EB.w, EB.base, eH(560)) +
+      `<g id="b-e-brk0">${brk(EB.x0, EB.w)}</g><g id="b-e-brk1">${brk(EB.x1, EB.w)}</g>` +
       dash("b-e-500", 760, eY(500), 1290, eY(500), DIM, 2.6) +
       `<g id="b-e-check">${r.linear([[1500, 252], [1530, 286], [1606, 196]], pen({ strokeWidth: 5, roughness: 0.9 }))}</g>` +
       `<g id="b-e-br0">${bracket(966, eY(512), eY(500))}</g><g id="b-e-br1">${bracket(1266, eY(500), eY(488))}</g>` +
-      `<g id="b-e-bal">${ballot(1690, 486, 0.9)}</g>`,
+      `<g id="b-e-bal">${ballot(1690, 476, 1.4)}</g>`,
     qe.labels + L("b-e-5050", 400, 548, 56, "50/50", 160) +
       LR("b-e-500l", 752, eY(500), 44, "500", 100) +
       L("b-e-zl", 860, 815, 44, "zeros", 160) + L("b-e-ol", 1160, 815, 44, "ones", 160) +
@@ -363,10 +370,10 @@ export default function scene(k) {
     "b-f-right",
     qf.svg +
       `<g id="b-f-arm">${arrow(1342, 600, 1442, 600, { strokeWidth: 3 })}</g>` +
-      meter("b-f-m", 1525, 600, 150, 110, [T.measuring16 + 0.25]) +
-      `<g id="b-f-card">${card(1690, 600, 100, 125, goldPen({ strokeWidth: 3.8, roughness: 1 }))}</g>`,
-    qf.labels + L("b-f-c0", 1690, 606, 80, "0", 90, G) + L("b-f-used", 1230, 806, 48, "used", 140)
+      meter("b-f-m", 1525, 600, 150, 110, [T.measuring16 + 0.25]),
+    qf.labels + L("b-f-used", 1230, 806, 48, "used", 140)
   );
+  const sFcard = board("b-f-card", card(1690, 600, 100, 125, goldPen({ strokeWidth: 3.8, roughness: 1 })), L("b-f-c0", 1690, 606, 80, "0", 90, G));
   const sFb = board(
     "b-f-bub",
     `<g id="b-f-empty">${r.circle(1322, 470, 14, pen({ strokeWidth: 2.2 }))}${r.circle(1344, 434, 20, pen({ strokeWidth: 2.2 }))}${dashedEllipse(1400, 320, 280, 150, 16)}</g>`,
@@ -403,7 +410,7 @@ export default function scene(k) {
       L("b-g-take", 1330, 240, 72, "many shots reveal the odds", 760, G)
   );
 
-  const html = [aFriend, aRow, aCard, aWhat, aGhost, aTwo, sB, bPaper, bRes, sC, sDl, sDc, sE, sFl, sFr, sFb, sFf, sFq, sG].join("\n");
+  const html = [aFriend, aRow, aCard, aWhat, aGhost, aTwo, sB, bPaper, bRes, sC, sDl, sDc, sE, sFl, sFr, sFcard, sFb, sFf, sFq, sG].join("\n");
 
   // ---------- timeline ----------
   const script = `
@@ -415,7 +422,7 @@ export default function scene(k) {
     const setBar = (id, base, h) => {
       const cr = $(id + "-cr");
       cr.setAttribute("y", (base - h).toFixed(2));
-      cr.setAttribute("height", Math.max(0, h + 6).toFixed(2));
+      cr.setAttribute("height", (h > 0.5 ? h + 6 : 0).toFixed(2));
       const cap = $(id + "-cap");
       cap.setAttribute("transform", "translate(0 " + (-h).toFixed(2) + ")");
       cap.style.opacity = h > 0.5 ? "1" : "0";
@@ -534,8 +541,8 @@ export default function scene(k) {
     draw("#b-d-ib400", ${t(T.four)}, 0.4);
     draw("#b-d-x4", ${t(T.four + 0.1)}, 0.5);
     write("#b-d-x4l", ${t(T.four + 0.45)}, 0.25);
-    write("#b-d-l400", ${t(T.four + 0.35)}, 0.3);
-    write("#b-d-half", ${t(T.four + 0.6)}, 0.8);
+    write("#b-d-l400", ${t(T.four + 0.2)}, 0.3);
+    write("#b-d-half", ${t(T.four + 0.4)}, 0.7);
 
     // ===== Scene E =====
     blurOut(["#b-d-left", "#b-d-chart"], ${t(T.so)});
@@ -548,6 +555,8 @@ export default function scene(k) {
     fade("#b-e-500", 1, ${t(T.fifty + 0.9)}, 0.4);
     write("#b-e-500l", ${t(T.fifty + 1.0)}, 0.3);
     write("#b-e-512", ${t(T.twelve + 0.6)}, 0.35);
+    draw("#b-e-brk0", ${t(T.twelve + 0.25)}, 0.3);
+    draw("#b-e-brk1", ${t(T.eighty + 0.25)}, 0.3);
     write("#b-e-488", ${t(T.eighty + 0.6)}, 0.35);
     draw("#b-e-check", ${t(T.relax)}, 0.6);
     write("#b-e-fine", ${t(T.broken)}, 0.8);
@@ -572,14 +581,14 @@ export default function scene(k) {
     write("#b-f-noans", ${t(T.no16 + 0.4)}, 0.7);
     draw("#b-f-arm", ${t(T.measuring16)}, 0.25);
     draw(["#b-f-m", "#b-f-m-n"], ${t(T.measuring16 + 0.1)}, 0.45);
-    hide(["#b-f-card", "#b-f-c0"]);
-    tl.set(["#b-f-card", "#b-f-c0"], { transformOrigin: "1690px 600px" }, 0);
-    tl.fromTo(["#b-f-card", "#b-f-c0"], { opacity: 0, scale: 0.6, x: -60 }, { opacity: 1, scale: 1, x: 0, duration: 0.45, ease: "back.out(1.8)" }, ${t(T.creates)});
+    hide("#b-f-card");
+    tl.set("#b-f-card", { transformOrigin: "1690px 600px" }, 0);
+    tl.fromTo("#b-f-card", { opacity: 0, scale: 0.6, x: -60 }, { opacity: 1, scale: 1, x: 0, duration: 0.45, ease: "back.out(1.8)" }, ${t(T.creates)});
     blurOut("#b-f-bub", ${t(T.creates + 0.5)});
     tl.to("#b-f-q-l0", { color: "${GOLD}", duration: 0.3 }, ${t(T.sitting + 0.7)});
     // line 17: every vote needs a fresh qubit
     blurOut("#b-f-left", ${t(T.thats)});
-    fade(["#b-f-right"], 0.35, ${t(T.thats + 0.3)}, 0.4);
+    fade(["#b-f-right", "#b-f-card"], 0.35, ${t(T.thats + 0.3)}, 0.4);
     write("#b-f-used", ${t(T.thats + 0.5)}, 0.4);
     draw("#b-f-fsetup", ${t(T.freshly - 0.3)}, 0.6);
     write("#b-f-fsul", ${t(T.freshly - 0.1)}, 0.3);
@@ -588,7 +597,7 @@ export default function scene(k) {
     write("#b-f-freshl", ${t(T.freshly + 0.5)}, 0.9);
 
     // ===== Scene G =====
-    blurOut(["#b-f-right", "#b-f-fresh", "#b-f-fq"], ${t(T.one18)});
+    blurOut(["#b-f-right", "#b-f-card", "#b-f-fresh", "#b-f-fq"], ${t(T.one18)});
     draw("#b-g-bal", ${t(T.one18 + 0.1)}, 0.6);
     draw("#b-g-card", ${t(T.one18 + 0.4)}, 0.5);
     write("#b-g-c0", ${t(T.one18 + 0.75)}, 0.2);
@@ -619,7 +628,7 @@ export default function scene(k) {
       const p0 = n === 1000 ? "74.8%" : Math.round(f0 * 100) + "%";
       const p1 = n === 1000 ? "25.2%" : Math.round((1 - f0) * 100) + "%";
       $("b-d-p0").textContent = p0; $("b-d-p1").textContent = p1;
-      $("b-d-p0").style.top = (${DB.base} - ${DB.maxH} * f0 - 100).toFixed(1) + "px";
+      $("b-d-p0").style.top = (Math.min(${DB.base} - ${DB.maxH} * f0, ${f1(dTop(0.75))}) - 92).toFixed(1) + "px";
       $("b-d-p1").style.top = (${DB.base} - ${DB.maxH} * (1 - f0) - 100).toFixed(1) + "px";
       const tr = $("b-d-trace"), dot = $("b-d-dot");
       if (N < 1) { tr.style.opacity = "0"; dot.style.opacity = "0"; }
