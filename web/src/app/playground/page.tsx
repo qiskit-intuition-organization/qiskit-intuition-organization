@@ -430,7 +430,6 @@ export default function Home() {
     <div className="site-shell">
       <aside className="site-sidebar">
         <div className="site-brand">
-          <span className="brand-mark">Q</span>
           <strong>Qiskit Intuition</strong>
         </div>
         <AccountMenu />

@@ -12,15 +12,18 @@ import { cAbs2, simulateCircuit } from "@/lib/quantum_simulator";
 import type { Complex, GateName, GateOp } from "@/lib/quantum_simulator";
 import { api } from "@/services/api";
 import {
-  AMBER,
+  ACCENT,
+  ACCENT_2,
   AmplitudeBars,
   BlochSphere,
   CircuitDiagram,
   CurvePlot,
+  ERROR,
+  FILL,
+  HIGHLIGHT,
   INK,
   Phasors,
   ProbabilityBars,
-  RED,
   piLabel,
 } from "./visuals";
 
@@ -121,7 +124,7 @@ function Interference({ widget }: { widget: Widget }) {
       <div className="widget-grid">
         <figure className="bloch">
           <Phasors phase={phi * PI} />
-          <figcaption>Blue: path 1 · red: path 2, added on · dashed: the total</figcaption>
+          <figcaption>Grey: path 1 · gold: path 2, added on · dashed blue: the total</figcaption>
         </figure>
         <div>
           <ProbabilityBars probabilities={[p0, 1 - p0]} />
@@ -132,7 +135,7 @@ function Interference({ widget }: { widget: Widget }) {
         {p0 > 0.99
           ? "In step: both paths point the same way, so they add up and every shot reads 0."
           : p0 < 0.01
-            ? "Half a wave apart: the paths to 0 point in opposite directions and cancel — every shot reads 1."
+            ? "Half a wave apart: the paths to 0 point in opposite directions and cancel, so every shot reads 1."
             : "Partly out of step: the paths partly cancel, so 0 becomes less likely."}
       </Status>
     </>
@@ -168,7 +171,7 @@ function BlochDial({ widget }: { widget: Widget }) {
               ? "Straight up: the qubit is |0⟩ and always reads 0."
               : theta > 0.98
                 ? "Straight down: |1⟩, always 1."
-                : `The closer the arrow is to the top, the more often you read 0 — here ${(p[0] * 100).toFixed(0)}% of the time.`}
+                : `The closer the arrow is to the top, the more often you read 0 (here ${(p[0] * 100).toFixed(0)}% of the time).`}
       </Status>
     </>
   );
@@ -216,7 +219,7 @@ function GatePlay({ widget }: { widget: Widget }) {
           <ul className="gate-legend">
             {(widget.gates ?? []).map((g) => (
               <li key={g}>
-                <strong>{g}</strong> — {GATE_BLURBS[g]}
+                <strong>{g}</strong>: {GATE_BLURBS[g]}
               </li>
             ))}
           </ul>
@@ -250,7 +253,7 @@ function Shots({ widget }: { widget: Widget }) {
       <ProbabilityBars probabilities={observed ?? [0, 0]} compare={truth} compareLabel="the true probabilities" />
       <Status>
         {observed
-          ? `${shots.toLocaleString()} shots read 1 ${(observed[1] * 100).toFixed(1)}% of the time. Typical wobble at this many shots: ±${(error * 100).toFixed(1)}%. Run again and watch it jump — less with more shots.`
+          ? `${shots.toLocaleString()} shots read 1 ${(observed[1] * 100).toFixed(1)}% of the time. Typical wobble at this many shots: ±${(error * 100).toFixed(1)}%. Run again and watch it jump (less with more shots).`
           : "Press Run: each shot is one measurement of a freshly prepared qubit."}
       </Status>
     </>
@@ -274,7 +277,7 @@ function ShotDots({ counts }: { counts: number[] }) {
     <figure className="shot-dots">
       <svg viewBox="0 0 400 84" width="100%" style={{ maxWidth: 400 }} role="img" aria-label={`${dots.filter(Boolean).length} of ${dots.length} shown shots read 1`}>
         {dots.map((d, i) => (
-          <circle key={i} cx={10 + (i % 25) * 15.5} cy={10 + Math.floor(i / 25) * 20} r={6} fill={d ? RED : "#fffdf5"} stroke={d ? RED : INK} strokeWidth={1.5} />
+          <circle key={i} cx={10 + (i % 25) * 15.5} cy={10 + Math.floor(i / 25) * 20} r={6} fill={d ? ACCENT : FILL} stroke={d ? ACCENT : INK} strokeWidth={1.5} />
         ))}
       </svg>
       <figcaption>
@@ -335,7 +338,7 @@ function BitOrder() {
       </div>
       <ProbabilityBars probabilities={Array.from({ length: 8 }, (_, i) => (i === value ? 1 : 0))} />
       <Status>
-        Qiskit prints <code>{bits.join("")}</code> — q0 is the <strong>rightmost</strong> digit. As a number that is {value}.
+        Qiskit prints <code>{bits.join("")}</code>, where q0 is the <strong>rightmost</strong> digit. As a number that is {value}.
       </Status>
     </>
   );
@@ -428,7 +431,7 @@ function CopyAttempt() {
         Fidelity with two true copies: <strong>{fidelity.toFixed(2)}</strong>.{" "}
         {fidelity > 0.995
           ? "At a pole the copier works perfectly: 0 and 1 copy fine."
-          : "In between, the copier entangles instead of copying — and the original's arrow shrinks."}
+          : "In between, the copier entangles instead of copying, and the original's arrow shrinks."}
       </Status>
     </>
   );
@@ -473,7 +476,7 @@ function Teleport() {
       <Status>
         {step < 6
           ? "Bob's arrow is short or pointing the wrong way: without Alice's two bits his qubit is useless."
-          : "After both fixes Bob's arrow matches Alice's original exactly — the state moved; nothing was copied."}
+          : "After both fixes Bob's arrow matches Alice's original exactly. The state moved; nothing was copied."}
       </Status>
     </>
   );
@@ -500,7 +503,7 @@ function Superdense() {
       <CircuitDiagram qubits={2} gates={gates} />
       <ProbabilityBars probabilities={p} />
       <Status>
-        The pair is now {bell}. After Bob&apos;s CNOT and H he reads <strong>{message}</strong> with certainty — two bits from one posted qubit.
+        The pair is now {bell}. After Bob&apos;s CNOT and H he reads <strong>{message}</strong> with certainty: two bits from one posted qubit.
       </Status>
     </>
   );
@@ -639,7 +642,7 @@ function Grover() {
       <Status>
         Chance of finding the answer: <strong>{(amps[marked] ** 2 * 100).toFixed(0)}%</strong> after {Math.floor(history.length / 2)} full round(s).{" "}
         {history.at(-1) === "oracle"
-          ? "The oracle only flipped a sign — the odds haven't changed yet. Now reflect about the average."
+          ? "The oracle only flipped a sign, so the odds haven't changed yet. Now reflect about the average."
           : amps[marked] ** 2 > 0.99
             ? "Found it: one measurement now gives the answer almost every time."
             : `Best after ${Math.round(PI / (4 * Math.asin(1 / Math.sqrt(n))) - 0.5)} round(s) for ${n} items; keep going and it overshoots.`}
@@ -699,7 +702,7 @@ function QftClocks() {
         </div>
       </div>
       <Status>
-        A pattern that repeats every {period} of 8 steps lands on multiples of 8 ÷ {period} = {8 / period}: the rhythm, read off as a position — like hearing the notes in a chord.
+        A pattern that repeats every {period} of 8 steps lands on multiples of 8 ÷ {period} = {8 / period}: the rhythm, read off as a position, like hearing the notes in a chord.
       </Status>
     </>
   );
@@ -752,7 +755,7 @@ function PhaseClock() {
       <ProbabilityBars probabilities={readout} labels={readout.map((_, k) => `0.${k.toString(2).padStart(t, "0")}`)} />
       <Status>
         Most likely reading: 0.{best.toString(2).padStart(t, "0")} in binary = {best}/{N} of a turn
-        {Math.abs(best / N - phase) < 1e-9 ? " — exact." : `, the closest 3-digit value to ${phase} (so the bars blur).`}
+        {Math.abs(best / N - phase) < 1e-9 ? ", exactly." : `, the closest 3-digit value to ${phase} (so the bars blur).`}
       </Status>
     </>
   );
@@ -775,7 +778,7 @@ function Noise() {
         <BlochSphere x={1 - lambda} y={0} z={0} size={190} ghost={[1, 0, 0]} label="One qubit in |+⟩: noise shrinks the arrow (dashed: ideal)" />
       </div>
       <Status>
-        {(lambda * 50).toFixed(1)}% of shots now land on 01 or 10 — outcomes a perfect Bell pair never gives. Noise pulls every state toward a random mush.
+        {(lambda * 50).toFixed(1)}% of shots now land on 01 or 10, outcomes a perfect Bell pair never gives. Noise pulls every state toward a random mush.
       </Status>
     </>
   );
@@ -797,17 +800,17 @@ function CouplingMap({ topology, pairs }: { topology: string; pairs: [number, nu
         <path key={`${a}${b}`} d={Math.abs(a - b) === 1 ? `M${pos[a][0]},${pos[a][1]} L${pos[b][0]},${pos[b][1]}` : `M${pos[a][0]},${pos[a][1]} Q${(pos[a][0] + pos[b][0]) / 2},${10 + 6 * Math.abs(a - b)} ${pos[b][0]},${pos[b][1]}`} fill="none" stroke={INK} strokeWidth={2} />
       ))}
       {pairs.filter(([a, b]) => !wired(a, b)).map(([a, b]) => (
-        <path key={`need${a}${b}`} d={`M${pos[a][0]},${pos[a][1]} Q${(pos[a][0] + pos[b][0]) / 2},118 ${pos[b][0]},${pos[b][1]}`} fill="none" stroke={RED} strokeWidth={2} strokeDasharray="5 4" />
+        <path key={`need${a}${b}`} d={`M${pos[a][0]},${pos[a][1]} Q${(pos[a][0] + pos[b][0]) / 2},118 ${pos[b][0]},${pos[b][1]}`} fill="none" stroke={ERROR} strokeWidth={2} strokeDasharray="5 4" />
       ))}
       {pos.map(([x, y], q) => (
         <g key={q}>
-          <circle cx={x} cy={y} r={16} fill={pairs.some((p) => p.includes(q)) ? "#fff1a1" : "#fffdf5"} stroke={INK} strokeWidth={2} />
+          <circle cx={x} cy={y} r={16} fill={pairs.some((p) => p.includes(q)) ? HIGHLIGHT : FILL} stroke={INK} strokeWidth={2} />
           <text x={x} y={y + 5} textAnchor="middle" className="bloch-label">
             q{q}
           </text>
         </g>
       ))}
-      <text x={160} y={127} textAnchor="middle" className="axis-label" fill={AMBER}>
+      <text x={160} y={127} textAnchor="middle" className="axis-label" fill={ACCENT_2}>
         {pairs.some(([a, b]) => !wired(a, b)) ? "red dashed: a CNOT the wiring can't do directly" : "every CNOT needed is wired directly"}
       </text>
     </svg>
@@ -834,7 +837,7 @@ function Routing() {
         <label>
           Chip wiring
           <select value={topology} onChange={(e) => setTopology(e.target.value)}>
-            <option value="line">Line: 0—1—2—3</option>
+            <option value="line">Line: neighbours only</option>
             <option value="full">All-to-all</option>
           </select>
         </label>
@@ -896,7 +899,7 @@ function Variational() {
           </p>
         </div>
       </div>
-      <Status>Each step measures the slope (parameter-shift rule) and turns the knob a little downhill. Amber dots trace the path.</Status>
+      <Status>Each step measures the slope (parameter-shift rule) and turns the knob a little downhill. Gold dots trace the path.</Status>
     </>
   );
 }

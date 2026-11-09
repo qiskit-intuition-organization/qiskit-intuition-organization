@@ -1,0 +1,16 @@
+{
+  "why-quantum": "01-why-quantum",
+  "qubit": "02-qubit",
+  "flip": "03-flip",
+  "measurement": "04-measurement",
+  "superposition": "05-superposition",
+  "rotations": "06-rotations",
+  "phase": "07-phase",
+  "interference": "08-interference",
+  "bases": "09-bases",
+  "registers": "10-registers",
+  "entanglement": "11-entanglement",
+  "no-cloning": "12-no-cloning",
+  "teleportation": "13-teleportation",
+  "superdense": "14-superdense"
+}

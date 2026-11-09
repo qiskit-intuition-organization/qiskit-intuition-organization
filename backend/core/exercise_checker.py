@@ -105,7 +105,7 @@ def check_code_task(code: str, task: dict) -> dict:
         detail = f"state (fidelity {fidelity:.3f})"
 
     if passed:
-        message = f"Correct — your circuit matches the target {detail}."
+        message = f"Correct: your circuit matches the target {detail}."
     else:
         width = int(np.log2(len(learner["amps"])))
         have = _probabilities(learner["amps"])
@@ -115,7 +115,7 @@ def check_code_task(code: str, task: dict) -> dict:
             for i in range(len(have))
             if have[i] > 1e-6 or want[i] > 1e-6
         ]
-        message = f"Not yet — the {detail.split(' (')[0]} differs. " + "; ".join(rows)
+        message = f"Not yet: the {detail.split(' (')[0]} differs. " + "; ".join(rows)
         if task.get("match", "state") == "state" and np.allclose(have, want, atol=0.02):
             message += ". The probabilities agree, so the difference is a relative phase."
     return {"passed": passed, "message": message, "stdout": learner["stdout"]}

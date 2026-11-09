@@ -15,7 +15,7 @@ def test_reports_covered_and_missing_ideas():
     review = review_explanation("With more SHOTS the fraction wobbles less.", LESSON)
     assert [i["idea"] for i in review["covered"]] == ["Repeat many times"]
     assert [i["idea"] for i in review["missing"]] == ["Settles toward 0.75"]
-    assert "1 of 2" in review["markdown"] and "the fraction converges." in review["markdown"]
+    assert "1 of 2" in review["markdown"] and "The fraction converges." in review["markdown"]
 
 
 def test_flags_misconceptions_and_handles_empty_text():
@@ -27,6 +27,12 @@ def test_short_cues_match_whole_words_only():
     lesson = {"key_ideas": [{"idea": "Mentions H", "terms": ["h"], "hint": "name the gate."}], "watch_for": []}
     assert review_explanation("Then an H gate recombines them.", lesson)["covered"]
     assert not review_explanation("The phase changes.", lesson)["covered"]
+
+
+def test_missing_idea_reads_as_a_bold_label_and_a_capitalised_hint():
+    lesson = {"key_ideas": [{"idea": "Mentions H", "terms": ["h"], "hint": "name the gate."}], "watch_for": []}
+    markdown = review_explanation("The phase changes.", lesson)["markdown"]
+    assert "- **Mentions H.** Name the gate." in markdown
 
 
 def test_complete_answer_gets_a_follow_up_question():

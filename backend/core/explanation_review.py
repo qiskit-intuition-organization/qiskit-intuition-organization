@@ -42,9 +42,9 @@ def review_explanation(text: str, lesson: dict) -> dict:
 
     lines: list[str] = []
     if not body.strip():
-        lines.append("Write a few sentences first — then I can tell you what's there and what's missing.")
+        lines.append("Write a few sentences first, then I can tell you what's there and what's missing.")
     elif not ideas:
-        lines.append("Good — now check your explanation against the experiment: does each claim match what you saw?")
+        lines.append("Good. Now check your explanation against the experiment: does each claim match what you saw?")
     else:
         lines.append(f"**You touched {len(covered)} of {len(ideas)} key ideas.**")
         for idea in covered:
@@ -53,7 +53,8 @@ def review_explanation(text: str, lesson: dict) -> dict:
             lines.append("")
             lines.append("**Worth adding:**")
             for idea in missing:
-                lines.append(f"- {idea['idea']} — {idea['hint']}")
+                hint = idea["hint"]
+                lines.append(f"- **{idea['idea']}.** {hint[:1].upper()}{hint[1:]}")
         else:
             lines.append("")
             lines.append("That covers the essentials. Can you point to the exact bar, arrow or amplitude that shows each one?")

@@ -8,7 +8,7 @@ one dedicated worker thread avoids it.
 
 Return plain Python / NumPy / Matplotlib objects from decorated functions:
 Qiskit objects such as ``QuantumCircuit`` should not escape to other threads.
-Learner code is unaffected — it runs in a separate process.
+Learner code is unaffected: it runs in a separate process.
 """
 
 from __future__ import annotations

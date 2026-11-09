@@ -76,7 +76,7 @@ export default function CircuitLab({
               gates.some((op) => op.gate === g),
             )
               ? "Challenge passed!"
-              : "Keep experimenting — compare the probabilities and gate requirements with the goal."}
+              : "Keep experimenting: compare the probabilities and gate requirements with the goal."}
           </p>
         </>
       )}

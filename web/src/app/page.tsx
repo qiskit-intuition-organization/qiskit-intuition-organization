@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
 import CircuitLab from "@/components/circuit-lab";
+import { LessonVideo } from "@/components/lesson-video";
 import IntuitionWidget from "@/components/intuition-widget";
 import MathBlock from "@/components/math";
 import { course, parseContent } from "@/lib/course";
@@ -220,7 +221,6 @@ export default function Home() {
       className={`site-shell ${notebook.reading_mode === "plain" ? "plain-reading" : ""}`}
     >
       <header className="mobile-bar">
-        <span className="brand-mark">Q</span>
         <strong>
           {view === "course"
             ? `Lesson ${index + 1} of ${lessons.length}`
@@ -236,11 +236,8 @@ export default function Home() {
       </header>
       <aside id="site-menu" className={`site-sidebar ${menuOpen ? "open" : ""}`}>
         <div className="site-brand">
-          <span className="brand-mark">Q</span>
-          <div>
-            <strong>{brand.name}</strong>
-            <small>{brand.tagline}</small>
-          </div>
+          <strong>{brand.name}</strong>
+          <small>{brand.tagline}</small>
         </div>
         <AccountMenu />
         <nav aria-label="Primary navigation">
@@ -350,6 +347,7 @@ export default function Home() {
               <h2>{STAGES[stage]}</h2>
               {stage === 0 && (
                 <>
+                  <LessonVideo lessonId={lesson.id} />
                   {lesson.analogy && (
                     <aside className="analogy-card" aria-label="Everyday analogy">
                       <p className="eyebrow">Picture it like this</p>
@@ -438,7 +436,7 @@ export default function Home() {
                         <p>
                           {answer === lesson.quiz.answer
                             ? "You predicted correctly. Now test it in the experiment."
-                            : "Not quite — and that's useful. Keep your guess in mind and see what the experiment shows."}
+                            : "Not quite, and that's useful. Keep your guess in mind and see what the experiment shows."}
                         </p>
                         <button
                           onClick={() => {

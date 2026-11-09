@@ -36,7 +36,7 @@ Most quantum courses open with linear algebra. This one opens with a picture you
 | Algorithms | Phase kickback: Deutsch's algorithm · A secret string in one question (Bernstein–Vazirani) · Grover search · The quantum Fourier transform · Phase estimation |
 | Real hardware & beyond | Noise and transpilation · Running on a real chip · Trainable circuits and quantum ML |
 
-Every lesson opens with an everyday analogy — what it captures and where it breaks — and ends with a one-line "remember it as" takeaway.
+Every lesson opens with an everyday analogy (what it captures and where it breaks) and ends with a one-line "remember it as" takeaway.
 
 ## Features
 
@@ -105,8 +105,6 @@ Everything is optional. On Hugging Face, add these as **Space secrets**. Locally
 ## Deployment
 
 The live site runs on Vercel as two projects built from this repository: the Next.js frontend (Root Directory `web`) and the FastAPI backend (repository root). Every push to `main` runs CI and redeploys both.
-
-The workflow `.github/workflows/sync-to-huggingface.yml` can also upload the app to a Hugging Face Space through `.github/workflows/sync-to-huggingface.yml`, which needs an `HF_TOKEN` repository secret with write access to the Space. The Space uses the Docker SDK and the root Dockerfile to start the Node frontend and private Python service.
 
 ### Separate Vercel deployments
 

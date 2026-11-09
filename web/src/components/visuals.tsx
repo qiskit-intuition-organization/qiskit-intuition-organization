@@ -2,10 +2,19 @@
 /** Small, dependency-free SVG drawings shared by the lessons and the Playground. */
 import type { GateOp } from "@/lib/quantum_simulator";
 
-export const INK = "#1d3a8a";
-export const RED = "#ab2e22";
-export const AMBER = "#ad6500";
-export const TEAL = "#087f8c";
+/*
+ * Drawing colours are theme tokens defined on :root in app/notebook.css.
+ * var() works in SVG presentation attributes; never pass these to a canvas.
+ */
+export const INK = "var(--svg-ink)";
+export const ACCENT = "var(--svg-accent)";
+export const ACCENT_2 = "var(--svg-accent-2)";
+export const CONTRAST = "var(--svg-contrast)";
+export const FILL = "var(--svg-fill)";
+export const HIGHLIGHT = "var(--svg-highlight)";
+export const AXIS = "var(--svg-axis)";
+export const FAINT = "var(--svg-faint)";
+export const ERROR = "var(--error)";
 
 /** Angle in multiples of π, e.g. 1.5708 → "π/2", 0.33π → "0.33π". */
 export function piLabel(angle: number): string {
@@ -103,7 +112,7 @@ export function CircuitDiagram({
                 <circle cx={cx} cy={yc} r={5.5} fill={INK} />
                 {gate.gate === "CNOT" ? (
                   <g>
-                    <circle cx={cx} cy={yt} r={12} fill="#fffdf5" stroke={INK} strokeWidth={2} />
+                    <circle cx={cx} cy={yt} r={12} fill={FILL} stroke={INK} strokeWidth={2} />
                     <line x1={cx - 12} x2={cx + 12} y1={yt} y2={yt} stroke={INK} strokeWidth={2} />
                     <line x1={cx} x2={cx} y1={yt - 12} y2={yt + 12} stroke={INK} strokeWidth={2} />
                   </g>
@@ -124,7 +133,7 @@ export function CircuitDiagram({
                 width={42}
                 height={34}
                 rx={3}
-                fill={gate.gate === "H" ? "#fff1a1" : "#fffdf5"}
+                fill={gate.gate === "H" ? HIGHLIGHT : FILL}
                 stroke={INK}
                 strokeWidth={2}
               />
@@ -212,7 +221,7 @@ export function BlochSphere({
         role="img"
         aria-label={`${label ? label + ": " : ""}Bloch vector x ${x.toFixed(2)}, y ${y.toFixed(2)}, z ${z.toFixed(2)}${length < 0.98 ? " (mixed)" : ""}`}
       >
-        <circle cx={c} cy={c} r={r} fill="rgba(8,127,140,.07)" stroke={INK} strokeWidth={1.5} />
+        <circle cx={c} cy={c} r={r} fill={FILL} stroke={INK} strokeWidth={1.5} />
         <path d={equator(false)} fill="none" stroke={INK} strokeWidth={1} strokeDasharray="3 4" opacity={0.5} />
         <path d={equator(true)} fill="none" stroke={INK} strokeWidth={1.2} />
         <line x1={top[0]} y1={top[1]} x2={bottom[0]} y2={bottom[1]} stroke={INK} strokeWidth={0.8} opacity={0.35} />
@@ -224,7 +233,7 @@ export function BlochSphere({
         <text x={plusI[0] - 2} y={plusI[1] - 7} textAnchor="middle" className="bloch-label small">|+i⟩</text>
         {trail.map(([tx, ty, tz], i) => {
           const [sx, sy] = pt(tx, ty, tz);
-          return <circle key={i} cx={sx} cy={sy} r={3} fill={AMBER} opacity={0.25 + (0.5 * (i + 1)) / (trail.length + 1)} />;
+          return <circle key={i} cx={sx} cy={sy} r={3} fill={ACCENT_2} opacity={0.25 + (0.5 * (i + 1)) / (trail.length + 1)} />;
         })}
         {ghost && (() => {
           const [gx, gy] = pt(...ghost);
@@ -232,11 +241,11 @@ export function BlochSphere({
         })()}
         {length > 0.02 ? (
           <>
-            <line x1={c} y1={c} x2={ex} y2={ey} stroke={RED} strokeWidth={3.5} strokeLinecap="round" opacity={behind ? 0.55 : 1} />
-            <circle cx={ex} cy={ey} r={5.5} fill={RED} opacity={behind ? 0.55 : 1} />
+            <line x1={c} y1={c} x2={ex} y2={ey} stroke={ACCENT} strokeWidth={3.5} strokeLinecap="round" opacity={behind ? 0.55 : 1} />
+            <circle cx={ex} cy={ey} r={5.5} fill={ACCENT} opacity={behind ? 0.55 : 1} />
           </>
         ) : (
-          <circle cx={c} cy={c} r={5} fill={RED} />
+          <circle cx={c} cy={c} r={5} fill={ACCENT} />
         )}
       </svg>
       {label && <figcaption>{label}</figcaption>}
@@ -261,7 +270,10 @@ export function ProbabilityBars({
   const width = Math.max(1, Math.round(Math.log2(probabilities.length)));
   return (
     <div className="prob-bars">
-      {probabilities.map((p, i) => (
+      {probabilities.map((raw, i) => {
+        // Simulators can return -1e-17 for an impossible outcome; clamp so the bar and label agree.
+        const p = Math.min(1, Math.max(0, raw));
+        return (
         <div className="probability-row" key={i}>
           <code>{labels?.[i] ?? i.toString(2).padStart(width, "0")}</code>
           <div className="bar-track">
@@ -270,7 +282,8 @@ export function ProbabilityBars({
           </div>
           <span>{(p * 100).toFixed(1)}%</span>
         </div>
-      ))}
+        );
+      })}
       {compare && compareLabel && <p className="caption">Outlined bars: {compareLabel}</p>}
     </div>
   );
@@ -313,8 +326,8 @@ export function CurvePlot({
   }).join(" ");
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width="100%" style={{ maxWidth: width }} role="img" aria-label={`${yLabel} against ${xLabel}`} className="curve-plot">
-      <line x1={pad.l} x2={pad.l + w} y1={sy(0)} y2={sy(0)} stroke="#6f6a5e" />
-      <line x1={pad.l} x2={pad.l} y1={sy(0)} y2={sy(1)} stroke="#6f6a5e" />
+      <line x1={pad.l} x2={pad.l + w} y1={sy(0)} y2={sy(0)} stroke={AXIS} />
+      <line x1={pad.l} x2={pad.l} y1={sy(0)} y2={sy(1)} stroke={AXIS} />
       {[0, 0.5, 1].map((v) => (
         <text key={v} x={pad.l - 6} y={sy(v) + 4} textAnchor="end" className="axis-label">{v}</text>
       ))}
@@ -324,15 +337,15 @@ export function CurvePlot({
       <path d={path} fill="none" stroke={INK} strokeWidth={2} />
       {target !== undefined && (
         <>
-          <line x1={pad.l} x2={pad.l + w} y1={sy(target)} y2={sy(target)} stroke={AMBER} strokeDasharray="6 4" strokeWidth={1.5} />
-          <text x={pad.l + w} y={sy(target) - 4} textAnchor="end" className="axis-label" fill={AMBER}>target</text>
+          <line x1={pad.l} x2={pad.l + w} y1={sy(target)} y2={sy(target)} stroke={ACCENT_2} strokeDasharray="6 4" strokeWidth={1.5} />
+          <text x={pad.l + w} y={sy(target) - 4} textAnchor="end" className="axis-label" fill={ACCENT_2}>target</text>
         </>
       )}
       {trail.map((t, i) => (
-        <circle key={i} cx={sx(t)} cy={sy(fn(t))} r={3} fill={AMBER} opacity={0.2 + (0.6 * (i + 1)) / (trail.length + 1)} />
+        <circle key={i} cx={sx(t)} cy={sy(fn(t))} r={3} fill={ACCENT_2} opacity={0.2 + (0.6 * (i + 1)) / (trail.length + 1)} />
       ))}
-      <line x1={sx(value)} x2={sx(value)} y1={sy(0)} y2={sy(fn(value))} stroke={RED} strokeDasharray="3 3" />
-      <circle cx={sx(value)} cy={sy(fn(value))} r={5} fill={RED} />
+      <line x1={sx(value)} x2={sx(value)} y1={sy(0)} y2={sy(fn(value))} stroke={ACCENT} strokeDasharray="3 3" />
+      <circle cx={sx(value)} cy={sy(fn(value))} r={5} fill={ACCENT} />
       <text x={pad.l + w} y={height - 4} textAnchor="end" className="axis-label">{xLabel}</text>
       <text x={4} y={pad.t - 2} className="axis-label">{yLabel}</text>
     </svg>
@@ -359,7 +372,7 @@ export function AmplitudeBars({
   const mean = amplitudes.reduce((a, b) => a + b, 0) / n;
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width="100%" style={{ maxWidth: width }} role="img" aria-label={`Amplitudes ${amplitudes.map((a) => a.toFixed(2)).join(", ")}`} className="amp-bars">
-      <line x1={30} x2={width - 10} y1={mid} y2={mid} stroke="#6f6a5e" />
+      <line x1={30} x2={width - 10} y1={mid} y2={mid} stroke={AXIS} />
       <text x={24} y={mid - scale + 4} textAnchor="end" className="axis-label">+1</text>
       <text x={24} y={mid + 4} textAnchor="end" className="axis-label">0</text>
       <text x={24} y={mid + scale + 4} textAnchor="end" className="axis-label">−1</text>
@@ -368,7 +381,7 @@ export function AmplitudeBars({
         const h = Math.abs(a) * scale;
         return (
           <g key={i}>
-            <rect x={x} y={a >= 0 ? mid - h : mid} width={36} height={Math.max(h, 1)} fill={i === highlight ? RED : TEAL} opacity={0.85} />
+            <rect x={x} y={a >= 0 ? mid - h : mid} width={36} height={Math.max(h, 1)} fill={i === highlight ? ACCENT : CONTRAST} opacity={0.85} />
             <text x={x + 18} y={height - 4} textAnchor="middle" className="axis-label">{labels[i]}</text>
             <text x={x + 18} y={a >= 0 ? mid - h - 5 : mid + h + 13} textAnchor="middle" className="axis-label">{a.toFixed(2)}</text>
           </g>
@@ -376,13 +389,17 @@ export function AmplitudeBars({
       })}
       {showMean && (
         <>
-          <line x1={36} x2={width - 10} y1={mid - mean * scale} y2={mid - mean * scale} stroke={AMBER} strokeDasharray="5 4" strokeWidth={2} />
-          <text x={width - 4} y={mid - mean * scale + 4} textAnchor="end" className="axis-label" fill={AMBER}>average</text>
+          <line x1={36} x2={width - 10} y1={mid - mean * scale} y2={mid - mean * scale} stroke={ACCENT_2} strokeDasharray="5 4" strokeWidth={2} />
+          <text x={width - 4} y={mid - mean * scale + 4} textAnchor="end" className="axis-label" fill={ACCENT_2}>average</text>
         </>
       )}
     </svg>
   );
 }
+
+/** Arrow colours for Phasors, keyed by the name used in each arrowhead marker id. */
+const PHASOR_COLORS = { ink: INK, accent: ACCENT, contrast: CONTRAST } as const;
+type PhasorColor = keyof typeof PHASOR_COLORS;
 
 /** Two path amplitudes as arrows on a circle, plus their sum (interference). */
 export function Phasors({ phase }: { phase: number }) {
@@ -393,23 +410,23 @@ export function Phasors({ phase }: { phase: number }) {
   const a: [number, number] = [r, 0];
   const b: [number, number] = [r * Math.cos(phase), -r * Math.sin(phase)];
   const sum: [number, number] = [a[0] + b[0], a[1] + b[1]];
-  const arrow = (from: [number, number], to: [number, number], color: string, dash?: string) => (
-    <line x1={c + from[0]} y1={c + from[1]} x2={c + to[0]} y2={c + to[1]} stroke={color} strokeWidth={3} strokeDasharray={dash} markerEnd={`url(#head-${color.slice(1)})`} />
+  const arrow = (from: [number, number], to: [number, number], color: PhasorColor, dash?: string) => (
+    <line x1={c + from[0]} y1={c + from[1]} x2={c + to[0]} y2={c + to[1]} stroke={PHASOR_COLORS[color]} strokeWidth={3} strokeDasharray={dash} markerEnd={`url(#head-${color})`} />
   );
   return (
     <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} role="img" aria-label="Two path amplitudes and their sum" className="phasors">
       <defs>
-        {[INK, RED, AMBER].map((color) => (
-          <marker key={color} id={`head-${color.slice(1)}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        {Object.entries(PHASOR_COLORS).map(([name, color]) => (
+          <marker key={name} id={`head-${name}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" fill={color} />
           </marker>
         ))}
       </defs>
-      <circle cx={c} cy={c} r={2 * r} fill="none" stroke="#c9c1aa" strokeDasharray="3 4" />
-      {arrow([0, 0], a, INK)}
-      {arrow(a, sum, RED)}
-      {Math.hypot(...sum) > 2 && arrow([0, 0], sum, AMBER, "6 4")}
-      <title>Blue: path 1. Red: path 2, added on. Dashed amber: the total.</title>
+      <circle cx={c} cy={c} r={2 * r} fill="none" stroke={FAINT} strokeDasharray="3 4" />
+      {arrow([0, 0], a, "ink")}
+      {arrow(a, sum, "accent")}
+      {Math.hypot(...sum) > 2 && arrow([0, 0], sum, "contrast", "6 4")}
+      <title>Grey: path 1. Gold: path 2, added on. Dashed blue: the total.</title>
     </svg>
   );
 }

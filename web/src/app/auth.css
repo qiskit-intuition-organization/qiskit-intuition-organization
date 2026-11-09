@@ -15,20 +15,16 @@
 .auth-paper label {
   display: grid;
   gap: 7px;
+  color: var(--text);
 }
 .auth-paper small {
   color: var(--muted);
 }
 .auth-paper form button {
   justify-self: start;
-  min-height: 44px;
-  padding: 10px 24px;
 }
 .auth-paper input {
   min-height: 44px;
-}
-.auth-paper a {
-  color: var(--ink);
 }
 .auth-links {
   display: flex;
@@ -36,82 +32,76 @@
   gap: 20px;
   margin-top: 26px;
 }
-.auth-error {
-  color: #8b1e1e;
-  background: #ffdbe4;
+.auth-error,
+.auth-message {
   padding: 12px 16px;
-  border-left: 3px solid #8b1e1e;
+  border: 1px solid var(--error);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  background: rgba(217, 79, 69, 0.12);
+  color: var(--text);
 }
 .auth-message {
-  color: #183e28;
-  background: #ddf5dc;
-  padding: 12px 16px;
+  border-color: var(--success);
+  background: rgba(95, 181, 131, 0.12);
 }
 .account-menu {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-  margin: 14px 0;
-}
-.site-sidebar .account-menu {
-  padding-bottom: 16px;
-  border-bottom: 1px dashed #cfc6ad;
-  font-size: 1rem;
-}
-.site-sidebar .account-menu a {
-  padding: 4px;
-}
-.account-menu button {
-  padding: 6px 12px;
-  min-height: 40px;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 14px;
 }
 .account-menu p {
-  font-size: 1rem;
+  margin: 0;
+  color: var(--text);
 }
 .profile-section {
   margin-top: 32px;
   padding-top: 24px;
-  border-top: 1px dashed var(--muted);
+  border-top: 1px solid var(--hair);
 }
 .profile-avatar {
   display: block;
   width: 128px;
   height: 128px;
+  margin-bottom: 18px;
+  border: 1px solid var(--strong);
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--ink);
-  margin-bottom: 18px;
 }
 .avatar-placeholder {
   display: grid;
   place-items: center;
+  background: var(--raised);
+  color: var(--gold);
   font-size: 3rem;
-  color: var(--ink);
-  background: var(--marker);
+  font-weight: 600;
 }
 @media (max-width: 880px) {
   .auth-paper {
-    width: calc(100% - 32px);
-    margin: 20px 16px 40px;
+    width: auto;
+    margin: 12px 16px 40px;
   }
 }
 .notebook-sync {
   margin: 16px 0 24px;
   padding: 12px 16px;
-  background: #fffdf5;
-  border: 1px dashed var(--muted);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  background: var(--raised);
 }
 .notebook-sync > p {
   margin: 0 0 8px;
 }
 .notebook-sync button {
-  padding: 8px 12px;
   margin: 4px 0;
 }
 .notebook-sync details {
   padding: 12px 0;
-  border-top: 1px dashed var(--muted);
+  border-top: 1px solid var(--hair);
 }
 .notebook-conflict {
   display: grid;

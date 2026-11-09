@@ -1,4 +1,6 @@
 """Tests for the sandbox execution core in the FastAPI backend layout."""
+import sys
+
 import pytest
 
 from backend.core.notebook_engine import execute_notebook_code
@@ -66,6 +68,10 @@ def test_escape_attempts_are_blocked(code):
     assert "Security Restriction" in result["error"]
 
 
+@pytest.mark.skipif(
+    sys.platform == "darwin",
+    reason="macOS ignores RLIMIT_AS; the memory cap is enforced on Linux, where CI and Vercel run",
+)
 def test_memory_hungry_program_is_stopped_with_a_clear_message():
     result = execute_notebook_code("big = np.ones(600_000_000)\nprint(big.sum())\n")
     assert result["success"] is False
