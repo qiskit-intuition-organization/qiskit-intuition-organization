@@ -1,21 +1,22 @@
 {
   "lines": [
-    {"say": "Here's a question. When you measure ten qubits, how many different results could you see?"},
-    {"say": "Picture a combination lock where every wheel has just two positions, zero and one."},
-    {"say": "One wheel gives two settings. Add a second wheel, and now there are four."},
+    {"say": "Each qubit you measure gives a zero or a one. So how many results can ten qubits give?"},
+    {"say": "Picture a combination lock where every wheel has two positions, zero and one."},
+    {"say": "One wheel gives two settings. A second wheel makes four."},
     {"say": "Zero zero, zero one, one zero, and one one."},
     {"say": "A third wheel makes eight, and every new wheel doubles the count again."},
-    {"say": "So ten wheels give two to the power of ten, which is one thousand and twenty four."},
+    {"say": "So ten wheels give two to the power of ten, one thousand and twenty four."},
     {"say": "Qubits count the same way. Ten qubits have one thousand and twenty four possible results."},
-    {"say": "Here's the quantum part. Qubits keep a number for every one of those results, called an amplitude."},
+    {"say": "Now the quantum part. The qubits hold a number for each result, called an amplitude."},
     {"say": "Each amplitude sets how likely its result is, so ten qubits carry one thousand and twenty four of them."},
-    {"say": "That doubling with every qubit is where a quantum computer gets its room to work."},
+    {"say": "That doubling is where a quantum computer gets its room to work."},
     {"say": "But here the lock picture breaks. A lock is only ever set to one combination."},
     {"say": "Qubits carry an amplitude for every combination, yet measuring them shows you just one."},
-    {"say": "So all those amplitudes don't mean all those answers. You get one string of ten zeros and ones."},
-    {"say": "One last habit to lock in. When Kiss kit writes a string, qubit zero goes on the right."},
+    {"say": "So you can't read out all those amplitudes. You get one string of ten zeros and ones."},
+    {"say": "One last habit to lock in. Kiss kit, our coding toolkit, numbers its qubits from zero."},
+    {"say": "When it writes a result, qubit zero goes on the right."},
     {"say": "Take two qubits, and flip only qubit zero to one."},
-    {"say": "Kiss kit shows zero one, not one zero, like a number whose smallest place sits on the right."},
+    {"say": "Kiss kit shows zero one, not one zero, with qubit zero on the right, like the ones digit in forty two."},
     {"say": "So every qubit you add doubles the amplitudes, but a measurement still shows you just one string."}
   ]
 }
