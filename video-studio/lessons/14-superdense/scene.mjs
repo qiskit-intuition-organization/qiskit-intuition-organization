@@ -114,11 +114,11 @@ export default function scene(k) {
   const T = {
     alice0: cue(0, "alice"), bob0: cue(0, "bob"), two0: cue(0, "two"), posting0: cue(0, "posting"), one0: cue(0, "one"), qubit0: cue(0, "qubit"),
     s1: cue(1), zero1: cue(1, "zero"), one1: cue(1, "one"), lone1: cue(1, "lone"), only1: cue(1, "only"), carry1: cue(1, "carry"), oneb1: cue(1, "one", 1),
-    off1: cue(2, null, 0, -0.25),
+    off1: cue(2, "trick", 0, -0.3),
     picture2: cue(2, "picture"), opens2: cue(2, "opens"), two2: cue(2, "two"),
     s3: cue(3), bob3: cue(3, "bob"), alice3: cue(3, "alice"), sets3: cue(3, "sets"), four3: cue(3, "four"), positions3: cue(3, "positions"), posts3: cue(3, "posts"),
     both4: cue(4, "both"), tell4: cue(4, "tell"), position4: cue(4, "position"), chose4: cue(4, "chose"),
-    off4: cue(5, null, 0, -0.2),
+    off4: cue(5, "quantum", 0, -0.45),
     quantum5: cue(5, "quantum"), keys5: cue(5, "keys"), bell5: cue(5, "bell"), ent5: cue(5, "entangled"), readings5: cue(5, "readings"), random5: cue(5, "random"), always5: cue(5, "always"),
     s6: cue(6), advance6: cue(6, "advance"), alice6: cue(6, "alice"), bob6: cue(6, "bob"),
     s7: cue(7), twists7: cue(7, "twists"), nothing7: cue(7, "nothing"), z7: cue(7, "z"), x7: wd(7, "xor"), both7: cue(7, "both"),
@@ -132,7 +132,7 @@ export default function scene(k) {
     off13: cue(14, "safe", 0, -0.45),
     safe14: cue(14, "safe"), breaks14: cue(14, "breaks"), posted14: cue(14, "posted"), key14: cue(14, "key"), see14: cue(14, "see"), position14: cue(14, "position"),
     alone15: cue(15, "alone"), random15: cue(15, "random"), spy15: cue(15, "spy"), learns15: cue(15, "learns"), nothing15: cue(15, "nothing"),
-    off15: cue(16, null, 0, -0.2),
+    off15: cue(16, "message", 0, -0.5),
     s16: cue(16), message16: cue(16, "message"), only16: cue(16, "only"),
     s17: cue(17), not17: cue(17, "not"), shared17: cue(17, "shared"), her17: cue(17, "her"), travels17: cue(17, "travels"), no17: cue(17, "no"),
     off17: cue(18, "with", 0, -0.05),
@@ -165,7 +165,7 @@ export default function scene(k) {
     g("b-safe",
       r.rect(760, 330, 400, 400, pen({ strokeWidth: 4.2 })) + r.rect(795, 365, 330, 330, pen({ strokeWidth: 2.6 })) +
       r.rect(768, 400, 16, 44, pen({ strokeWidth: 2.6 })) + r.rect(768, 616, 16, 44, pen({ strokeWidth: 2.6 })) +
-      r.rect(790, 730, 56, 18, pen({ strokeWidth: 2.6 })) + r.rect(1074, 730, 56, 18, pen({ strokeWidth: 2.6 }))) +
+      r.rect(770, 730, 46, 18, pen({ strokeWidth: 2.6 })) + r.rect(1104, 730, 46, 18, pen({ strokeWidth: 2.6 }))) +
     g("b-wheelp",
       g("b-wheel", r.circle(960, 545, 90, pen({ strokeWidth: 3.2 })) + r.circle(960, 545, 22, pen({ strokeWidth: 2.4 })) +
         [0, 1, 2, 3].map((i) => { const a = (i * Math.PI) / 2 + Math.PI / 4; return r.line(fx(960 + 11 * Math.cos(a)), fx(545 + 11 * Math.sin(a)), fx(960 + 56 * Math.cos(a)), fx(545 + 56 * Math.sin(a)), pen({ strokeWidth: 3 })) + dotS(fx(960 + 58 * Math.cos(a)), fx(545 + 58 * Math.sin(a)), 12); }).join("")),
@@ -215,8 +215,8 @@ export default function scene(k) {
     CX.map((cx, i) => g(`b-tk${i}`, tick(cx + 64, 805, 12, { strokeWidth: 3.4 }))).join("") +
     g("b-gl", glass(116, 250), at(420, 520, 90)) +
     g("b-glx", cross(420, 520, 66)) +
-    g("b-ov", r.ellipse(CX[3], 585, 244, 96, goldPen({ strokeWidth: 3.4 }))) +
-    g("b-ovtk", tick(1170, 505, 14, { stroke: GOLD, strokeWidth: 4 })) +
+    g("b-ov", r.ellipse(CX[3], 583, 236, 86, goldPen({ strokeWidth: 3.4 }))) +
+    g("b-ovtk", tick(1130, 500, 14, { stroke: GOLD, strokeWidth: 4 })) +
     g("b-path11", dashed([[560, 560], [1250, 560]], 18, 14, { strokeWidth: 2.6 })) +
     // Bob's circuit: wires, the backwards arrow, CNOT, H, two meters, the read bits.
     g("b-wr", r.line(250, 460, 1240, 460, pen()) + r.line(250, 660, 1240, 660, pen())) +
@@ -237,7 +237,7 @@ export default function scene(k) {
     lc("b-half", 1010, 490, 260, 40, "half turns") +
     lc("b-4bs", 960, 470, 400, 64, "4 Bell states") +
     lc("b-glq", 420, 520, 100, 80, "?") +
-    lc("b-btog", 1322, 505, 300, 48, "both together") +
+    lc("b-btog", 1282, 500, 300, 48, "both together") +
     lc("b-tag", 420, 665, 160, 48, "Z + X", G) +
     lc("b-bh", 1450, 440, 300, 48, "both halves") +
     lc("b-note", 800, 330, 520, 40, "made with: H, then CNOT", "opacity:0.6") +
@@ -342,7 +342,7 @@ export default function scene(k) {
     draw("#b-q1", T.lone1 - 0.1, 0.6);
     write("#b-lone", T.only1 - 0.15, 0.9);
     draw("#b-ar1", T.carry1 - 0.1, 0.4);
-    draw("#b-ghost", T.oneb1 - 0.15, 0.3); draw("#b-gx", T.oneb1 + 0.2, 0.3);
+    draw("#b-ghost", T.carry1 - 0.05, 0.3); draw("#b-gx", T.oneb1 - 0.05, 0.3);
     fade(["#b-nmA0", "#b-nmB0"], 0, T.off1 - 0.2, 0.3);
     blurOut(["#b-card1", "#b-s1", "#b-bitdef", "#b-lone"], T.off1);
     const FLIPS = [T.zero1 - 0.12, T.one1 - 0.12, T.lone1 + 0.2, T.carry1 - 0.15];
