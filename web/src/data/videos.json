@@ -12,5 +12,8 @@
   "entanglement": "11-entanglement",
   "no-cloning": "12-no-cloning",
   "teleportation": "13-teleportation",
-  "superdense": "14-superdense"
+  "superdense": "14-superdense",
+  "deutsch": "15-deutsch",
+  "bernstein-vazirani": "16-bernstein-vazirani",
+  "grover": "17-grover"
 }
