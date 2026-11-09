@@ -214,9 +214,9 @@ export default function scene(k) {
 
   // ---------- 10. the pancake falls short (div at 1060,250) ----------
   const psHtml = `<div id="b-ps" class="obj" style="left:1060px;top:250px;width:600px;height:360px">
-    <svg class="sk" width="600" height="360" viewBox="0 0 600 360"><g id="b-ps1">${cake(300, 56, 240, 36, true)}</g><g id="b-ps2">${cake(300, 196, 240, 36, false)}</g></svg>
-    ${lbl("b-psor", 250, 92, 100, 48, "or")}
-    ${lbl("b-psl", 60, 248, 480, 44, "always one side up")}
+    <svg class="sk" width="600" height="360" viewBox="0 0 600 360"><g id="b-ps1">${cake(300, 50, 320, 46, true)}</g><g id="b-ps2">${cake(300, 200, 320, 46, false)}</g></svg>
+    ${lbl("b-psor", 250, 94, 100, 52, "or")}
+    ${lbl("b-psl", 20, 256, 560, 52, "always one side up")}
   </div>`;
 
   // ---------- 11 to 13. probability bars (div at 1240,200; baseline local y 520) ----------
@@ -422,7 +422,7 @@ export default function scene(k) {
 
     // ---------- 12. the same half turn: 8 in 10 reads 1 ----------
     fade("#b-tag0", 0, ${T.half12 - 0.1}, 0.25);
-    write("#b-xmini", ${T.half12 - 0.15}, 0.2);
+    show("#b-xmini", ${T.half12 - 0.15}); write("#b-xmini", ${T.half12 - 0.15}, 0.2);
     show("#b-trB", ${T.half12});
     write("#b-tag1", ${T.one12}, 0.45);
 

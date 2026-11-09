@@ -59,6 +59,7 @@ Newest at the bottom. One line per lesson when it is committed.
     cut off mid-way. Next: build (continue from the partial scene), then visual QA.
   - 05-superposition: script reviewed. Next: build, then visual QA.
   - 02-qubit: visual QA next.
+- 2026-11-09: lesson 03-flip: visual QA done, ready to render. QA: {"verdict":"fixed","seconds":78.011,"remaining":["Minor, unchanged: on the X return turn in line 14 (trace C), the gold dashed tip trace runs a few px outside the circle's rim on the right. This comes from the oblique 3D projection and is hard to notice.","Minor, unchanged: the die under 'no chance' is small and its pips are mostly covered by the gold cross. The label carries the meaning.","Minor,
 
 ## First-time setup (macOS, from the repo root)
 ```bash
