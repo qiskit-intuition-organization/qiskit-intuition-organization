@@ -1,0 +1,22 @@
+{
+  "lines": [
+    {"say": "Here's a puzzle. Can a gate change a qubit but leave the odds of reading zero or one unchanged?"},
+    {"say": "Picture the qubit as an arrow. Up always reads zero, down always reads one."},
+    {"say": "The odds depend only on how far up or down it points, like latitude on a globe."},
+    {"say": "Cities on one line of latitude are equally far north, however far east or west."},
+    {"say": "That's longitude. Our arrow has one too, the way it faces round the globe, called the phase."},
+    {"say": "The Z gate spins the arrow half way round its latitude, so the odds stay put."},
+    {"say": "S turns it a quarter of the way, and T an eighth."},
+    {"say": "Let's test it. Lay the arrow on the equator pointing right, and it's fifty fifty."},
+    {"say": "Apply Z, and it swings round to point left. Still fifty fifty."},
+    {"say": "So did Z do nothing? The bars never moved, but the arrow turned."},
+    {"say": "Now add an H gate. It tips the arrow up or down, depending on which way it faces."},
+    {"say": "Without the Z, it lands straight up, and reads zero every time."},
+    {"say": "With the Z, it lands straight down, and reads one every time."},
+    {"say": "Same odds before, opposite answers after. The phase was there all along."},
+    {"say": "Here the globe breaks. Maps print longitude, but no measurement reads phase directly."},
+    {"say": "Only a later gate, like our H, turns phase into odds. That's called interference."},
+    {"say": "In the formula, theta tracks latitude, the odds, and phi tracks longitude, the phase."},
+    {"say": "So phase is the arrow's longitude: invisible now, but it decides what happens later."}
+  ]
+}

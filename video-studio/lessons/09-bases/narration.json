@@ -1,0 +1,22 @@
+{
+  "lines": [
+    { "say": "Here is a puzzle. Two different qubits look alike when we measure them the usual way." },
+    { "say": "Both read zero half the time and one half the time. How can we tell them apart?" },
+    { "say": "Think of polarized sunglasses. They let through light that wiggles their way." },
+    { "say": "Send in light wiggling on a slant, and upright glasses pass only half." },
+    { "say": "Tilt the glasses to that slant, and all of it passes." },
+    { "say": "The light never changed. Only the question the glasses were asking did." },
+    { "say": "A qubit works the same way. Picture it as an arrow inside a ball." },
+    { "say": "Measuring asks about one line through the ball, called an axis, usually zero at the top and one at the bottom." },
+    { "say": "The nearer the arrow is to an end, the more likely that answer." },
+    { "say": "Our two qubits lie sideways: plus points front, minus points back." },
+    { "say": "Both sit halfway between top and bottom, so up or down gives fifty fifty." },
+    { "say": "Ask along the front to back axis instead, and plus always answers front, minus always back." },
+    { "say": "But real hardware only asks up or down." },
+    { "say": "So first, a turn called the H gate swaps front and back with up and down." },
+    { "say": "Now plus reads zero and minus reads one, every time." },
+    { "say": "Here the picture breaks. A beam can partly pass, but one particle of light passes or it doesn't." },
+    { "say": "Fifty fifty doesn't mean the qubit is random. Plus is perfectly definite, just not lined up with the question." },
+    { "say": "A measurement asks about one axis. To ask about another, turn that axis onto up and down first." }
+  ]
+}

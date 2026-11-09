@@ -1,0 +1,23 @@
+{
+  "lines": [
+    { "say": "Here's a challenge. Make a qubit read one every time, without an X gate." },
+    { "say": "The trick is called interference, and noise cancelling headphones use it too." },
+    { "say": "They hear the noise around you, and play its mirror image." },
+    { "say": "Where the noise wave rises, theirs dips, so they cancel and the sound disappears." },
+    { "say": "Waves that rise and dip together get louder instead." },
+    { "say": "A qubit does this too. From zero, an H gate splits it into two paths, zero and one." },
+    { "say": "Each path carries an amplitude, a number that sets its chance and can be negative, drawn as an arrow." },
+    { "say": "A second H brings the paths together, and on each result, their arrows add." },
+    { "say": "On zero they point the same way and grow. On one, this H flips path one's arrow, so they cancel." },
+    { "say": "So H then H always reads zero." },
+    { "say": "Now add a Z gate in the middle. It shifts path one by half a wave, flipping its sign." },
+    { "say": "That's the headphone trick. Now the arrows cancel on zero, and add on one." },
+    { "say": "So H, Z, H reads one every time, no X gate needed." },
+    { "say": "Shift path one by a quarter wave instead, and you land halfway, at fifty fifty." },
+    { "say": "Unlike headphones, nothing is lost. The chance that vanishes from zero reappears on one." },
+    { "say": "And it isn't particles colliding. It's amplitudes, just numbers, adding to zero." },
+    { "say": "Probabilities alone could never cancel, because a chance is never negative." },
+    { "say": "Every quantum algorithm is a careful pattern of these cancellations." },
+    { "say": "Remember, amplitudes add like waves. In step they grow, and out of step they cancel." }
+  ]
+}

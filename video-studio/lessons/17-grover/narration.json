@@ -1,0 +1,22 @@
+{
+  "lines": [
+    { "say": "Here are four sealed boxes, and just one of them hides a prize." },
+    { "say": "A helper won't say which box it is, but will quietly mark it." },
+    { "say": "With Grover search, one look is enough. Here's how." },
+    { "say": "Each box gets an amplitude, a number whose square is its chance of showing up." },
+    { "say": "An H gate on each qubit makes it fair: every box gets one half, a one in four chance." },
+    { "say": "The helper, called the oracle, flips the prize box's sign, to minus one half." },
+    { "say": "But squaring it still gives one quarter, so the odds haven't changed." },
+    { "say": "Next, the diffuser reflects every amplitude around their average, which is now one quarter." },
+    { "say": "The other three sit a quarter above it, so they flip down to zero." },
+    { "say": "The prize sits three quarters below, so it's flung three quarters above, up to one." },
+    { "say": "Now one look finds it every time. That's interference, growing the prize and cancelling the rest." },
+    { "say": "With more boxes, one round isn't enough. It's like pushing a swing." },
+    { "say": "Each round, like a well timed push, lifts the prize a little higher." },
+    { "say": "For N boxes, the sweet spot is just under the square root of N rounds. Push longer and it swings back." },
+    { "say": "But a swing gains energy, and this never does. The chances always add up to one." },
+    { "say": "The prize only gains because every other box loses." },
+    { "say": "And it never opens every box at once. It reshapes amplitudes so one look is likely right." },
+    { "say": "So mark the answer with a sign, reflect around the average, and repeat about pi over four times root N." }
+  ]
+}

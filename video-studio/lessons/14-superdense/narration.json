@@ -1,0 +1,23 @@
+{
+  "lines": [
+    {"say": "Can Alice send Bob two bits by posting him just one qubit?"},
+    {"say": "A bit is a zero or a one, and a lone qubit can only carry one bit."},
+    {"say": "Their trick? Picture a safe that opens with two keys."},
+    {"say": "Bob holds one key. Alice sets hers to one of four positions and posts it."},
+    {"say": "With both keys, Bob can tell which position she chose."},
+    {"say": "The quantum keys are a Bell pair: two entangled qubits whose readings are random but always match."},
+    {"say": "They share it in advance: Alice keeps one half, Bob the other."},
+    {"say": "To set her key, Alice gives her half one of four twists: nothing, Z, X, or both."},
+    {"say": "Z and X are half turns, and the twists mean zero zero, zero one, one zero, one one."},
+    {"say": "Each twist leaves the pair in a different one of four patterns, called Bell states."},
+    {"say": "The four can be told apart perfectly, but only by reading both qubits together."},
+    {"say": "So Alice posts her qubit, and Bob holds both halves."},
+    {"say": "He undoes the link, running the pair's recipe backwards: C NOT, then H."},
+    {"say": "Then he measures both, and reads her two bits for certain."},
+    {"say": "Here the safe picture breaks: peek at a posted key and you'd see its position."},
+    {"say": "Alone, her qubit looks completely random, so a spy who grabs it learns nothing."},
+    {"say": "The message lives only in the pair."},
+    {"say": "It's not magic: the pair was shared beforehand, and her qubit still travels no faster than light."},
+    {"say": "With a shared Bell pair, one qubit delivers two bits. The second rides on the entanglement."}
+  ]
+}

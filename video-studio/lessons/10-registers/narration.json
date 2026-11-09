@@ -1,0 +1,22 @@
+{
+  "lines": [
+    {"say": "Each qubit you measure gives a zero or a one. So how many results can ten qubits give?"},
+    {"say": "Picture a combination lock where every wheel has two positions, zero and one."},
+    {"say": "One wheel gives two settings. A second wheel makes four."},
+    {"say": "Zero zero, zero one, one zero, and one one."},
+    {"say": "A third wheel makes eight, and every new wheel doubles the count again."},
+    {"say": "So ten wheels give two to the power of ten, one thousand and twenty four."},
+    {"say": "Qubits count the same way. Ten qubits have one thousand and twenty four possible results."},
+    {"say": "Now the quantum part. The qubits hold a number for each result, called an amplitude."},
+    {"say": "Each amplitude sets how likely its result is, so ten qubits carry one thousand and twenty four of them."},
+    {"say": "That doubling is where a quantum computer gets its room to work."},
+    {"say": "But here the lock picture breaks. A lock is only ever set to one combination."},
+    {"say": "Qubits carry an amplitude for every combination, yet measuring them shows you just one."},
+    {"say": "So you can't read out all those amplitudes. You get one string of ten zeros and ones."},
+    {"say": "One last habit to lock in. Kiss kit, our coding toolkit, numbers its qubits from zero."},
+    {"say": "When it writes a result, qubit zero goes on the right."},
+    {"say": "Take two qubits, and flip only qubit zero to one."},
+    {"say": "Kiss kit shows zero one, not one zero, with qubit zero on the right, like the ones digit in forty two."},
+    {"say": "So every qubit you add doubles the amplitudes, but a measurement still shows you just one string."}
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "lines": [
+    { "say": "Here's a puzzle. A sealed box takes zero or one, and answers zero or one." },
+    { "say": "It's either constant, giving the same answer both times, or balanced, giving different ones." },
+    { "say": "Think of a coin. A fair one has two different faces, a trick one the same face twice." },
+    { "say": "Normally you check both sides, and an ordinary computer must ask the box twice." },
+    { "say": "A quantum computer needs one question, thanks to a trick called phase kickback." },
+    { "say": "First, a helper qubit is set to a state called minus: an up arrow on zero, a down arrow on one." },
+    { "say": "Whenever the box answers one, it flips the helper, swapping those two arrows." },
+    { "say": "But swapped, minus is the same picture upside down: just multiplied by minus one." },
+    { "say": "So the helper is unchanged, and the minus kicks back onto the input instead, as a hidden sign called a phase." },
+    { "say": "Now ask once, with an H gate putting the input in superposition: up arrows on zero and one." },
+    { "say": "If the box is constant, both arrows get the same sign, and keep their shape." },
+    { "say": "If it's balanced, only one arrow turns over, and the input becomes minus." },
+    { "say": "A final H makes them interfere, giving a sure reading: zero for constant, one for balanced." },
+    { "say": "That's Deutsch's algorithm. One question, a certain answer." },
+    { "say": "Here the coin picture breaks: you never see either face, only whether they differ." },
+    { "say": "The two answers stay hidden. You learn one fact about the pair, nothing more." },
+    { "say": "Phase kickback writes the box's answer into the input's phase, and interference reads it in one question." }
+  ]
+}
