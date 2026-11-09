@@ -94,7 +94,7 @@ export default function scene(k) {
     G("b-out", out0 + out1) +
     G("b-zbox", box(730, 550, 100, 100)) +
     `<path id="b-hw" fill="none" stroke="${GOLD}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>` +
-    G("b-sk", cc(arrow(1350, 196, 1350, 116, { strokeWidth: 3.4 }, 14) + arrow(1440, 116, 1440, 196, { strokeWidth: 3.4 }, 14))) +
+    G("b-sk", cc(arrow(1350, 196, 1350, 116, { strokeWidth: 3.4 }, 14) + arrow(1440, 116, 1440, 196, { strokeWidth: 3.4 }, 14)), ` style="color:${INK}"`) +
     bar("b-br0", BX, 400, BW, BH) + bar("b-br1", BX, 700, BW, BH) +
     `<g id="b-dots" fill="${GOLD}"><circle id="b-dt0" r="9"/><circle id="b-dt1" r="9"/><circle id="b-dt2" r="9"/></g>` +
     `<g id="b-amp0" transform="translate(${AX} 300)" style="color:${INK}">${upArrow(110, 5, 22)}</g>` +
@@ -116,7 +116,8 @@ export default function scene(k) {
     C("b-pc0", BX + BW / 2, 428, 140, 40, "50%") + C("b-pc1", BX + BW / 2, 728, 140, 40, "50%") +
     C("b-skp", 1384, 136, 50, 44, "+") + C("b-skm", 1476, 176, 50, 44, MINUS) +
     C("b-hwl", 883, 534, 150, 40, "half wave", `color:${GOLD}`) +
-    C("b-sgl", 1000, 690, 160, 44, `+ → ${MINUS}`) +
+    C("b-qwl", 900, 534, 200, 40, "quarter wave", `color:${GOLD}`) +
+    C("b-sgl", 1000, 694, 200, 54, `+ → ${MINUS}`) +
     C("b-e0", SX + 62, 300, 90, 44, "= 0", "opacity:0") + C("b-e1", SX + 62, 600, 90, 44, "= 0", "opacity:0");
 
   // Hook (line 0)
@@ -185,7 +186,7 @@ export default function scene(k) {
     G("b-bk0", r.rect(NL.x0 + 4, NL.y - 62, 452, 56, pen({ strokeWidth: 2.8, roughness: 1 }))) +
     G("b-bk1", r.rect(964, NL.y - 62, 452, 56, pen({ strokeWidth: 2.8, roughness: 1 }))) +
     G("b-ngz", r.rect(170, NL.y - 62, 326, 56, pen({ strokeWidth: 2, stroke: DIMINK, fill: DIMINK, fillStyle: "hachure", hachureGap: 12, fillWeight: 1.4 }))) +
-    G("b-nbk", r.rect(250, NL.y - 54, 220, 40, pen({ strokeWidth: 2.6, roughness: 1.2 }))) +
+    G("b-nbk", r.rect(250, NL.y - 54, 220, 40, pen({ strokeWidth: 2.6, roughness: 1.2, fill: GROUND, fillStyle: "solid" }))) +
     G("b-nbx", r.line(236, NL.y - 74, 484, NL.y + 4, pen({ strokeWidth: 4.4 })) + r.line(484, NL.y - 74, 236, NL.y + 4, pen({ strokeWidth: 4.4 })));
   const s16Html =
     C("b-n0", NL.x0, NL.y + 40, 80, 40, "0") + C("b-n50", 960, NL.y + 40, 120, 40, "50%") + C("b-n100", NL.x1, NL.y + 40, 140, 40, "100%") +
@@ -226,13 +227,13 @@ export default function scene(k) {
     ${full("b-hook", hookSvg, hookHtml)}
     ${lbl("b-intf", 560, 116, 800, 72, "interference", `color:${GOLD}`)}
     ${full("b-wv", wvSvg, wvHtml)}
-    <div class="obj" id="b-phones" style="left:760px;top:255px;width:400px;height:400px"><svg class="sk" width="400" height="400" viewBox="0 0 400 400">${phones("b-ph")}</svg></div>
+    <div class="obj" id="b-phones" style="left:760px;top:255px;width:400px;height:400px;color:${INK}"><svg class="sk" width="400" height="400" viewBox="0 0 400 400">${phones("b-ph")}</svg></div>
     ${full("b-dg", dgSvg, dgHtml)}
     ${lbl("b-amph", 560, 112, 800, 60, `<span style="color:${GOLD}">amplitude</span> = a number`)}
     ${C("b-card", 960, 800, 640, 56, `H → H → always <span style="color:${GOLD}">0</span>`)}
     <div class="obj" id="b-cardb" style="left:640px;top:752px;width:640px;height:96px"><svg class="sk" width="640" height="96" viewBox="0 0 640 96"><g id="b-cardg">${r.rect(4, 4, 632, 88, pen({ strokeWidth: 2.4, roughness: 1.2, stroke: DIMINK }))}</g></svg></div>
     ${full("b-cr", crSvg, crHtml)}
-    <div class="obj" id="b-ph2" style="left:300px;top:200px;width:400px;height:400px;transform:scale(0.8)"><svg class="sk" width="400" height="400" viewBox="0 0 400 400">${phones("b-pq")}</svg></div>
+    <div class="obj" id="b-ph2" style="left:300px;top:200px;width:400px;height:400px;transform:scale(0.8);color:${INK}"><svg class="sk" width="400" height="400" viewBox="0 0 400 400">${phones("b-pq")}</svg></div>
     ${full("b-s14", s14Svg, s14Html)}
     ${full("b-s15", s15Svg, s15Html)}
     ${full("b-s16", s16Svg, s16Html)}
@@ -535,6 +536,8 @@ export default function scene(k) {
     tl.to("#b-amph", { scale: 1, y: 0, opacity: 1, duration: 0.9, ease: "power2.inOut" }, T.l13 + 0.05);
     fade("#b-zl", 0, T.quarter - 0.1, 0.25);
     show("#b-ql", T.quarter); write("#b-ql", T.quarter, 0.3);
+    write("#b-qwl", T.quarter + 0.1, 0.5);
+    fade("#b-qwl", 0, T.halfway, 0.3);
     tl.to("#b-amp1", { color: GOLD, duration: 0.25 }, T.quarter);
     tl.to("#b-amp1", { color: INK, duration: 0.3 }, T.FC);
 
