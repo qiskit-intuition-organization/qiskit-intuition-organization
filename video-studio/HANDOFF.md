@@ -46,11 +46,10 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 ## Status (updated 2026-11-09)
 | Lessons | State | Next step |
 |---|---|---|
-| 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved | Web export when the player is built |
+| 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved. On the live site since 2026-11-09 | None |
 | 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/` | Web export |
-| 08 to 10 | Done: script reviewed, built, visual QA passed, rendered (86 to 89 s), 2026-11-09. Waiting for Dhruv to watch | Web export when the player is built |
-| 11 to 13 | 11: script reviewed, partial build. 12 and 13: script and beat plan written, **not yet reviewed** | Next batch: script review, build, visual QA (`scriptDone: true`). One batch of 3 costs about 60% of the 5-hour limit, so start it only just after a reset |
-| 14 to 21 | Draft `narration.json` only. The writer was stopped before `plan.md` | Script stage again, then the rest |
+| 08 to 14 | Done: script reviewed, built, visual QA passed, rendered (84 to 89 s), 2026-11-09. On the live site since 2026-11-09 | None |
+| 15 to 21 | Draft `narration.json` only (no `plan.md`) | Script stage again, then review, build, visual QA. A full lesson costs about 25 to 30% of the 5-hour limit |
 | 22 | Nothing yet | All stages |
 
 - Renders of 01 to 05 and 07 are on Dhruv's Mac in `video-studio/Videos/16x9` and
@@ -59,6 +58,16 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 - Workflow notes from the builders: `kit/look.mjs` writes `contact-sheet-1.jpg`, `-2.jpg` and so
   on when there are more than 9 frames; `cue(line, word)` prefix-matches words longer than 3
   letters and words at line edges can land in the next line's word list, so check cue times.
+
+## Putting finished videos on the site (live since 2026-11-09)
+The player (`web/src/components/lesson-video.tsx`) sits at the top of each lesson's Intuition step and
+shows only for lessons listed in `web/src/data/videos.json`. After rendering new lessons, run from
+`video-studio/` in a checkout of `main`:
+```bash
+node kit/export-web.mjs ../web ~/Downloads/"Qiskit Intuition - video pilot/Videos"   # second dir = lesson 6 pilot
+```
+It writes `web/public/videos/NN-id.mp4`, `NN-id-phone.mp4` and `NN-id.jpg` (skipping ones already up
+to date) and rewrites `videos.json`. Commit those, run the CI checks, push to `main`, and Vercel deploys.
 
 ## If usage runs out (Dhruv's rule)
 Dhruv switches between Claude accounts when one runs out of usage. So:

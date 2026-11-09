@@ -139,5 +139,6 @@ node kit/build.mjs lessons/NN-id       # build both cuts (seconds)
 node kit/look.mjs lessons/NN-id        # a frame at the end of every line, 16:9 and phone
 node kit/look.mjs lessons/NN-id --at 12.4,13.1   # exact moments
 ```
-Then read `review/wide/contact-sheet.jpg` and `review/phone/contact-sheet.jpg`, and open single
+Then read the contact sheets it prints (`review/wide/contact-sheet.jpg`, or `contact-sheet-1.jpg`, `-2.jpg` and so on
+when there are more than 9 frames, and the same under `review/phone/`), and open single
 frames to check detail. Do not render MP4s; that happens at the end for all lessons.

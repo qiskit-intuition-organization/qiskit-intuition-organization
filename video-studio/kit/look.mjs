@@ -1,8 +1,9 @@
 // Snapshots a built lesson so you can look at it: one frame near the end of every narration line
 // (when that line's drawing should be complete), in 16:9 and on the phone.
 // Usage: node kit/look.mjs <lessonDir> [--at 3.2,10.5] [--phone-only|--wide-only]
-// Writes <lessonDir>/review/wide/ and review/phone/, each with PNGs and contact-sheet.jpg.
-import { readFileSync, rmSync } from "node:fs";
+// Writes <lessonDir>/review/wide/ and review/phone/, each with PNGs and contact sheets
+// (contact-sheet.jpg, or contact-sheet-1.jpg, -2.jpg and so on when there are more than 9 frames).
+import { readdirSync, readFileSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
 
@@ -23,5 +24,7 @@ for (const [name, dir] of runs) {
   rmSync(out, { recursive: true, force: true });
   const res = spawnSync("npx", ["hyperframes", "snapshot", dir, "--at", times, "--no-end", "-o", out, "--timeout", "120000"], { encoding: "utf8" });
   if (res.status !== 0) throw new Error(`snapshot failed (${name}): ${res.stdout}\n${res.stderr}`);
-  console.log(`${name}: ${out}/contact-sheet.jpg  (frames at ${times})`);
+  // hyperframes splits the sheet into contact-sheet-1.jpg, -2.jpg ... past 9 frames, so list what it wrote.
+  const sheets = readdirSync(out).filter((f) => /^contact-sheet(-\d+)?\.jpg$/.test(f)).sort();
+  console.log(`${name}: ${sheets.map((f) => join(out, f)).join(", ") || "no contact sheet written"}  (frames at ${times})`);
 }
