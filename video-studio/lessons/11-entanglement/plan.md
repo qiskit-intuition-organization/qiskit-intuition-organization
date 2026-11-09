@@ -1,19 +1,22 @@
 # Lesson 11 Entanglement: beat plan
 
-Voiced with bf_emma: 16 lines, 260 words, narration ends 85.50 s, film about 88.1 s with the 2.6 s hold.
+Voiced with bf_emma: 16 lines, 260 words, narration ends 85.82 s, film about 88.4 s with the 2.6 s hold.
 
-Line windows (s): 0 0.40-6.61 | 1 6.91-12.14 | 2 12.44-17.39 | 3 17.68-22.82 | 4 23.13-28.42 |
-5 28.72-35.33 | 6 35.63-39.88 | 7 40.17-44.05 | 8 44.36-48.44 | 9 48.73-53.59 | 10 53.90-58.51 |
-11 58.80-64.43 | 12 64.74-70.01 | 13 70.31-73.47 | 14 73.76-79.69 | 15 79.99-85.49
+Line windows (s): 0 0.40-6.61 | 1 6.91-12.13 | 2 12.44-17.38 | 3 17.68-22.82 | 4 23.12-28.42 |
+5 28.72-36.48 | 6 36.78-41.03 | 7 41.33-45.21 | 8 45.51-50.03 | 9 50.33-55.20 | 10 55.50-59.59 |
+11 59.89-65.52 | 12 65.82-71.44 | 13 71.73-74.38 | 14 74.68-80.01 | 15 80.31-85.82
 
 ## Cueing notes for the scene
 - Whisper heard every real word. The "not heard" items are digit pairs written as "zero-zero",
   "one-one" (fine) and a last word that spilled into the next line's window.
-- Spilled last words: line 0 "flip", 1 "up", 3 "target", 8 "own", 12 "results", 14 "two" are stored
-  under the NEXT line. `cue(n, word)` falls back to a letter estimate for them, which is fine, or
+- Spilled last words: line 0 "flip", 1 "up", 3 "target", 9 "pair", 10 "advance" are stored
+  under the NEXT line. The other way round, line 6's first word "Measure" is stored under line 5 and
+  line 15's first word "So" under line 14. `cue(n, word)` falls back to a letter estimate for them, which is fine, or
   cue them as the next line's start. Same for "zero zero / one one" in lines 5, 6, 7, 14: cue them
   by estimate (`cue(5, "zero", 0)` etc.) or by a neighbouring real word ("stays", "becomes",
   "Never", "half").
+- Line 4: Whisper heard "H to" as one token "Hto", so cue the H box with `cue(4, "use")` plus a small
+  offset rather than `cue(4, "H")`.
 - Digit convention: in every pair the FIRST digit is the control (top qubit), the second the target,
   as in course.json. Put tiny "c t" labels over the first pair drawn so this is never ambiguous.
 
@@ -69,10 +72,10 @@ Line windows (s): 0 0.40-6.61 | 1 6.91-12.14 | 2 12.44-17.39 | 3 17.68-22.82 | 4
   label. The rule card fades to 0.35.
 - Stays.
 
-**5. "Now apply C NOT. It acts on both parts. Zero zero stays zero zero, and one zero becomes one one."**
+**5. "Now apply C NOT, and it acts on each part of that superposition: zero zero stays zero zero, and one zero becomes one one."**
 - On "apply": the CNOT symbol turns gold briefly (0.6 s) then back to ink. The circuit moves up and
   shrinks (scale 0.7, to y 140 to 320; the title is long gone).
-- On "parts": two chips draw centre stage, stacked: row 1 at y 560, row 2 at y 720, each with an
+- On "part": the control's "0" and "1" halves (from the 50/50 coin) split into two chips centre stage, stacked: row 1 at y 560, row 2 at y 720, each with an
   arrow to a result chip on the right.
 - "Zero zero stays zero zero": row 1 writes "0 0 → 0 0", all ink.
 - "one zero becomes one one": row 2 writes "1 0 →", then the result chip shows "1 0" whose second
@@ -92,12 +95,12 @@ Line windows (s): 0 0.40-6.61 | 1 6.91-12.14 | 2 12.44-17.39 | 3 17.68-22.82 | 4
 - On "always": a gold check-style tick and gold label "always agree" (64 px) above the chart.
 - Leaves: the 01 and 10 marks fade at line 8 start.
 
-**8. "Yet either qubit alone is a fair coin flip, with no arrow of its own."**
+**8. "Yet either qubit alone is a fair coin flip, and its own arrow shrinks to nothing."**
 - On "either": the chart slides left and shrinks (scale 0.6, to x 160 to 820). Right side: a coin for
   qubit A alone with its own two-bar tally "0" and "1", each at half; label "A alone: 50/50".
 - On "arrow": a small hand-drawn circle (the qubit ball from earlier lessons) at x 1400, y 620 with
-  an arrow pointing up; via onFrame the arrow shrinks to a dot over 1.2 s. Label "no arrow of its
-  own" (48 px) on "own" (start of line 9 window, about 48.7 s).
+  a gold arrow pointing up; from "shrinks" to "nothing" (onFrame) the arrow shrinks to a dot.
+  Label "no arrow of its own" (48 px) on "nothing".
 - Leaves: the single-qubit tally and shrinking ball blur out at line 9 start, the label stays 1 s.
 
 **9. "That's entanglement. The pair has one shared state, and the information lives in the pair."**
@@ -108,10 +111,11 @@ Line windows (s): 0 0.40-6.61 | 1 6.91-12.14 | 2 12.44-17.39 | 3 17.68-22.82 | 4
   pair" on "lives".
 - Leaves: everything blurs out at line 10 start, keeping nothing.
 
-**10. "Here the dancers mislead us, because dancers follow steps written down in advance."**
+**10. "Here the dancers mislead us, because they follow steps written in advance."**
 - On "dancers": the two dancers return smaller (about 260 px), centred at y 520.
 - On "steps": each dancer holds a little paper sheet with scribbled steps (two copies of the same
-  sheet, one per dancer); on "advance" a label "steps written in advance" (52 px).
+  sheet, one per dancer); on "written" a label "steps written in advance" (52 px). ("advance" spills
+  to line 11's start.)
 - Stays.
 
 **11. "Experiments called Bell tests show entangled qubits can't be carrying answers settled in advance."**
@@ -120,25 +124,26 @@ Line windows (s): 0 0.40-6.61 | 1 6.91-12.14 | 2 12.44-17.39 | 3 17.68-22.82 | 4
   in advance" (56 px) writes below.
 - Leaves: dancers, sheets and X blur out at line 12 start.
 
-**12. "And entanglement alone can't send a message. Each side on its own just sees random results."**
+**12. "Nor can entanglement send a message faster than light. Each side alone just sees random results."**
 - Two "labs", rough boxes at x 260 to 700 and x 1220 to 1660 (y 360 to 800), labelled "side A",
   "side B"; a wavy dotted line between them (the shared pair).
-- On "message": an envelope arrow from A to B draws, then a hand strike crosses it out.
+- On "message": an envelope arrow from A to B draws, with speed lines and a label "faster than
+  light?" (48 px) on "faster"; on "light" a hand strike crosses the envelope out.
 - On "random": each lab's list of results writes downward via onFrame: A "0 1 1 0 1 0", B the same
-  digits, each list labelled "random" (48 px). ("results" spills to the next line's start.)
+  digits, each list labelled "random" (48 px) on "random".
 - Stays.
 
-**13. "The match only shows up when the two lists of results are compared."**
+**13. "The match only shows up when the two lists are compared."**
 - On "match": the two lists start sliding toward the centre (move 1.0 s, power2.inOut) until they
   sit side by side.
 - On "compared": gold ties join each matching row, one by one, and gold label "they match" (60 px)
   writes above.
 - Leaves: labs and lists blur out at line 14 start.
 
-**14. "This pair is called a Bell state. In symbols, it's ket zero zero plus ket one one, over root two."**
+**14. "This pair is called a Bell state, written ket zero zero plus ket one one, over root two."**
 - On "Bell": label "Bell state" (64 px) top centre.
 - The formula writes in pieces, centred at y 480, 120 px: "|00⟩" on "ket" (first), "+" on "plus",
-  "|11⟩" on "ket" (second), then the brackets and "/√2" on "root". Gold underline draws under the
+  "|11⟩" on "ket" (second), then the brackets and "/√2" on "root" (cue "root"; "two" is heard as "2"). Gold underline draws under the
   whole formula at line end. Small notes under the digits: "both 0" under |00⟩, "both 1" under |11⟩
   (44 px).
 - Stays: formula moves up to y 300 at line 15 start.
@@ -165,7 +170,7 @@ export const phrases = [
 ];
 ```
 Built-ins already cover "C NOT" to CNOT and "fifty fifty" to 50/50. Check the captions read
-"00 stays 00, and 10 becomes 11" and "Never 01, never 10."
+"superposition: 00 stays 00, and 10 becomes 11" and "Never 01, never 10."
 
 ## Respellings
 None needed: Whisper heard C NOT, H, superposition, entanglement, Bell and ket correctly.

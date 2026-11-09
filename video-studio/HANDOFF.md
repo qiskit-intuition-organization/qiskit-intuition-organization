@@ -49,7 +49,7 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 | 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved | Web export when the player is built |
 | 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/` | Web export |
 | 08 to 10 | Done: script reviewed, built, visual QA passed, rendered (86 to 89 s), 2026-11-09. Waiting for Dhruv to watch | Web export when the player is built |
-| 11 to 13 | Script and beat plan written, **not yet reviewed** | Next batch: script review, build, visual QA (`scriptDone: true`). One batch of 3 costs about 60% of the 5-hour limit, so start it only just after a reset |
+| 11 to 13 | 11: script reviewed, partial build. 12 and 13: script and beat plan written, **not yet reviewed** | Next batch: script review, build, visual QA (`scriptDone: true`). One batch of 3 costs about 60% of the 5-hour limit, so start it only just after a reset |
 | 14 to 21 | Draft `narration.json` only. The writer was stopped before `plan.md` | Script stage again, then the rest |
 | 22 | Nothing yet | All stages |
 
@@ -96,7 +96,7 @@ Newest at the bottom. One line per lesson when it is committed.
 - 2026-11-09: lesson 08-interference: visual QA done, ready to render. QA verdict: fixed (89.233 s). Remaining items are minor or known: the 2 lint warnings every lesson gets, and a small diagram label that drops below 40 px for about 4 s when the diagram shrinks to 0.75 scale. The full QA JSON was truncated in the request, so it is not restored here.
 - 2026-11-09: lesson 09-bases: visual QA done, ready to render. QA verdict: fixed (85.84 s). Remaining items are minor or known: a kit-level timing issue (in timing.json a line's last word can land in the next line's word list, so cue(4, 'half') resolves to line 3's word; the scene's timing still lines up), and one expected check item. The full QA JSON was truncated in the request, so it is not restored here.
 - 2026-11-09: lesson 10-registers: visual QA done, ready to render. QA verdict: fixed (86.373 s). Remaining items are minor or known: 40 line_unread warnings on the rolling drum digits in the line 10 lock (by design), and 2 generic kit lint warnings. The full QA JSON was truncated in the request, so it is not restored here.
-
+- 2026-11-09: lesson 11-entanglement: script reviewed. `scene.mjs` is a **partial** build, stopped at the 5-hour limit. Next: build (continue from the partial scene, `scriptDone: true, reviewDone: true`), then visual QA.
 
 ## First-time setup (macOS, from the repo root)
 ```bash
