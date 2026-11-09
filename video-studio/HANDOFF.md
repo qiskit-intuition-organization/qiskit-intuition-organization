@@ -48,7 +48,8 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 |---|---|---|
 | 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved | Web export when the player is built |
 | 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/` | Web export |
-| 08 to 13 | Script and beat plan written, **not yet reviewed** | Next batch: script review, build, visual QA (`scriptDone: true`) |
+| 08 to 10 | Done: script reviewed, built, visual QA passed, rendered (86 to 89 s), 2026-11-09. Waiting for Dhruv to watch | Web export when the player is built |
+| 11 to 13 | Script and beat plan written, **not yet reviewed** | Next batch: script review, build, visual QA (`scriptDone: true`). One batch of 3 costs about 60% of the 5-hour limit, so start it only just after a reset |
 | 14 to 21 | Draft `narration.json` only. The writer was stopped before `plan.md` | Script stage again, then the rest |
 | 22 | Nothing yet | All stages |
 
