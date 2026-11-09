@@ -1,20 +1,55 @@
 {
   "lines": [
-    { "say": "Here's a puzzle. Can you make a qubit's answer random, then undo it so it's certain again?" },
-    { "say": "A tossed coin can't. Once it spins, the side it started on is lost." },
-    { "say": "Let's draw the qubit as an arrow in a ball. Pointing up means zero, and pointing down means one." },
-    { "say": "It starts pointing up, a state we write as ket zero, so it always reads zero." },
-    { "say": "Now apply the Hadamard gate, H for short. It tips the arrow flat, onto the ball's equator, facing you." },
-    { "say": "Picture a compass needle. North means zero, south means one, and our needle now points east." },
-    { "say": "That's a perfectly definite direction. Only the question, north or south, has no good answer." },
-    { "say": "So each answer comes up half the time. Measure many fresh arrows, and you get fifty fifty." },
-    { "say": "Here's the surprise. Apply H a second time, and the arrow tips straight back up." },
-    { "say": "Now it reads zero every time. Nothing random is left." },
-    { "say": "So H doesn't add randomness like a coin toss. It's a turn, and the same turn again undoes it." },
-    { "say": "Randomness only appears when you measure an arrow sitting between up and down." },
-    { "say": "The compass breaks down here, though. A real needle pointing east would answer neither." },
-    { "say": "A qubit can't. It must answer zero or one, and then it becomes that answer." },
-    { "say": "In symbols, H turns ket zero into ket plus, which is ket zero plus ket one, over root two." },
-    { "say": "So H tips the arrow onto the equator, a definite state with random answers, and a second H brings it home." }
+    {
+      "say": "Here's a puzzle. Can you make a qubit's answer random, then undo it so it's certain again?"
+    },
+    {
+      "say": "A tossed coin can't. Once it spins, its starting side is lost."
+    },
+    {
+      "say": "Let's draw the qubit as an arrow in a ball, up for zero and down for one."
+    },
+    {
+      "say": "It starts pointing up, a state written ket zero, so it always reads zero."
+    },
+    {
+      "say": "Now apply the Hadamard gate, H for short. Like any gate, it turns the arrow, tipping it flat onto the equator, facing you."
+    },
+    {
+      "say": "Picture a compass needle. North means zero, south means one, and our needle now points east."
+    },
+    {
+      "say": "That's a definite direction. It's only the question, north or south, that has no good answer."
+    },
+    {
+      "say": "Asking that is called measuring, and each answer comes up half the time."
+    },
+    {
+      "say": "Here's the surprise. Before measuring, apply H again, and the arrow tips straight back up."
+    },
+    {
+      "say": "Now it reads zero every time. Nothing random is left."
+    },
+    {
+      "say": "So H isn't a coin toss. It's a turn, and the same turn again undoes it."
+    },
+    {
+      "say": "Randomness only appears when you measure an arrow between up and down."
+    },
+    {
+      "say": "Here the compass breaks down. A real needle pointing east would answer neither."
+    },
+    {
+      "say": "A qubit can't. It must answer zero or one, and then it becomes that answer."
+    },
+    {
+      "say": "In symbols, H turns ket zero into ket plus: ket zero plus ket one, each weighted one over root two."
+    },
+    {
+      "say": "Squared, that weight gives each answer's chance, one half."
+    },
+    {
+      "say": "So H tips the arrow onto the equator, a definite state with random answers, and a second H brings it home."
+    }
   ]
 }

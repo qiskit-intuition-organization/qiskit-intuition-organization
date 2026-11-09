@@ -1,10 +1,10 @@
 {
   "lines": [
     {
-      "say": "Here's a puzzle. Your qubit reads zero every time, and you want it to read one."
+      "say": "Your qubit, a quantum bit, reads zero every time you check it. How can you make it read one?"
     },
     {
-      "say": "Picture the qubit, our quantum bit, as an arrow. Up means zero, and down means one."
+      "say": "Picture the qubit as an arrow. Up means zero, and down means one."
     },
     {
       "say": "To change it, we use a gate, which turns the arrow without stretching it."
@@ -13,40 +13,40 @@
       "say": "Our first gate is called X, and it's like flipping a pancake."
     },
     {
-      "say": "Flip the pan, and the top of the pancake ends up on the bottom."
+      "say": "Flip the pan, and the pancake's top ends up on the bottom."
     },
     {
-      "say": "Flip it again, and you're right back where you started."
+      "say": "Flip it again, and you're back where you started."
     },
     {
-      "say": "X does the same to the arrow, spinning it half a turn around a line from left to right."
+      "say": "X does the same to our arrow, a half turn around a line running left to right."
     },
     {
       "say": "The arrow pointing up at zero lands pointing down at one."
     },
     {
-      "say": "That's the not gate of ordinary computers: it swaps zero and one every time, with no chance involved."
+      "say": "It's the not gate of ordinary computers, swapping zero and one every time, with no chance involved."
     },
     {
       "say": "Do X twice, and two half turns make a full turn, so you're back home."
     },
     {
-      "say": "Here the pancake falls short. It's always one side up, but our arrow can also point in between."
+      "say": "Here the pancake falls short. It's always one side up, but our arrow can point in between."
     },
     {
       "say": "Say it leans toward the top, so it reads zero eight times out of ten."
     },
     {
-      "say": "X still makes its half turn, so now it leans low and reads one eight times out of ten."
+      "say": "After the same half turn, it leans low and reads one eight times out of ten."
     },
     {
       "say": "X has swapped how much zero and how much one the arrow holds."
     },
     {
-      "say": "And X doesn't read the qubit and then flip it. It turns the whole arrow, lean and all."
+      "say": "X doesn't read the qubit and then flip it. It turns the whole arrow, lean and all."
     },
     {
-      "say": "In symbols, we call up ket zero and down ket one, and X swaps them."
+      "say": "Up is written ket zero, and down is ket one, so X turns ket zero into ket one and ket one into ket zero."
     },
     {
       "say": "So remember, gates turn the arrow, and X is the half turn that swaps zero and one."

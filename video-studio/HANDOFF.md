@@ -53,6 +53,12 @@ Newest at the bottom. One line per lesson when it is committed.
 - 2026-11-08: batch 1 (lessons 01 to 03) started. 02's script review is done and committed; 01
   and 03 were mid-review when the batch was restarted to add per-lesson commits.
 - 2026-11-08: lesson 02-qubit: script reviewed and scene built, visual QA next. Build notes: {"seconds":80.418,"checkErrors":0,"knownIssues":["hyperframes check reports 2 lint warnings that every lesson gets (the board file is 335 lines, and the caption track has 48 elements). Layout, contrast, motion and runtime are all clean.","Captions show ⟩ and α in TASA Orbiter's fallback font, because the caption font has no such glyphs. This is the same for all lessons that use the plan's phrase p
+- 2026-11-08: both batches stopped at the 5-hour limit. Saved on 2026-11-09:
+  - 03-flip: script reviewed and scene built (78 s, 0 check errors). Visual QA next.
+  - 01-why-quantum, 04-measurement, 07-phase: script reviewed. `scene.mjs` is a **partial** build,
+    cut off mid-way. Next: build (continue from the partial scene), then visual QA.
+  - 05-superposition: script reviewed. Next: build, then visual QA.
+  - 02-qubit: visual QA next.
 
 ## First-time setup (macOS, from the repo root)
 ```bash
