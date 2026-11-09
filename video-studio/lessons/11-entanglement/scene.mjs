@@ -500,13 +500,12 @@ export default function scene(k) {
     write("#b-alone8", T.either8 + 0.3, 0.7);
     draw("#b-c8-rim", T.either8 - 0.05, 0.4);
     draw("#b-tax", T.either8 + 0.3, 0.4); write(["#b-tl0", "#b-tl1"], T.either8 + 0.5, 0.25);
-    draw("#b-bc", T.own8, 0.6);
-    draw("#b-barg", T.arrow8 - 0.1, 0.3);
-    write("#b-noarrow", T.nothing8, 0.7);
+    draw("#b-bc", T.own8 - 0.6, 0.6);
+    draw("#b-barg", T.own8 + 0.05, 0.3);
+    write("#b-noarrow", T.nothing8 - 0.1, 0.6);
 
     // 9. entanglement
-    blurOut(["#b-chart", "#b-alone8", "#b-c8", "#b-tally", "#b-ball"], T.off8);
-    fade("#b-noarrow", 0, T.off8 + 0.8, 0.3);
+    blurOut(["#b-chart", "#b-alone8", "#b-c8", "#b-tally", "#b-ball", "#b-noarrow"], T.off8 + 0.2);
     write("#b-ent", T.ent9, 0.8);
     draw(["#b-c9a-rim", "#b-c9b-rim"], T.pair9 - 0.4, 0.5);
     draw("#b-lp9", T.pair9 + 0.1, 0.8);
@@ -520,7 +519,7 @@ export default function scene(k) {
     draw("#b-fl2", T.dancers10 - 0.1, 0.5);
     draw(${JSON.stringify([...dParts("b-e1"), ...dParts("b-e2")])}, T.dancers10, 1.1);
     draw(["#b-ssa", "#b-ssb"], T.steps10, 0.6);
-    write("#b-written", T.written10, 0.9);
+    write("#b-written", T.written10, 0.6);
     // 11. Bell tests
     write("#b-bell", T.bell11, 0.5); draw("#b-labg", T.bell11 + 0.2, 0.9);
     fade("#b-written", 0, T.cant11 - 0.1, 0.25);
@@ -565,6 +564,6 @@ export default function scene(k) {
     write("#b-tog15", T.together15, 1.0);
     draw("#b-lp15", T.together15 + 0.4, 0.8);
   `;
-  const css = `#root .bits span { display:inline-block; }`;
+  const css = `#root .bits span { display:inline-block; } #root #b-fe .gl-root { margin-right: -0.16em; }`;
   return { html, script, css };
 }
