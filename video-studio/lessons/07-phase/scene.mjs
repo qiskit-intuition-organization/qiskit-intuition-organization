@@ -151,6 +151,7 @@ export default function scene(k) {
     `</g>` +
     // Odds bars
     OB.svg + OC.svg + MBL.svg + MBR.svg +
+    `<g id="b-eqs">${r.line(734, 432, 786, 430, goldPen({ strokeWidth: 5, roughness: 0.6 }))}${r.line(734, 454, 786, 452, goldPen({ strokeWidth: 5, roughness: 0.6 }))}</g>` +
     tick("b-tk5", 1484, 160, 0.9) + tick("b-tk8", 1704, 160, 0.9) +
     // Phase arc near the north pole of globe 1 (board coords; centre of globe 1 is 760,470)
     `<g id="b-pharc">${r.arc(760, 232, 150, 40, 0.15, PI - 0.05, false, goldPen({ strokeWidth: 3.4, roughness: 0.8 }))}${r.line(686, 234, 680, 212, goldPen({ strokeWidth: 3 }))}${r.line(686, 234, 703, 220, goldPen({ strokeWidth: 3 }))}</g>` +
@@ -161,14 +162,14 @@ export default function scene(k) {
     // Thought bubble and loose circle (line 9)
     `<g id="b-bub">${r.ellipse(300, 362, 310, 112, pen({ strokeWidth: 2.6 }))}${r.circle(280, 432, 18, pen({ strokeWidth: 2.2 }))}${r.circle(268, 452, 9, pen({ strokeWidth: 2 }))}</g>` +
     `<g id="b-strike">${r.line(178, 366, 424, 356, goldPen({ strokeWidth: 4.4 }))}</g>` +
-    `<g id="b-loop">${r.ellipse(1470, 500, 470, 560, pen({ strokeWidth: 2.6, roughness: 2 }))}</g>` +
+    `<g id="b-loop">${r.ellipse(1470, 518, 520, 570, pen({ strokeWidth: 2.6, roughness: 2 }))}</g>` +
     // Circuits (line 10)
     `<g id="b-cl">${r.line(390, 196, 478, 196, pen())}${r.line(562, 196, 650, 196, pen())}</g>` + gateBox("b-hl", 520, 196, 84) +
     `<g id="b-cr">${r.line(1220, 196, 1298, 196, pen())}${r.line(1382, 196, 1418, 196, pen())}${r.line(1502, 196, 1580, 196, pen())}</g>` + gateBox("b-zr", 1340, 196, 84) + gateBox("b-hr", 1460, 196, 84) +
     gateBox("b-zrg", 1340, 196, 84, { stroke: GOLD, strokeWidth: 3.8 }) +
     `<g id="b-ghL"><path d="M520 470 L520 318 M506 338 L520 318 L534 338" fill="none" stroke="${INK}" stroke-opacity=".5" stroke-width="4" stroke-dasharray="10 9" stroke-linecap="round"/></g>` +
     `<g id="b-ghR"><path d="M1400 510 L1400 662 M1386 642 L1400 662 L1414 642" fill="none" stroke="${INK}" stroke-opacity=".5" stroke-width="4" stroke-dasharray="10 9" stroke-linecap="round"/></g>` +
-    `<g id="b-dbl">${arrow(760, 770, 1240, 770, { stroke: GOLD, strokeWidth: 4 }, 22)}${arrow(1240, 770, 760, 770, { stroke: GOLD, strokeWidth: 4 }, 22).split("</path>").slice(1).join("</path>")}</g>` +
+    `<g id="b-dbl">${arrow(760, 770, 1240, 770, { stroke: GOLD, strokeWidth: 4 }, 22)}${r.line(760, 770, 780, 760, goldPen({ strokeWidth: 3.4 }))}${r.line(760, 770, 780, 780, goldPen({ strokeWidth: 3.4 }))}</g>` +
     // Map, meter and the dotted line with its cross (line 14)
     mapSvg + meterSvg +
     `<g id="b-dot"><path d="M1012 418 L1196 176" fill="none" stroke="${INK}" stroke-opacity=".6" stroke-width="3.5" stroke-dasharray="3 12" stroke-linecap="round"/></g>` +
@@ -202,14 +203,14 @@ export default function scene(k) {
     ${OB.html}${OC.html}${MBL.html}${MBR.html}
     ${lbl("b-obh", 1300, 140, 170, 48, "odds", "text-align:left")}
     ${lbl("b-och", 1300, 140, 170, 48, "odds", "text-align:left")}
-    ${lbl("b-eqs", 712, 404, 96, 64, "=", `color:${GOLD}`)}
+    ${lbl("b-eqn", 1090, 290, 640, 56, "equally far north", "text-align:left")}
     ${lbl("b-lon", 990, 168, 280, 56, "longitude", `color:${GOLD};text-align:left`)}
-    ${lbl("b-ph", 420, 168, 220, 64, "phase", `color:${GOLD};text-align:right`)}
+    ${lbl("b-ph", 400, 108, 220, 64, "phase", `color:${GOLD};text-align:right`)}
     ${lbl("b-z5l", 200, 462, 120, 80, "Z", `color:${GOLD}`)}
     ${lbl("b-z8l", 200, 462, 120, 80, "Z", `color:${GOLD}`)}
-    ${lbl("b-half", 150, 286, 340, 44, "half turn", "text-align:right")}
+    ${lbl("b-half", 140, 236, 340, 44, "half turn", "text-align:right")}
     ${lbl("b-same", 1528, 140, 200, 48, "same", `color:${GOLD};text-align:left`)}
-    ${DIALS.map((x, i) => lbl(`b-dl${i}`, x - 60, 334, 120, 60, ["Z", "S", "T"][i], i === 0 ? `color:${GOLD}` : "")).join("")}
+    ${DIALS.map((x, i) => lbl(`b-dl${i}`, x - 60, 300, 120, 60, ["Z", "S", "T"][i], i === 0 ? `color:${GOLD}` : "")).join("")}
     ${DIALS.map((x, i) => lbl(`b-dn${i}`, x - 80, 548, 160, 44, ["half", "quarter", "eighth"][i])).join("")}
     ${lbl("b-5050", 1480, 128, 220, 64, "50/50", `color:${GOLD};text-align:left`)}
     ${lbl("b-bubt", 170, 330, 260, 44, "did nothing?")}
@@ -386,13 +387,15 @@ export default function scene(k) {
     // ===== Line 3: cities on one line of latitude =====
     fade(["#b-g1-arrg", "#b-ob-fill", "#b-ob-frame", "#b-ob-p0", "#b-ob-p1", "#b-ob-l0", "#b-ob-l1", "#b-obh"], 0, T.l3, 0.4);
     show(["#b-g1-pins", "#b-g1-brk"], T.cities - 0.05);
-    write("#b-eqs", T.north, 0.3);
+    write("#b-eqn", T.equally, 0.8);
+    draw("#b-eqs", T.north, 0.3);
 
     // ===== Line 4: that's longitude; our arrow has one too, the phase =====
     draw("#b-g1-merA", T.lon4, 0.6);
     draw("#b-g1-merB", T.lon4 + 0.3, 0.6);
     write("#b-lon", T.lon4 + 0.1, 0.55);
     blurOut(["#b-g1-pins", "#b-g1-brk", "#b-g1-merA", "#b-g1-merB", "#b-eqs"], T.arrow4);
+    blurOut("#b-eqn", T.l4);
     fade(["#b-g1-arrg", "#b-ob-fill", "#b-ob-frame", "#b-ob-p0", "#b-ob-p1", "#b-ob-l0", "#b-ob-l1", "#b-obh"], 1, T.arrow4 + 0.1, 0.45);
     draw("#b-pharc", T.phase4 - 0.1, 0.6);
     write("#b-ph", T.phase4, 0.4);
