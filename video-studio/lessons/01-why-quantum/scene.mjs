@@ -51,7 +51,7 @@ export default function scene(k) {
     run: w(15, "run", 0, -0.1), oneAns: w(15, "answer", 0, -0.2), sceneD1: lines[16].start,
     algorithm: w(16, "algorithm", 0, -0.08), recipe: w(16, "recipe", 0, -0.08), puts: w(16, "puts", 0, -0.05),
     calm: w(16, "calm", 0, 0), wrong: w(16, "wrong", 0, -0.05), right: w(16, "right", 0, -0.1),
-    likely: w(16, "likely", 0, -0.12), sceneD2: lines[17].start + 0.6,
+    likely: w(16, "likely", 0, -0.12), sceneD2: lines[17].start + 0.9,
     hidden: w(17, "hidden", 0, -0.1), factoring: w(17, "factoring", 0, -0.08), molecules: w(17, "molecules", 0, -0.12),
     everyday: w(17, "everyday", 0, -0.1), wins: w(17, "wins", 0, -0.15), sceneD3: lines[18].start + 0.65,
     speedups: w(18, "speed", 0, -0.05), interf2: w(18, "interference", 0, -0.08), wrong2: w(18, "wrong", 0, -0.08),
@@ -404,7 +404,7 @@ export default function scene(k) {
         }
       }
       $("b-nodal").setAttribute("d", nod || "M0 0");
-      $("b-calm").style.transform = "translate(" + (HB.XB - 124) + "px," + (calmY - 32).toFixed(1) + "px)";
+      $("b-calm").style.transform = "translate(" + (HB.XB - 136) + "px," + (calmY - 58).toFixed(1) + "px)";
     });
   `;
 
@@ -442,7 +442,7 @@ export default function scene(k) {
     lbl("b-amplbl", 966, 104, 320, 62, "amplitude", "text-align:left;" + G) +
     lbl("b-plus", 244, 650, 70, 58, "+", "text-align:left") +
     lbl("b-minus", 322, 750, 70, 58, "−", "text-align:left") +
-    clbl("b-chance", 1500, 556, 240, 58, "chance") +
+    clbl("b-chance", 1500, 556, 170, 58, "chance", PAD) +
     lbl("b-sizelbl", 1330, SQ.y + 50, 124, 50, "size", "text-align:right;" + G) +
     clbl("b-sqlbl", SQ.x + SQ.s / 2, SQ.y - 72, 300, 46, "size × size")
   );
