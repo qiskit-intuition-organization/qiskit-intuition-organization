@@ -133,7 +133,7 @@ export default function scene(k) {
       L(`b-aname${b}`, cx, 202, 300, 56, `qubit ${b ? "B" : "A"}`) +
       DIG[b].split("").map((d, i) => L(`b-ad${b}${i}`, cx - 100 + i * 40, 484, 40, 56, d)).join("") +
       L(`b-abl${b}0`, cx - 60, 772, 80, 44, "0") + L(`b-abl${b}1`, cx + 60, 772, 80, 44, "1") +
-      L(`b-ahalf${b}0`, cx - 60, 604, 90, 44, "half") + L(`b-ahalf${b}1`, cx + 60, 604, 90, 44, "half");
+      L(`b-ahalf${b}0`, cx - 60, 606, 90, 40, "half") + L(`b-ahalf${b}1`, cx + 60, 606, 90, 40, "half");
   });
   aLab += L("b-aq", 960, 300, 160, 140, "?") + L("b-aeq", 960, 640, 120, 96, "=");
   const sceneA = sheet("b-sA", aSvg, aLab);
@@ -158,7 +158,7 @@ export default function scene(k) {
     g("b-torch", r.rect(190, 505, 170, 70, pen({ strokeWidth: 3.2 })) + r.poly([[360, 497], [425, 470], [425, 610], [360, 583]], pen({ strokeWidth: 3.2 })) +
       r.rect(240, 492, 36, 13, thin()) + r.line(210, 525, 340, 524, dim()) + r.line(210, 556, 340, 557, dim())) +
     `<g id="b-lensrot">` +
-    g("b-lens", lensShape + r.curve([[870, 420], [850, 404], [826, 404]], pen({ strokeWidth: 3 })) +
+    g("b-lens", lensShape) + g("b-arms", r.curve([[870, 420], [850, 404], [826, 404]], pen({ strokeWidth: 3 })) +
       r.curve([[1050, 405], [1110, 396], [1170, 392], [1186, 412]], pen({ strokeWidth: 3 }))) +
     g("b-hatch", lensHatch((i) => thin({ seed: 700 + i }))) +
     g("b-hatchg", lensHatch((i) => goldPen({ strokeWidth: 3.2, seed: 720 + i })), 'style="opacity:0"') +
@@ -237,16 +237,16 @@ export default function scene(k) {
   const sceneR = sheet("b-sR", rSvg, rLab);
 
   // D. The hardware only asks up or down
-  const dm = meter("b-dm", 1540, 520, 200, 160);
+  const dm = meter("b-dm", 1540, 520, 260, 170);
   const dSvg = dm.svg +
-    g("b-dwire", r.line(1000, 520, 1125, 520, pen({ strokeWidth: 3 })) + r.line(1235, 520, 1440, 520, pen({ strokeWidth: 3 }))) +
+    g("b-dwire", r.line(1000, 520, 1125, 520, pen({ strokeWidth: 3 })) + r.line(1235, 520, 1410, 520, pen({ strokeWidth: 3 }))) +
     g("b-dh", r.rect(1125, 465, 110, 110, goldPen({ strokeWidth: 4 }))) +
-    g("b-dout", arrow(1648, 520, 1720, 520, { strokeWidth: 2.8 }, 16)) +
+    g("b-dout", arrow(1678, 520, 1750, 520, { strokeWidth: 2.8 }, 16)) +
     g("b-dtick", tick(1488, 712, 54, goldPen({ strokeWidth: 4.6 })));
   const ROWD = [{ k: "|+⟩", d: "0", top: 628 }, { k: "|−⟩", d: "1", top: 724 }];
   const dDigT = (rIdx, i) => +((rIdx ? T.minus14 + 0.1 : T.plus14 + 0.12) + i * 0.17).toFixed(3);
   const dLab = dm.marks +
-    L("b-dtag", 1470, 278, 520, 48, "only asks: up or down?") + L("b-dhw", 1540, 358, 300, 44, "the hardware") +
+    L("b-dhw", 1540, 282, 300, 44, "the hardware") + L("b-dtag", 1540, 350, 520, 48, "only asks: up or down?") +
     L("b-dH", 1180, 466, 110, 80, "H", GC) + LR("b-dq", 990, 486, 140, 44, "qubit") +
     ROWD.map((row, rI) => LL(`b-drk${rI}`, 1080, row.top, 160, 56, `${row.k} →`) +
       [0, 1, 2, 3].map((i) => L(`b-dd${rI}${i}`, 1270 + i * 54, row.top, 50, 56, row.d, GC)).join("")).join("");
@@ -344,8 +344,8 @@ export default function scene(k) {
     blurOut("#b-title", 3.0);
     write("#b-aname0", 3.2, 0.45); write("#b-aname1", 3.4, 0.45);
     DIG.forEach((s, b) => s.split("").forEach((_, i) => write("#b-ad" + b + i, digT(b, i) - 0.04, 0.14)));
-    draw(["#b-ab00-fr", "#b-ab01-fr"], T.half1 - 0.2, 0.6); draw(["#b-ab10-fr", "#b-ab11-fr"], T.half1, 0.6);
-    write(["#b-abl00", "#b-abl01", "#b-abl10", "#b-abl11"], T.half1 + 0.4, 0.25);
+    draw(["#b-ab00-fr", "#b-ab01-fr"], T.zero1 - 0.45, 0.5); draw(["#b-ab10-fr", "#b-ab11-fr"], T.zero1 - 0.3, 0.5);
+    write(["#b-abl00", "#b-abl01", "#b-abl10", "#b-abl11"], T.zero1, 0.25);
     write(["#b-ahalf00", "#b-ahalf01"], T.time1b - 0.2, 0.35); write(["#b-ahalf10", "#b-ahalf11"], T.time1b, 0.35);
     write("#b-aeq", T.tell - 0.1, 0.3);
     toGold("#b-aq", T.apart - 0.3, 0.2);
@@ -353,7 +353,7 @@ export default function scene(k) {
     blurOut("#b-sA", T.endA);
 
     // ---------- B. Polarized sunglasses ----------
-    draw("#b-lens", T.think, 1.5); draw("#b-hatch", T.think + 1.1, 0.6);
+    draw("#b-lens", T.think, 1.5); draw("#b-arms", T.think + 0.9, 0.5); fade("#b-arms", 0, T.tilt - 0.1, 0.3); draw("#b-hatch", T.think + 1.1, 0.6);
     write("#b-polar", T.sung - 0.1, 0.9);
     write("#b-wud", T.light2 - 0.05, 0.7);
     fade(["#b-w0", "#b-wud"], 0, T.l3 + 0.15, 0.3);
@@ -406,7 +406,7 @@ export default function scene(k) {
     toGold("#b-rk1", T.minus11, 0.2);
     blurOut("#b-sR", T.endC);
     fade("#b-mid", 0, T.endC, 0.3);
-    move("#b-sC", { x: 0, scale: 1 }, { x: -170, scale: 0.8 }, T.endC, 0.8);
+    move("#b-sC", { x: 0, scale: 1 }, { x: -140, scale: 0.8 }, T.endC, 0.8);
 
     // ---------- D. Hardware asks up or down, so turn first ----------
     draw(["#b-dm-body", "#b-dm-nd"], T.hardware - 0.1, 1.0); write(["#b-dm-m0", "#b-dm-m1"], T.hardware + 0.8, 0.2);
@@ -506,7 +506,7 @@ export default function scene(k) {
       "b-w4": [[T.beam - 0.1, T.beam + 0.4, 0, 1]],
       "b-w5": [[T.partly, T.partly + 0.4, 0, 1]],
     };
-    const PHOTON_X = [[T.particle, T.particle + 0.8, 480, 846], [T.passes15 - 0.05, T.passes15 + 0.6, 846, 1500]];
+    const PHOTON_X = [[T.particle, T.particle + 0.8, 480, 846], [T.passes15 - 0.05, T.passes15 + 0.5, 846, 1250]];
     const GHOST_X = [[T.passes15 + 0.3, T.doesnt + 0.05, 480, 832]];
     const waveEls = {};
     const waveAx = {};
@@ -546,7 +546,7 @@ export default function scene(k) {
       const dx = tip[0] - C.x, dy = tip[1] - C.y, len = Math.hypot(dx, dy) || 1;
       const ux = dx / len, uy = dy / len;
       const px = side > 0 ? -uy : uy, py = side > 0 ? ux : -ux;
-      const cx = tip[0] + px * 76 + ux * 8, cy = tip[1] + py * 76 + uy * 8;
+      const cx = tip[0] + px * 76 - ux * 55, cy = tip[1] + py * 76 - uy * 55;
       el.style.left = (cx - 60).toFixed(1) + "px"; el.style.top = (cy - 42).toFixed(1) + "px";
     }
     onFrame((t) => {
@@ -574,7 +574,7 @@ export default function scene(k) {
       $("b-glowP").style.opacity = String(glow);
       rideLabel(kp, tipP, 1); rideLabel(km, tipM, -1);
       const fr = sched(FB_REV, t, 0), fa = sched(FB_ANG, t, 90), fg = sched(FB_GOLD, t, 0);
-      const fe = proj(fa, 1.25), fb = proj(fa + 180, 1.25);
+      const fs = 1.06 + 0.19 * Math.sin(fa * R2D), fe = proj(fa, fs), fb = proj(fa + 180, fs);
       ["b-fbax", "b-fbaxg"].forEach((id) => {
         const el = $(id);
         el.setAttribute("x1", (C.x + (fb[0] - C.x) * fr).toFixed(1)); el.setAttribute("y1", (C.y + (fb[1] - C.y) * fr).toFixed(1));
@@ -591,7 +591,7 @@ export default function scene(k) {
       // rows: asked up or down, then front or back
       Object.entries(ROWV).forEach(([id, segs]) => { const v = sched(segs, t, 0); setBar(id, v, v > 0.75); });
       // D: meter needle
-      $("b-dm-rot").setAttribute("transform", "translate(1540 571.2) rotate(" + needleD(t).toFixed(2) + ")");
+      $("b-dm-rot").setAttribute("transform", "translate(1540 574.4) rotate(" + needleD(t).toFixed(2) + ")");
       // E: beam, photon, ghost, bars
       const px = sched(PHOTON_X, t, 480);
       $("b-photon").style.opacity = t >= T.particle - 0.05 && px < 1495 ? "1" : "0";
