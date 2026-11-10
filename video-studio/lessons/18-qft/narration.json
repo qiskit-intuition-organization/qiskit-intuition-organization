@@ -1,20 +1,21 @@
 {
   "lines": [
-    { "say": "Play a chord on a piano. How does your ear pick out the notes?" },
-    { "say": "One tangled wave reaches you, yet you hear three separate notes." },
-    { "say": "Your ear splits the wave into the frequencies inside it. That's a Fourier transform." },
-    { "say": "The quantum Fourier transform, or Q F T, does the same to amplitudes, the numbers that set each reading's chance." },
-    { "say": "Two qubits have four possible readings: zero, one, two and three." },
-    { "say": "Put equal weight on zero and two, and none on one or three. It repeats every two steps." },
-    { "say": "Run the Q F T, and the output peaks at zero and two, matching that rhythm." },
-    { "say": "Here's why. Each input sends an arrow to every output, and the way it points is called its phase." },
-    { "say": "From zero, the arrows all point up. From two, they flip half a turn at every step." },
-    { "say": "At one and three, the arrows point opposite ways and cancel. At zero and two, they add. That's interference." },
-    { "say": "Slide the pattern onto one and three, and the peaks stay put. The Q F T hears the rhythm." },
+    { "say": "Play a piano chord. How does your ear pick out the notes?" },
+    { "say": "One tangled wave arrives, yet you hear three separate notes." },
+    { "say": "Your ear splits that wave into frequencies, how fast each note vibrates. That's a Fourier transform." },
+    { "say": "The quantum Fourier transform, or Q F T, does the same to amplitudes, the numbers that set each reading's chance when you measure." },
+    { "say": "Two qubits, quantum bits, have four possible readings, zero to three." },
+    { "say": "Put equal amplitudes on zero and two, leaving one and three empty. That pattern repeats every two steps." },
+    { "say": "Now run the Q F T, and the chance peaks at frequencies zero and two." },
+    { "say": "Here's why. Each input sends every output a clock hand, and where it points is its phase." },
+    { "say": "From zero, every hand points up. From two, each turns half a circle more than the last." },
+    { "say": "At outputs one and three, up cancels down, while at zero and two they add. That's interference." },
+    { "say": "Slide the pattern onto one and three, and the peaks stay put. The Q F T hears the rhythm, wherever it starts." },
     { "say": "Here the chord picture breaks. Your ear hears every note at once." },
-    { "say": "Measure afterwards, and you get one frequency per run, picked at random from the peaks." },
-    { "say": "So it isn't a faster way to analyse data. It shines when you need one hidden rhythm." },
-    { "say": "That's the step at the heart of Shor's algorithm for factoring big numbers." },
-    { "say": "So the Q F T turns rhythm into position. With N readings, a pattern repeating every r steps lands on multiples of N over r." }
+    { "say": "But measuring gives one frequency per run, picked at random from the peaks." },
+    { "say": "That's no good for listing every note in your data, but plenty when you need one hidden rhythm." },
+    { "say": "Shor's algorithm finds one, and uses it to break huge numbers into their factors." },
+    { "say": "So the Q F T turns rhythm into position." },
+    { "say": "With N readings, a pattern repeating every r steps lands on multiples of N over r." }
   ]
 }
