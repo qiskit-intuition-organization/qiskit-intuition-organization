@@ -10,7 +10,7 @@ export const meta = {
   ],
 }
 
-// Pass { studio: "<absolute path to video-studio>", date: "YYYY-MM-DD", parallel: 3, lessons: [...] } as the Workflow args.
+// Pass { studio: "<absolute path to video-studio>", date: "YYYY-MM-DD", parallel: 3, stagger: false, lessons: [...] } as the Workflow args.
 const STUDIO = args.studio
 
 const ctx = (L) => `You are making one short hand-drawn explainer video for lesson ${L.number} of the Qiskit Intuition course: "${L.title}" (lesson id "${L.id}").
@@ -36,7 +36,7 @@ const QA_SCHEMA = { type: 'object', properties: {
 
 const scriptPrompt = (L) => `${ctx(L)}
 
-YOUR JOB: write the narration script and a beat plan. Do not write scene.mjs yet.
+YOUR JOB: write the narration script and a beat plan. Do not write scene.mjs yet. If narration.json already exists in your lesson folder it is an unreviewed first draft: read it, keep what is good, and rewrite freely where it falls short.
 1. Study the lesson text, and the pilot's script (${STUDIO}/pilot/tools/narration.json) and storyboard (${STUDIO}/pilot/reference/storyboard.jpg) for tone and pacing.
 2. Write ${STUDIO}/lessons/${L.dir}/narration.json following every script rule in KIT.md: complete beginner, fluent and continuous, warm, the lesson's analogy, where it breaks, a one-sentence takeaway, 14 to 22 lines, 170 to 260 words, no dashes, maths spelled as spoken. Physics must be exactly right.
 3. Write ${STUDIO}/lessons/${L.dir}/plan.md: for each line (numbered from 0), what is on screen, which drawing appears on which spoken word, what is gold, what leaves. Design visuals a beginner understands at a glance; plan a strong central sketch for the analogy and a moving picture of the real idea (dials, arrows, bars, coins, waves, circuits drawn by hand), plus the closing picture. Keep everything in the safe area. Also list caption phrase pairs to add (spoken -> notation) and any respellings for the voice.
@@ -96,7 +96,7 @@ Repository worktree: ${REPO} (branch video-lessons). Run every command with git 
 1. Stage ONLY these files if they exist and changed: video-studio/lessons/${L.dir}/narration.json, video-studio/lessons/${L.dir}/plan.md, video-studio/lessons/${L.dir}/scene.mjs. Never stage anything else (no audio, renders, review/, project/, other lessons, nothing outside video-studio/).
 2. In ${STUDIO}/HANDOFF.md, under "## Progress log", append this line at the bottom of that list (before the next "## " heading), then stage HANDOFF.md too:
 - ${args.date}: lesson ${L.dir}: ${stage}. ${note}
-3. Commit with: git -C ${REPO} -c user.name="Dhruv Sachdeva" -c user.email="109058006+LuCiFeR041205@users.noreply.github.com" commit -m "chore(video): ${L.dir} ${stage}" -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -- video-studio/HANDOFF.md followed by only those of the three lesson files that exist (this path list makes the commit hold only these files, even if another batch staged something else)
+3. Commit with: git -C ${REPO} -c user.name="Dhruv Sachdeva" -c user.email="109058006+LuCiFeR041205@users.noreply.github.com" commit -m "chore(video): ${L.dir} ${stage}" -m "Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>" -- video-studio/HANDOFF.md followed by only those of the three lesson files that exist (this path list makes the commit hold only these files, even if another batch staged something else)
 4. git -C ${REPO} push origin video-lessons. If it is rejected, run git -C ${REPO} pull --rebase origin video-lessons, then push again.
 If git reports index.lock, wait 5 seconds and retry. Return the commit sha, whether the push succeeded, and the files committed.`,
     { label: `commit:${L.dir}:${stage}`, phase: 'Save', schema: COMMIT_SCHEMA, model: 'haiku', effort: 'low' })
@@ -109,11 +109,17 @@ const brief = (o) => JSON.stringify(o ?? {}).slice(0, 400)
 // Per-lesson flags let a run pick up where an earlier one stopped:
 // scriptDone skips the script stage, reviewDone skips script review, buildDone skips the build
 // (pass buildNotes so visual QA knows what the builder said).
+// With args.stagger, the first lesson runs alone until its script review is done, and only then
+// do the others start. Use it when the usage window is nearly full and about to reset.
+let openGate = () => {}
+const gate = args.stagger ? new Promise((open) => { openGate = open }) : Promise.resolve()
+
 const runLesson = async (L) => {
   const script = L.scriptDone ? { skipped: 'script already written' }
     : await agent(scriptPrompt(L), { label: `script:${L.dir}`, phase: 'Script', schema: SCRIPT_SCHEMA, effort: 'high' })
   const review = L.reviewDone ? { skipped: 'script review already done' }
     : await agent(reviewPrompt(L), { label: `review:${L.dir}`, phase: 'Script review', schema: REVIEW_SCHEMA, effort: 'high' })
+  if (L === lessons[0]) openGate()
   let build = L.buildNotes ?? { skipped: 'build already done' }
   if (!L.buildDone) {
     build = await agent(buildPrompt(L), { label: `build:${L.dir}`, phase: 'Build', schema: BUILD_SCHEMA, effort: 'high' })
@@ -141,5 +147,8 @@ const limited = async (fn) => {
   try { return await fn() } finally { active--; const next = waiting.shift(); if (next) next() }
 }
 
-const results = await parallel(lessons.map((L) => () => limited(() => runLesson(L))))
+const results = await parallel(lessons.map((L, i) => () => limited(async () => {
+  if (i > 0) await gate
+  try { return await runLesson(L) } finally { if (i === 0) openGate() }
+})))
 return results.map((r, i) => r ?? { lesson: lessons[i].dir, failed: true })
