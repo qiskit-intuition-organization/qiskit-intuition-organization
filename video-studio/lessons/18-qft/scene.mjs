@@ -220,7 +220,7 @@ export default function scene(k) {
     G("b-crack", r.linear(crackPts, pen({ strokeWidth: 3.6, roughness: 0.8 }))) +
     G("b-crBase", r.line(1030, RB, 1730, RB, pen({ strokeWidth: 3.4 }))) +
     [0, 2].map((i) => G(`b-cb${i}`, r.rect(RC[i] - RW / 2, RB - RH, RW, RH, pen({ strokeWidth: 3.2, roughness: 1 })) + r.rect(RC[i] - RW / 2 + 4, RB - RH + 4, RW - 8, RH - 8, hatch(INK)))).join("") +
-    [0, 2].map((i) => `<g id="b-cbs${i}" style="opacity:0">${r.rect(RC[i] - RW / 2 + 3, RB - RH + 3, RW - 6, RH - 6, pen({ fill: GOLD, fillStyle: "solid", stroke: GOLD, strokeWidth: 3 }))}</g>`).join("") +
+    [0, 2].map((i) => `<g id="b-cbs${i}" style="opacity:0"><rect x="${RC[i] - RW / 2 + 2}" y="${RB - RH + 2}" width="${RW - 4}" height="${RH - 3}" fill="${GOLD}"/>${r.rect(RC[i] - RW / 2 + 3, RB - RH + 3, RW - 6, RH - 6, pen({ fill: GOLD, fillStyle: "solid", stroke: GOLD, strokeWidth: 3 }))}</g>`).join("") +
     G("b-pk", [0, 2].map((i) => r.rect(RC[i] - RW / 2 - 12, RB - RH - 12, RW + 24, RH + 12, goldPen({ strokeWidth: 2.6, roughness: 1.2 }))).join("")) +
     G("b-rays", rays) +
     `<g id="b-eyeBW">${G("b-eyeB", eye(1380, 150, 140, 3))}</g>` +
@@ -361,7 +361,7 @@ export default function scene(k) {
       const rock = t > T.where && t < T.where + 1.1 ? 25 * Math.sin((2 * Math.PI * (t - T.where)) / 1.1) : 0;
       for (let k = 0; k < 4; k++) {
         const aS = 90 * s * k + (k === 3 ? rock : 0);
-        const aD = Math.min(180 * k, Math.max(0, (t - T.turns) * 360)) + 90 * s * k;
+        const aD = Math.min(180 * k, Math.max(0, (t - T.turns) * 540)) + 90 * s * k;
         const u = k % 2 === 0 ? S([[T.add, T.add + 0.5, 0, 1]], t, 0) : S([[T.cancels, T.cancels + 0.4, 0, 1], [T.pop + 0.15, T.pop + 0.55, 1, 0]], t, 0);
         const rad = aS * DEG, ux = Math.sin(rad), uy = -Math.cos(rad), po = 6 * (1 - u);
         $("b-hs" + k).setAttribute("transform", "rotate(" + aS.toFixed(2) + " " + COL[k] + " " + CY + ")");
@@ -471,7 +471,7 @@ export default function scene(k) {
     draw("#b-rhythm", T.repeats, 0.5);
     write("#b-rhyL", T.two5b, 0.5);
     fade("#b-z1", 0, T.two5b, 0.25);
-    fade("#b-z3", 0, T.two5b + 1.0, 0.3);
+    fade("#b-z3", 0, T.two5b, 0.25);
 
     // ===== Line 6: run the QFT; peaks at 0 and 2 =====
     tl.to(["#b-rhythm", "#b-rhyL"], { color: INK, duration: 0.3 }, T.run);
@@ -514,10 +514,10 @@ export default function scene(k) {
     fade("#b-fanB", 0.2, T.two8 + 0.3, 0.3);
     fade("#b-fanB", 0, T.turns + 0.3, 0.3);
     [1, 2, 3].forEach((k) => {
-      draw("#b-hop" + k, T.turns + 0.5 * k, 0.3);
-      write("#b-ht" + k, T.turns + 0.5 * k + 0.05, 0.35);
+      draw("#b-hop" + k, T.turns + k / 3, 0.3);
+      write("#b-ht" + k, T.turns + k / 3 + 0.05, 0.35);
     });
-    fade(["#b-hop1", "#b-hop2", "#b-hop3", "#b-ht1", "#b-ht2", "#b-ht3"], 0, T.l9, 0.3);
+    fade(["#b-hop1", "#b-hop2", "#b-hop3", "#b-ht1", "#b-ht2", "#b-ht3"], 0, T.l9 + 0.2, 0.3);
     tl.to(["#b-hd0", "#b-hd1", "#b-hd2", "#b-hd3"], { color: INK, duration: 0.3 }, T.l9);
 
     // ===== Line 9: they cancel at 1 and 3, they add at 0 and 2 =====
@@ -601,18 +601,18 @@ export default function scene(k) {
     draw("#b-dArOut", T.uses + 0.1, 0.35);
     write("#b-num", T.break14, T.huge + 0.26 - T.break14);
     draw("#b-dArIn", T.huge, 0.35);
-    write("#b-fac", T.factors, 0.7);
+    write("#b-fac", T.factors, 0.5);
     tl.to("#b-beat", { color: INK, duration: 0.3 }, T.factors);
-    blurOut("#b-sd", T.l15);
+    blurOut("#b-sd", T.l15 + 0.5);
 
     // ===== Line 15: the QFT turns rhythm into position =====
-    draw("#b-eInBase", T.l15 + 0.1, 0.3);
-    draw("#b-eInBars", T.l15 + 0.3, 0.4);
-    write(["#b-eiN0", "#b-eiN1", "#b-eiN2", "#b-eiN3"], T.l15 + 0.4, 0.3);
-    draw("#b-eBox", T.l15 + 0.6, 0.45);
-    write("#b-eQL", T.l15 + 0.8, 0.25);
-    draw("#b-eOutBase", T.l15 + 0.9, 0.3);
-    write(["#b-eoN0", "#b-eoN1", "#b-eoN2", "#b-eoN3"], T.l15 + 1.0, 0.3);
+    draw("#b-eInBase", T.l15 + 0.75, 0.3);
+    draw("#b-eInBars", T.l15 + 0.9, 0.4);
+    write(["#b-eiN0", "#b-eiN1", "#b-eiN2", "#b-eiN3"], T.l15 + 1.0, 0.3);
+    draw("#b-eBox", T.l15 + 1.15, 0.45);
+    write("#b-eQL", T.l15 + 1.3, 0.25);
+    draw("#b-eOutBase", T.l15 + 1.4, 0.3);
+    write(["#b-eoN0", "#b-eoN1", "#b-eoN2", "#b-eoN3"], T.l15 + 1.5, 0.3);
     write("#b-eQft", T.qft15, 0.3);
     write("#b-eRhy", T.rhythm15, 0.45);
     draw("#b-eArr", T.arrow15, 0.25);
