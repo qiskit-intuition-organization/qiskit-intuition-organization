@@ -15,7 +15,9 @@ export const phrases = [
 ];
 
 export default function scene(k) {
-  const { r, pen, goldPen, arrow, lbl, cue, lines, INK, GOLD } = k;
+  const { r, pen, goldPen, arrow, lbl, cue, lines, INK, GOLD, GROUND } = k;
+  // A gate box whose inside is painted with the ground, so the target wire stops at its edges.
+  const gateBox = (x, y, w, h, o) => `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" fill="${GROUND}"/>` + r.rect(x, y, w, h, pen(o));
   const fx = (n) => +(+n).toFixed(1);
   const DEG = Math.PI / 180;
   // Label centred on (cx, cy).
@@ -89,7 +91,7 @@ export default function scene(k) {
     combines: cue(12, "combines", 0, -0.1), hands12: cue(12, "hands", 0, -0.1), digits12: cue(12, "digits", 0, -0.1), one12: cue(12, "one", 0, -0.1),
     l13: cue(13), input13: cue(13, "input", 0, -0.1), turns13: cue(13, "turns", 0, -0.1), eigen: cue(13, "eigenstate", 0, -0.1), ket13: cue(13, "ket", 0, -0.1),
     l14: cue(14), other: cue(14, "other", 0, -0.1), random: cue(14, "random", 0, -0.1), phases: cue(14, "phases", 0, -0.1),
-    l15: cue(15), kick15: cue(15, "kick", 0, -0.1), u15a: cue(15, "kick", 0, 0.15), u15b: cue(15, "and", 0, -0.05), u15c: cue(15, "times", 0, -0.3),
+    l15: cue(15), kick15: cue(15, "kick", 0, -0.1), u15a: cue(15, "kick", 0, 0.15), u15b: cue(15, "Utwice", 0, 0.05), u15c: cue(15, "times", 0, -0.3),
     counting15: cue(15, "counting", 0, -0.1), inverse15: cue(15, "inverse", 0, -0.1), reads: cue(15, "reads", 0, -0.1), binary15: cue(15, "binary", 0, -0.1),
     end: lines[15].end,
   };
@@ -188,7 +190,7 @@ export default function scene(k) {
     G("b-cam", r.rect(300, 182, 92, 62, pen({ strokeWidth: 2.8, roughness: 1 })) + r.rect(318, 168, 30, 14, pen({ strokeWidth: 2.4, roughness: 0.8 })) +
       r.circle(346, 213, 36, pen({ strokeWidth: 2.6 })) + r.circle(346, 213, 12, pen({ strokeWidth: 2, fill: INK, fillStyle: "solid" }))) +
     G("b-wt", r.line(300, TY, 1150, TY, pen({ strokeWidth: 3, roughness: 0.8 }))) +
-    UX.map((x, j) => G(`b-U${j + 1}`, r.rect(x - 65, TY - 50, 130, 100, pen({ strokeWidth: 3.2, roughness: 1 })))).join("") +
+    UX.map((x, j) => G(`b-U${j + 1}`, gateBox(x - 65, TY - 50, 130, 100, { strokeWidth: 3.2, roughness: 1 }))).join("") +
     UX.map((x, j) => CG(`b-ct${j + 1}`, r.circle(x, WY[j], 22, pen({ strokeWidth: 2, fill: INK, fillStyle: "solid" })) + r.line(x, WY[j], x, TY - 52, pen({ strokeWidth: 2.8, roughness: 0.6 })), j === 0 ? GOLD : INK)).join("") +
     CG("b-kick", curveArrow([[542, 664], [598, 450], [700, 268], [980, 232], [1272, 262]], goldPen({ strokeWidth: 3.8 }), 18), GOLD) +
     G("b-sh1", curveArrow([[812 + OX, 318], [800 + OX, 352], [772 + OX, 384]], { strokeWidth: 2.6 }, 12)) +
@@ -292,7 +294,7 @@ export default function scene(k) {
     KY.map((y, j) => G(`b-kw${j + 1}`, r.line(300, y, 1040, y, pen({ strokeWidth: 3, roughness: 0.8 })))).join("") +
     KY.map((y, j) => G(`b-kr${j + 1}`, r.line(1260, y, 1400, y, pen({ strokeWidth: 3, roughness: 0.8 })))).join("") +
     G("b-kwt", r.line(300, TY, 1160, TY, pen({ strokeWidth: 3, roughness: 0.8 }))) +
-    KX.map((x, j) => G(`b-kU${j + 1}`, r.rect(x - 65, TY - 50, 130, 100, pen({ strokeWidth: 3.2, roughness: 1 })))).join("") +
+    KX.map((x, j) => G(`b-kU${j + 1}`, gateBox(x - 65, TY - 50, 130, 100, { strokeWidth: 3.2, roughness: 1 }))).join("") +
     KX.map((x, j) => G(`b-kc${j + 1}`, r.circle(x, KY[j], 22, pen({ strokeWidth: 2, fill: INK, fillStyle: "solid" })) + r.line(x, KY[j], x, TY - 52, pen({ strokeWidth: 2.8, roughness: 0.6 })))).join("") +
     KX.map((x, j) => CG(`b-kf${j + 1}`, arrow(x + 44, 662, x + 44, 600, goldPen({ strokeWidth: 3.4 }), 13), GOLD)).join("") +
     G("b-kQ", r.rect(1040, 250, 220, 360, pen({ strokeWidth: 3.6, roughness: 1 }))) +
