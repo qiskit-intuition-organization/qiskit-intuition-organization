@@ -17,5 +17,8 @@
   "bernstein-vazirani": "16-bernstein-vazirani",
   "grover": "17-grover",
   "qft": "18-qft",
-  "hardware": "20-hardware"
+  "phase-estimation": "19-phase-estimation",
+  "hardware": "20-hardware",
+  "real-chip": "21-real-chip",
+  "qml": "22-qml"
 }
