@@ -109,10 +109,11 @@ export default function scene(k) {
     return { svg, html };
   }
   // A laptop: screen (x, y, w wide) and keyboard base.
-  const laptop = (p, x, y, w) => {
+  const laptop = (p, x, y, w, solid = false) => {
     const h = w * 0.6;
-    return G(p, r.rect(x, y, w, h, pen({ strokeWidth: 3 })) + r.rect(x + 12, y + 12, w - 24, h - 24, pen({ strokeWidth: 1.8, roughness: 0.8 })) +
-      r.poly([[x - 20, y + h + 6], [x + w + 20, y + h + 6], [x + w + 46, y + h + 36], [x - 46, y + h + 36]], pen({ strokeWidth: 3 })));
+    const sf = solid ? { fill: GROUND, fillStyle: "solid" } : {};
+    return G(p, r.rect(x, y, w, h, pen({ strokeWidth: 3, ...sf })) + r.rect(x + 12, y + 12, w - 24, h - 24, pen({ strokeWidth: 1.8, roughness: 0.8 })) +
+      r.poly([[x - 20, y + h + 6], [x + w + 20, y + h + 6], [x + w + 46, y + h + 36], [x - 46, y + h + 36]], pen({ strokeWidth: 3, ...sf })));
   };
   // A one-qubit circuit: |0⟩, wire, RY box with a small knob on its top edge, meter. Local units with the
   // wire start at (ox, oy), scale s, label size ls.
@@ -160,18 +161,18 @@ export default function scene(k) {
     const neck = r.line(X(560), Y(440), X(560), Y(540), pen({ strokeWidth: 6, roughness: 0.6 })) +
       r.line(X(560), Y(445), X(1470), Y(445), pen({ strokeWidth: 3 })) + r.line(X(560), Y(535), X(1470), Y(535), pen({ strokeWidth: 3 })) +
       FR.map((x) => r.line(X(x), Y(447), X(x), Y(533), pen({ strokeWidth: 2, roughness: 0.6 }))).join("");
-    const body = r.curve(P([[1470, 445], [1462, 400], [1500, 340], [1600, 300], [1720, 300], [1770, 330]]), pen({ strokeWidth: 3.2 })) +
-      r.curve(P([[1470, 535], [1462, 580], [1500, 640], [1600, 680], [1720, 680], [1770, 650]]), pen({ strokeWidth: 3.2 })) +
-      r.circle(X(1620), Y(490), S(170), pen({ strokeWidth: 3 })) + r.circle(X(1620), Y(490), S(150), pen({ strokeWidth: 1.6, roughness: 1.6 })) +
-      r.line(X(1735), Y(440), X(1735), Y(540), pen({ strokeWidth: 5, roughness: 0.6 }));
+    // One closed outline: upper bout, rounded end (kept inside x 1775), lower bout.
+    const body = r.curve(P([[1470, 445], [1462, 400], [1500, 340], [1590, 302], [1690, 300], [1748, 334], [1772, 410], [1775, 490], [1772, 570], [1748, 646], [1690, 680], [1590, 678], [1500, 640], [1462, 580], [1470, 535]]), pen({ strokeWidth: 3.2 })) +
+      r.circle(X(1608), Y(490), S(160), pen({ strokeWidth: 3 })) + r.circle(X(1608), Y(490), S(140), pen({ strokeWidth: 1.6, roughness: 1.6 })) +
+      r.line(X(1722), Y(440), X(1722), Y(540), pen({ strokeWidth: 5, roughness: 0.6 }));
     const SY = [455, 470, 485, 500, 515, 530];
     const posts = [[330, topE(330) + 20], [410, topE(410) + 20], [490, topE(490) + 20], [490, botE(490) - 20], [410, botE(410) - 20], [330, botE(330) - 20]];
     let strings = "";
     SY.forEach((y, i) => {
       strings += r.line(X(posts[i][0]), Y(posts[i][1]), X(560), Y(y), pen({ strokeWidth: 1.6, roughness: 0.4 }));
-      if (i > 0) strings += r.line(X(560), Y(y), X(1735), Y(y), pen({ strokeWidth: 1.6, roughness: 0.3 }));
+      if (i > 0) strings += r.line(X(560), Y(y), X(1722), Y(y), pen({ strokeWidth: 1.6, roughness: 0.3 }));
     });
-    const vib = `<path id="${p}-vib" class="ink" pathLength="1" d="M${X(560)} ${Y(455)} L${X(1735)} ${Y(455)}" stroke="${INK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+    const vib = `<path id="${p}-vib" class="ink" pathLength="1" d="M${X(560)} ${Y(455)} L${X(1722)} ${Y(455)}" stroke="${INK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
     return G(`${p}-head`, head + pegs) + G(`${p}-neck`, neck) + G(`${p}-body`, body) + G(`${p}-str`, strings + vib);
   }
   // An ear: outer rim, inner fold, lobe. Local coordinates are the big ear's.
@@ -234,10 +235,11 @@ export default function scene(k) {
 
   // ===================== Scene B: tuning a guitar by ear (lines 2 and 3) =====================
   const TUN = tuner("b-tun", 0, 0, 1);
-  const PEG = { x: 410, y: 376 }; // key centre of the peg we turn
+  const GX = -40; // the big guitar sits 40 px left, so its body clears the phone edge
+  const PEG = { x: 410 + GX, y: 376 }; // key centre of the peg we turn
   const pegArrow = curveArrow(Array.from({ length: 9 }, (_, i) => { const a = ((200 + (i * 140) / 8) * Math.PI) / 180; return [PEG.x + Math.cos(a) * 44, PEG.y + Math.sin(a) * 44]; }), { gold: true, strokeWidth: 3 }, 13);
-  const soundSvg = [50, 85, 120].map((rr, i) => G(`b-snd${i}`, r.arc(1380, 450, 2 * rr, 2 * rr, (-78 * Math.PI) / 180, (-22 * Math.PI) / 180, false, pen({ strokeWidth: 2.6, roughness: 0.8 })))).join("");
-  const sB = full("b-sB", guitar("b-g", 0, 0, 1, true) + earSvg("b-ear", 0, 0, 1) + TUN.svg + soundSvg + G("b-pegAr", pegArrow),
+  const soundSvg = [40, 70, 100].map((rr, i) => G(`b-snd${i}`, r.arc(1400 + GX, 440, 2 * rr, 2 * rr, (-120 * Math.PI) / 180, (-60 * Math.PI) / 180, false, pen({ strokeWidth: 2.6, roughness: 0.8 })))).join("");
+  const sB = full("b-sB", guitar("b-g", GX, 0, 1, true) + earSvg("b-ear", -150 + GX, -50, 1) + TUN.svg + soundSvg + G("b-pegAr", pegArrow),
     LL("b-tbe", 192, 130, 420, 58, "tuning by ear") +
     C("b-tin", 940, 122, 200, 42, "in tune") + C("b-tfl", 846, 298, 90, 40, "flat") + C("b-tsh", 1034, 298, 100, 40, "sharp") +
     LL("b-low", 1112, 236, 240, 48, "too low", `color:${GOLD}`) + LL("b-closer", 1112, 236, 240, 48, "closer"));
@@ -270,7 +272,7 @@ export default function scene(k) {
     C("b-roth", D2.cx, 745, 300, 50, `θ = <span id="b-rothv">0.00</span>π`) + C("b-roth3", D2.cx, 745, 300, 50, "θ = π/3", `color:${GOLD}`) +
     C("b-rop", D2.cx, 806, 320, 54, `P(1) = <span id="b-ropv">0%</span>`, `color:${GOLD}`) +
     C("b-barl", BAR.x + BAR.w / 2, 0, 130, 46, "0%", `color:${GOLD}`) +
-    RL("b-tgtl", 688, T25, 230, 42, "target 25%") +
+    RL("b-tgtl", 668, T25, 230, 42, "target 25%") +
     C("b-old50", BAR.x + BAR.w / 2, 520, 110, 44, "50%") +
     LL("b-howfar", 815, 612, 260, 46, "how far off") + LL("b-eqcost", 815, 672, 220, 54, "= cost", `color:${GOLD}`) +
     coin("b-coin1", 650, 384, 34, "1", true, 50));
@@ -340,7 +342,7 @@ export default function scene(k) {
   let net = "";
   for (let l = 0; l < 2; l++) NN[l][1].forEach((y1) => NN[l + 1][1].forEach((y2) => { net += r.line(NN[l][0], y1, NN[l + 1][0], y2, pen({ strokeWidth: 1.6, roughness: 0.6 })); }));
   NN.forEach(([x, ys]) => ys.forEach((y) => { net += r.circle(x, y, 26, pen({ strokeWidth: 2.6, fill: GROUND, fillStyle: "solid" })); }));
-  const sNet = full("b-netW", G("b-net", net), C("b-netl", 1590, 420, 220, 46, "AI model") + C("b-approx", 1290, 262, 90, 70, "≈"));
+  const sNet = full("b-netW", G("b-net", net), C("b-netl", 1590, 420, 220, 46, "AI model") + C("b-approx", 1405, 300, 90, 70, "≈"));
 
   // ===================== Scene E: the guitar picture breaks (line 10) =====================
   const TUN2 = tuner("b-tun2", 220 - 790 * 0.6, 250 - 150 * 0.6, 0.6);
@@ -389,7 +391,7 @@ export default function scene(k) {
     r.line(cx - 140, 520, cx + 140, 520, pen({ strokeWidth: 3 })) + r.curve([[cx - 140, 520], [cx - 90, 554], [cx + 90, 554], [cx + 140, 520]], pen({ strokeWidth: 3 })));
   const CP = circuit("b-pc", 427, 488, 0.4, 40, { ket: false, ry: "RY" });
   const panL = `<div class="obj" id="b-panL" style="left:0;top:0;width:1920px;height:1080px"><svg class="sk" width="1920" height="1080" viewBox="0 0 1920 1080">${G("b-panLs", pan(560))}${CP.svg}</svg>${CP.html}${C("b-qlab", 560, 596, 220, 48, "quantum")}</div>`;
-  const panR = `<div class="obj" id="b-panR" style="left:0;top:0;width:1920px;height:1080px"><svg class="sk" width="1920" height="1080" viewBox="0 0 1920 1080">${G("b-panRs", pan(1360))}${laptop("b-lapR", 1270, 371, 180)}</svg>${C("b-olab", 1360, 596, 220, 48, "ordinary")}</div>`;
+  const panR = `<div class="obj" id="b-panR" style="left:0;top:0;width:1920px;height:1080px"><svg class="sk" width="1920" height="1080" viewBox="0 0 1920 1080">${G("b-panRs", pan(1360))}${laptop("b-lapR", 1270, 371, 180, true)}</svg>${C("b-olab", 1360, 596, 220, 48, "ordinary")}</div>`;
   const sH = wrap("b-sH",
     full("b-scale",
       G("b-post", r.line(960, 372, 960, 742, pen({ strokeWidth: 4.4 })) + r.line(870, 752, 1050, 752, pen({ strokeWidth: 4 })) + r.line(900, 752, 960, 712, pen({ strokeWidth: 2.6 })) + r.line(1020, 752, 960, 712, pen({ strokeWidth: 2.6 }))) +
@@ -522,11 +524,11 @@ export default function scene(k) {
 
       // ===== Guitar strings and tuner needles =====
       const amp = pluckAmp(t, T.pluck, 18) + pluckAmp(t, T.pluck2, 18);
-      $("b-g-vib").setAttribute("d", stringD(560, 1735, 455, amp));
+      $("b-g-vib").setAttribute("d", stringD(${560 + GX}, ${1722 + GX}, 455, amp));
       const ta = sched([[T.here, T.here + 0.5, -45, -30], [T.pluck2 + 0.1, T.pluck2 + 0.7, -30, -8]], t, -45) + (t > T.here && t < T.here + 1 ? 4 * Math.exp(-(t - T.here - 0.5) * 4) * Math.sin(2 * Math.PI * 3 * (t - T.here - 0.5)) * (t > T.here + 0.5 ? 1 : 0) : 0);
       $("b-tun-nT").setAttribute("transform", "rotate(" + ta.toFixed(2) + " 940 300)");
       const amp2 = pluckAmp(t, T.hear10 - 0.15, 10);
-      $("b-g2-vib").setAttribute("d", stringD(${f1(180 - 240 * 0.42 + 560 * 0.42)}, ${f1(180 - 240 * 0.42 + 1735 * 0.42)}, ${f1(500 - 490 * 0.42 + 455 * 0.42)}, amp2));
+      $("b-g2-vib").setAttribute("d", stringD(${f1(180 - 240 * 0.42 + 560 * 0.42)}, ${f1(180 - 240 * 0.42 + 1722 * 0.42)}, ${f1(500 - 490 * 0.42 + 455 * 0.42)}, amp2));
       const tb = t < T.moment ? -45 : -12;
       $("b-tun2-nT").setAttribute("transform", "rotate(" + tb + " ${TUN2.px} ${TUN2.py})");
 
@@ -548,7 +550,7 @@ export default function scene(k) {
       bl.style.top = f1(BAR.yb - bh - 64) + "px";
       bl.textContent = Math.round(p2 * fill * 100) + "%";
       const yTop = BAR.yb - bh, y25 = BAR.yb - BAR.h * 0.25, gp = $("b-gap");
-      if (y25 - yTop > 26) gp.setAttribute("d", "M795 " + f1(yTop + 3) + " L795 " + f1(y25 - 3) + " M785 " + f1(yTop + 15) + " L795 " + f1(yTop + 3) + " L805 " + f1(yTop + 15) + " M785 " + f1(y25 - 15) + " L795 " + f1(y25 - 3) + " L805 " + f1(y25 - 15));
+      if (y25 - yTop > 40) gp.setAttribute("d", "M795 " + f1(yTop + 3) + " L795 " + f1(y25 - 3) + " M785 " + f1(yTop + 15) + " L795 " + f1(yTop + 3) + " L805 " + f1(yTop + 15) + " M785 " + f1(y25 - 15) + " L795 " + f1(y25 - 3) + " L805 " + f1(y25 - 15));
       else gp.setAttribute("d", "");
       gp.setAttribute("stroke", t >= T.far && t < T.l6 ? GOLD : INK);
 
@@ -558,8 +560,10 @@ export default function scene(k) {
       const dC = 2 * (p2 - 0.25) * (Math.PI / 2) * Math.sin(Math.PI * a2);
       const m = -((CH.h / CMAX) * dC) / (CH.w / CH.thMax), n = Math.hypot(1, m), hl = 100;
       const tn = $("b-tan");
-      tn.setAttribute("x1", f1(bx - hl / n)); tn.setAttribute("y1", f1(by - (hl * m) / n));
-      tn.setAttribute("x2", f1(bx + hl / n)); tn.setAttribute("y2", f1(by + (hl * m) / n));
+      const clipAx = (x, y) => (y > CH.y0 && y !== by ? [bx + ((x - bx) * (CH.y0 - by)) / (y - by), CH.y0] : [x, y]);
+      const e1 = clipAx(bx - hl / n, by - (hl * m) / n), e2 = clipAx(bx + hl / n, by + (hl * m) / n);
+      tn.setAttribute("x1", f1(e1[0])); tn.setAttribute("y1", f1(e1[1]));
+      tn.setAttribute("x2", f1(e2[0])); tn.setAttribute("y2", f1(e2[1]));
 
       // ===== Optimizer loop: a gold dot laps the loop every 1.6 s =====
       const ph = (-90 + (360 * (t - T.loop - 0.6)) / 1.6) * Math.PI / 180;
@@ -815,7 +819,7 @@ export default function scene(k) {
 
     // ===================== Line 15: how it works, and where it might help =====================
     blurOut("#b-sH", T.point - 0.1);
-    tl.set(["#b-optl", "#b-lb0", "#b-lb1", "#b-lb2"], { opacity: 0 }, T.point);
+    tl.set(["#b-optl", "#b-lb0", "#b-lb1", "#b-lb2", "#b-lb0b", "#b-lb1b", "#b-lb2b"], { opacity: 0 }, T.point);
     tl.set("#b-loopW", { filter: "blur(0px)", transformOrigin: "960px 470px" }, T.point);
     tl.fromTo("#b-loopW", { opacity: 0, scale: 0.45, x: -200 }, { opacity: 1, scale: 0.6, x: -200, duration: 0.5, ease: "power2.out", immediateRender: false }, T.point + 0.05);
     drawP("#b-mag", T.works - 0.2, 0.6);
