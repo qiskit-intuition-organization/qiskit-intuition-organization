@@ -1,0 +1,21 @@
+{
+  "lines": [
+    { "say": "Remember turning the R Y knob by hand until a qubit, a quantum bit, read one a quarter of the time?" },
+    { "say": "This time, let a computer turn it for you." },
+    { "say": "It's like tuning a guitar by ear: pluck, hear how far off it is, nudge the peg, pluck again." },
+    { "say": "Our circuit's pegs are its rotation angles, like theta, left free to change, so it's trainable." },
+    { "say": "Start theta at pi over two: a one comes up half the time, but we want a quarter." },
+    { "say": "How far off we are is called the cost. Plotted against theta, it's a valley with zero at the bottom." },
+    { "say": "Its slope, called the gradient, shows which way is downhill, so we nudge that way." },
+    { "say": "Run, measure, nudge again, and the chance slides from fifty percent to twenty five." },
+    { "say": "Each time, the new theta is the old theta minus a small step times the slope." },
+    { "say": "An ordinary program, the optimizer, runs this loop, just as AI models are trained." },
+    { "say": "But here the guitar picture breaks: you hear a pitch the moment you pluck." },
+    { "say": "Each run gives just a zero or a one, so we estimate the cost from many runs, called shots." },
+    { "say": "Even the slope must be measured, by rerunning with theta shifted pi over two each way." },
+    { "say": "So every listen costs many runs." },
+    { "say": "And quantum learning isn't automatically better: today it often matches ordinary computers, or does worse." },
+    { "say": "The point is knowing how it works, and where it might help." },
+    { "say": "So a trainable circuit has knobs, and an optimizer turns them downhill on a measured cost." }
+  ]
+}

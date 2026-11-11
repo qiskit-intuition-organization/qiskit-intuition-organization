@@ -1,19 +1,19 @@
 {
   "lines": [
     {
-      "say": "Your circuit is ready, and you want to run it on a real chip."
+      "say": "Your circuit is ready. Now let's run it on a real quantum chip."
     },
     {
-      "say": "Here's the catch. On a chip, not every qubit can reach every other."
+      "say": "Here's the catch: on a chip, not every qubit is wired to every other."
     },
     {
-      "say": "Picture a long dinner table, where guests can only chat with their neighbours."
+      "say": "Picture a long dinner table where guests can only chat with their neighbours."
     },
     {
-      "say": "To reach the far end, they trade seats, risking a spilled drink every time."
+      "say": "To reach the far end, guests swap seats, and each swap risks a spilled drink."
     },
     {
-      "say": "A chip is the same. Wires join only neighbouring qubits, a wiring diagram called the coupling map."
+      "say": "A chip is the same: wires join only neighbours, in a pattern called the coupling map."
     },
     {
       "say": "A gate on two qubits, like C NOT, only works along a wire."
@@ -22,34 +22,34 @@
       "say": "What if your circuit needs a C NOT between qubits that aren't neighbours?"
     },
     {
-      "say": "Qiskit's transpiler, which fits your circuit to the chip, adds swap gates."
+      "say": "Kiss kit's transpiler, which fits your circuit to the chip, adds swap gates."
     },
     {
-      "say": "A swap trades the states of two neighbours, like guests trading seats. Moving states like this is called routing."
+      "say": "A swap trades the states of two neighbours, like guests trading seats. Adding them is called routing."
     },
     {
       "say": "Take four qubits in a row, and a C NOT from first to last."
     },
     {
-      "say": "Two swaps walk the first state along until it's beside the last. Then the C NOT runs."
+      "say": "Two swaps walk the first state next to the last. Then the C NOT runs."
     },
     {
       "say": "But each swap costs three C NOTs, so one gate has become seven."
     },
     {
-      "say": "Every C NOT adds a little noise, a small chance of error, so more gates mean a noisier answer."
+      "say": "Every C NOT adds a small chance of error, called noise, so more gates mean a noisier answer."
     },
     {
-      "say": "Here the dinner table breaks down, because a guest could always just shout."
+      "say": "Here's where the dinner table breaks down: a guest could always just shout."
     },
     {
-      "say": "A chip has no shortcut. Far apart qubits can't interact until their states sit side by side."
+      "say": "A chip has no shortcut. Distant qubits can't interact until their states sit side by side."
     },
     {
-      "say": "The rewritten circuit may look different, but it computes the same thing. Only the noise has grown."
+      "say": "The rewritten circuit may look different, but it computes the same thing. Only the noise grows."
     },
     {
-      "say": "So keep qubits that work together close, and keep circuits short."
+      "say": "So think like the chip: keep qubits that work together close, and circuits short."
     },
     {
       "say": "Chips connect only neighbours, routing adds swaps, and every swap adds noise."
