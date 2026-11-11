@@ -14,7 +14,7 @@ function Sketch({ sketch }: { sketch: WalkthroughSketch }) {
       </div>
     );
   }
-  const labels = Object.keys(sketch.odds);
+  const labels = Object.keys(sketch.odds).sort(); // 00, 01, 10, 11: same-length bitstrings
   return (
     <div className="walkthrough-sketch">
       <ProbabilityBars probabilities={labels.map((k) => sketch.odds[k])} labels={labels} />

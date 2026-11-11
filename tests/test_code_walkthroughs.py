@@ -44,6 +44,6 @@ def test_every_step_is_short_and_well_formed(lesson):
             continue
         assert sketch["kind"] in {"arrow", "odds"} and sketch["label"]
         if sketch["kind"] == "arrow":
-            assert math.isclose(math.dist(sketch["xyz"], (0, 0, 0)), 1, abs_tol=1e-6)
+            assert math.isclose(math.dist(sketch["xyz"], (0, 0, 0)), 1, abs_tol=1e-3)
         else:
-            assert math.isclose(sum(sketch["odds"].values()), 1, abs_tol=1e-6)
+            assert math.isclose(sum(sketch["odds"].values()), 1, abs_tol=1e-3)

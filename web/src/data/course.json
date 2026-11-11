@@ -641,7 +641,7 @@
       "misconception": "Counts like 512/488 instead of 500/500 don't mean the circuit is wrong. That's shot noise. Compare to the exact probabilities before blaming the circuit.",
       "qiskit": {
         "intro": "`measure_all()` adds a measurement to every qubit. `StatevectorSampler` is a local, ideal Sampler: it returns counts just like hardware would.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(1)\nqc.h(0)                 # put the arrow on the equator (Lesson 5)\nqc.measure_all()        # measure every qubit\n\nprint(qc.draw())\n\nsampler = StatevectorSampler()\nresult = sampler.run([qc], shots=1000).result()\ncounts = result[0].data.meas.get_counts()\nprint(counts)\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\nqc = QuantumCircuit(1)  # one qubit, arrow up at |0⟩\nqc.h(0)                 # H: arrow to the equator, |+⟩\nqc.measure_all()        # measure every qubit\n\nprint(qc.draw())  # H box, a barrier, then the meter\n\nsampler = StatevectorSampler()  # an ideal simulator on your computer\nresult = sampler.run([qc], shots=1000).result()  # 1000 shots\ncounts = result[0].data.meas.get_counts()  # tally of each reading\nprint(counts)  # about 500 each, rarely exactly\n",
         "notes": [
           [
             "measure_all()",
@@ -722,7 +722,80 @@
         "captures": "Each shot is one vote; the fractions estimate the probabilities, with an error that shrinks like 1/√N.",
         "breaks": "A voter already had an opinion before you asked. A qubit has no answer waiting: measuring creates it, and every \"vote\" needs a freshly prepared qubit."
       },
-      "takeaway": "One shot is one vote; many shots reveal the odds."
+      "takeaway": "One shot is one vote; many shots reveal the odds.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler",
+          "does": "Two tools: one builds circuits, one runs them shot by shot.",
+          "more": "StatevectorSampler is new here. It plays the role of real hardware: instead of handing you the arrow, it hands you counts, like a poll.",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(1)",
+          "does": "One qubit, arrow pointing up at |0⟩.",
+          "more": "",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": null,
+            "label": "starts at |0⟩"
+          }
+        },
+        {
+          "code": "qc.h(0)",
+          "does": "H tips the arrow down to the equator: |+⟩, a fifty fifty qubit.",
+          "more": "H gets its own lesson next. For now it just sets up a qubit whose true odds we know: half 0, half 1.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after H"
+          }
+        },
+        {
+          "code": "qc.measure_all()",
+          "does": "Add a measurement: each shot, the qubit answers 0 or 1, one vote.",
+          "more": "Measuring creates the answer and leaves the qubit sitting on it. The answer lands in a place named meas, which we read later.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 0.5,
+              "1": 0.5
+            },
+            "label": "true odds of each vote"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw the circuit: an H box, then a meter writing to meas.",
+          "more": "The shaded ░ column is a barrier that measure_all adds before the meters. The double line at the bottom is meas, where the 0 or 1 gets stored; '1/' means it holds 1 bit.",
+          "sketch": null
+        },
+        {
+          "code": "sampler = StatevectorSampler()\nresult = sampler.run([qc], shots=1000).result()",
+          "does": "Run the poll: prepare a fresh qubit and measure it, 1000 times.",
+          "more": "The circuit goes inside square brackets, [qc], because a Sampler takes a list and can run several circuits at once. .result() waits for the run to finish.",
+          "sketch": null
+        },
+        {
+          "code": "counts = result[0].data.meas.get_counts()\nprint(counts)",
+          "does": "Count the votes: about 500 zeros and 500 ones, like {'1': 513, '0': 487}.",
+          "more": "result[0] is the first (and only) circuit, and meas is where its readings went. Your numbers will differ each run: that gap from 500 is shot noise, not a bug.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "superposition",
@@ -782,7 +855,7 @@
       "misconception": "H does not 'add randomness'. It's a deterministic rotation; randomness only appears when you measure a state that sits off the poles.",
       "qiskit": {
         "intro": "Same pattern as X: `qc.h(qubit)`. Printing the `Statevector` shows the 1/√2 ≈ 0.707 amplitudes.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nplus = QuantumCircuit(1)\nplus.h(0)\n\nback = QuantumCircuit(1)\nback.h(0)\nback.h(0)\n\nprint(back.draw())\n\nprint('H|0>  =', Statevector(plus))\nprint('HH|0> =', Statevector(back))\n",
+        "code": "from qiskit import QuantumCircuit  # builds circuits\nfrom qiskit.quantum_info import Statevector  # works out the arrow\n\nplus = QuantumCircuit(1)  # one qubit, arrow up at |0⟩\nplus.h(0)  # H tips it onto the equator: |+⟩\n\nback = QuantumCircuit(1)  # a second circuit, also at |0⟩\nback.h(0)  # first H: arrow tips to |+⟩\nback.h(0)  # second H: arrow tips back up to |0⟩\n\nprint(back.draw())  # one wire, two H boxes\n\nprint('H|0>  =', Statevector(plus))  # 0.707 and 0.707: 50/50\nprint('HH|0> =', Statevector(back))  # 1 and 0: always 0\n",
         "notes": [
           [
             "plus.h(0)",
@@ -859,7 +932,104 @@
         "captures": "|+⟩ is a definite state. The randomness comes from the question you ask, which is why a second H can bring the needle back to north exactly.",
         "breaks": "A real needle pointing east would answer \"neither\". A qubit must answer 0 or 1, and then it really becomes that answer."
       },
-      "takeaway": "H tips the arrow onto the equator: a definite state with random answers. A second H undoes it."
+      "takeaway": "H tips the arrow onto the equator: a definite state with random answers. A second H undoes it.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The same two tools: one builds circuits, one works out the arrow.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "plus = QuantumCircuit(1)\nplus.h(0)",
+          "does": "One qubit, then H tips the arrow from the north pole onto the equator.",
+          "more": "The arrow now faces you at |+⟩. It is a definite direction, like a compass needle pointing east. Only the question \"0 or 1?\" has no favourite answer.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after H"
+          }
+        },
+        {
+          "code": "back = QuantumCircuit(1)\nback.h(0)",
+          "does": "A second circuit: same start at |0⟩, same first H, arrow at |+⟩.",
+          "more": "",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after first H"
+          }
+        },
+        {
+          "code": "back.h(0)",
+          "does": "H again: the same turn tips the arrow straight back up to |0⟩.",
+          "more": "H is a turn, not a coin toss. Doing the same turn twice brings the arrow home, so nothing random is left.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "after second H"
+          }
+        },
+        {
+          "code": "print(back.draw())",
+          "does": "Draw the second circuit: one wire with two H boxes in a row.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "print('H|0>  =', Statevector(plus))",
+          "does": "One H: two equal weights, 0.707 each, so 0 and 1 are 50/50.",
+          "more": "Each number is a weight, 1/√2 ≈ 0.707. Squared, it gives the chance: one half. The \"+0.j\" is an imaginary part of zero, and dims=(2,) just says one qubit with two possible answers.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 0.5,
+              "1": 0.5
+            },
+            "label": "odds after one H"
+          }
+        },
+        {
+          "code": "print('HH|0> =', Statevector(back))",
+          "does": "Two H's: weights 1 and 0, so it reads 0 every time.",
+          "more": "The randomness was never lost. The arrow just pointed along the equator, and the second H turned it back to the pole.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 1.0,
+              "1": 0.0
+            },
+            "label": "odds after two H's"
+          }
+        }
+      ]
     },
     {
       "id": "rotations",
@@ -916,7 +1086,7 @@
       "misconception": "Doubling the angle doesn't double the probability. P(1) = sin²(θ/2) is curved: small angles barely move the odds; angles near π/2 move them fastest.",
       "qiskit": {
         "intro": "Rotation gates take the angle first, then the qubit. Use `numpy.pi` for exact fractions of π.",
-        "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nfor theta in [0, np.pi / 3, np.pi / 2, np.pi]:\n    qc = QuantumCircuit(1)\n    qc.ry(theta, 0)\n    p1 = Statevector(qc).probabilities()[1]\n    print(f'theta = {theta:.3f}  ->  P(1) = {p1:.3f}')\n\nprint(qc.draw())          # the last circuit: RY(pi)\n",
+        "code": "import numpy as np  # math tools, including pi\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nfor theta in [0, np.pi / 3, np.pi / 2, np.pi]:  # four dial settings\n    qc = QuantumCircuit(1)  # fresh qubit, arrow up at |0⟩\n    qc.ry(theta, 0)  # turn the arrow by theta\n    p1 = Statevector(qc).probabilities()[1]  # chance of reading 1\n    print(f'theta = {theta:.3f}  ->  P(1) = {p1:.3f}')  # one line per setting\n\nprint(qc.draw())  # the last circuit: RY(pi)\n",
         "notes": [
           [
             "qc.ry(theta, 0)",
@@ -983,7 +1153,74 @@
         "captures": "Rotations give continuous control: the angle sets the probability of reading 1.",
         "breaks": "A dimmer brightens evenly as you turn it; P(1) = sin²(θ/2) changes slowly near the ends and fast in the middle. And each measurement is still fully on or fully off, never half-bright."
       },
-      "takeaway": "RY(θ) is a dial: P(1) = sin²(θ/2)."
+      "takeaway": "RY(θ) is a dial: P(1) = sin²(θ/2).",
+      "walkthrough": [
+        {
+          "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "Our two usual tools, plus numpy for the number pi.",
+          "more": "Angles here are in radians: a half turn is pi (about 3.142), a quarter turn is pi / 2. `import numpy as np` just lets us write the short name np.",
+          "sketch": null
+        },
+        {
+          "code": "for theta in [0, np.pi / 3, np.pi / 2, np.pi]:\n    qc = QuantumCircuit(1)",
+          "does": "Try four dial settings. Each one starts a fresh qubit, arrow up at |0⟩.",
+          "more": "This is a loop, new in this lesson. The indented lines run once for each value in the list, with theta set to that value: 0, then pi/3, then pi/2, then pi.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": null,
+            "label": "each round starts at |0⟩"
+          }
+        },
+        {
+          "code": "    qc.ry(theta, 0)",
+          "does": "Turn the dial: RY tips the arrow by angle theta, angle first, then qubit.",
+          "more": "The sketch shows theta = pi/3, a sixth of a full turn: the arrow leans a third of the way from the north pole to the south pole. At pi/2 it sits on the equator, at pi it points straight down at |1⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.866,
+              0.0,
+              0.5
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after RY(π/3)"
+          }
+        },
+        {
+          "code": "    p1 = Statevector(qc).probabilities()[1]",
+          "does": "Read off the chance of getting 1 for this setting.",
+          "more": "probabilities() gives a list of odds in outcome order, 0 first. The [1] picks the second entry, the chance of 1. For theta = pi/3 that is 0.25: one reading in four.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 0.75,
+              "1": 0.25
+            },
+            "label": "odds at θ = π/3"
+          }
+        },
+        {
+          "code": "    print(f'theta = {theta:.3f}  ->  P(1) = {p1:.3f}')",
+          "does": "Print one line per setting: P(1) climbs 0, 0.25, 0.5, 1 as the dial turns.",
+          "more": "The f before the quotes makes an f-string: anything in {curly braces} is replaced by its value. The :.3f part means show 3 decimal places, so pi/3 prints as 1.047.",
+          "sketch": null
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw the last circuit from the loop: one wire with an Ry(π) box.",
+          "more": "After the loop ends, qc still holds the circuit from the final round, theta = pi. That is a half turn, the same flip as X.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "phase",
@@ -1041,7 +1278,7 @@
       "misconception": "'The gate did nothing because the bars didn't move' is the classic trap. A gate can change the state without changing the current measurement odds.",
       "qiskit": {
         "intro": "Phase gates: `z`, `s`, `t`, and the general phase gate `p(φ)`. Compare statevectors to see the phase that measurements can't.",
-        "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)\nqc.h(0)\nqc.s(0)          # quarter turn around z\n\nprint(qc.draw())\n\nstate = Statevector(qc)\nprint('amplitudes   :', np.round(state.data, 3))\nprint('probabilities:', state.probabilities_dict(decimals=3))\n",
+        "code": "import numpy as np  # number tools, used here to round\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(1)  # one qubit, arrow up at |0⟩\nqc.h(0)  # tip it to the equator, facing |+⟩\nqc.s(0)  # quarter turn around z: now |+i⟩\n\nprint(qc.draw())\n\nstate = Statevector(qc)  # work out the arrow\nprint('amplitudes   :', np.round(state.data, 3))  # the phase shows here\nprint('probabilities:', state.probabilities_dict(decimals=3))  # still 50/50\n",
         "notes": [
           [
             "qc.s(0)",
@@ -1115,7 +1352,78 @@
         "captures": "Phase leaves the measurement odds untouched, yet it is a real difference that a later gate can turn into different odds.",
         "breaks": "Longitude is printed on every map. Phase can't be read off directly: only interference reveals a relative phase, and turning the whole globe at once (a global phase) changes nothing at all."
       },
-      "takeaway": "Phase is the arrow's longitude: invisible now, decisive later."
+      "takeaway": "Phase is the arrow's longitude: invisible now, decisive later.",
+      "walkthrough": [
+        {
+          "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The two usual tools, plus numpy to tidy up long numbers.",
+          "more": "numpy is Python's number toolbox. We only use np.round from it, to cut the amplitudes to 3 decimals.",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(1)\nqc.h(0)",
+          "does": "One qubit, then H lays the arrow on the equator, pointing at |+⟩.",
+          "more": "This is where the video started: on the equator, fifty fifty.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after H"
+          }
+        },
+        {
+          "code": "qc.s(0)",
+          "does": "S turns the arrow a quarter way round the equator. Longitude changes, latitude doesn't.",
+          "more": "Z would be a half turn, S a quarter, T an eighth. The arrow now faces |+i⟩, still on the equator, so the odds can't have moved.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "after S"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw the circuit: one wire, an H box then an S box.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "state = Statevector(qc)\nprint('amplitudes   :', np.round(state.data, 3))",
+          "does": "Peek at the raw amplitudes: the j on |1⟩ is the phase S added.",
+          "more": "Python writes i as j. So [0.707+0.j    0.   +0.707j] means 0.707 for |0⟩ and 0.707i for |1⟩ (the spaces are just padding). Without S the second one would be plain 0.707: only the phase differs.",
+          "sketch": null
+        },
+        {
+          "code": "print('probabilities:', state.probabilities_dict(decimals=3))",
+          "does": "The odds: still fifty fifty. Measurement can't see the turn S made.",
+          "more": "Python prints np.str_('0'): np.float64(0.5), which just means '0': 0.5. To reveal the phase, a later gate like H must turn longitude into latitude.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 0.5,
+              "1": 0.5
+            },
+            "label": "odds after S"
+          }
+        }
+      ]
     },
     {
       "id": "interference",
@@ -1171,7 +1479,7 @@
       "misconception": "Cancellation is not two particles bumping into each other. It's amplitudes (which can be negative or complex) adding to zero. Probabilities alone could never cancel.",
       "qiskit": {
         "intro": "`qc.p(phi, qubit)` applies a phase shift of φ. Sweep it to trace the interference curve.",
-        "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nfor phi in np.linspace(0, 2 * np.pi, 5):\n    qc = QuantumCircuit(1)\n    qc.h(0)\n    qc.p(phi, 0)\n    qc.h(0)\n    p0 = Statevector(qc).probabilities()[0]\n    print(f'phi = {phi:.2f}  ->  P(0) = {p0:.3f}')\n\nprint(qc.draw())          # the last circuit: H, phase, H\n",
+        "code": "import numpy as np  # number tools, including pi\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nfor phi in np.linspace(0, 2 * np.pi, 5):  # 5 shifts: 0 to a full wave\n    qc = QuantumCircuit(1)  # fresh qubit at |0⟩\n    qc.h(0)  # split into two paths\n    qc.p(phi, 0)  # shift the |1⟩ path by phi\n    qc.h(0)  # recombine: paths add or cancel\n    p0 = Statevector(qc).probabilities()[0]  # chance of reading 0\n    print(f'phi = {phi:.2f}  ->  P(0) = {p0:.3f}')\n\nprint(qc.draw())          # the last circuit: H, phase, H\n",
         "notes": [
           [
             "qc.p(phi, 0)",
@@ -1248,7 +1556,97 @@
         "captures": "Amplitudes with opposite signs cancel and amplitudes with the same sign reinforce, so H–Z–H sends everything to |1⟩.",
         "breaks": "Headphones cancel sound in the air. Here what cancels are amplitudes (numbers attached to outcomes), and the probability that vanishes from one outcome reappears on the other."
       },
-      "takeaway": "Amplitudes add like waves: in step they grow, out of step they cancel."
+      "takeaway": "Amplitudes add like waves: in step they grow, out of step they cancel.",
+      "walkthrough": [
+        {
+          "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The usual two Qiskit tools, plus numpy for pi and evenly spaced numbers.",
+          "more": "numpy is a maths library. We nickname it np, so np.pi is the number pi (about 3.14).",
+          "sketch": null
+        },
+        {
+          "code": "for phi in np.linspace(0, 2 * np.pi, 5):",
+          "does": "Try 5 phase shifts, from none up to a full wave (2π).",
+          "more": "np.linspace(0, 2 * np.pi, 5) makes 5 evenly spaced numbers: 0, 1.57, 3.14, 4.71, 6.28. A for loop runs the indented lines below once per number, with phi set to that number each time.",
+          "sketch": null
+        },
+        {
+          "code": "    qc = QuantumCircuit(1)\n    qc.h(0)",
+          "does": "A fresh qubit each round. H splits it into two paths, |0⟩ and |1⟩.",
+          "more": "On the globe, the arrow tips from the north pole down to |+⟩ on the equator.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after H"
+          }
+        },
+        {
+          "code": "    qc.p(phi, 0)",
+          "does": "Shift the |1⟩ path by phi: the globe's arrow slides along the equator.",
+          "more": "Shown here for phi = π (3.14), half a wave: the same flip as a Z gate, so the arrow lands on |−⟩. At phi = 0 or 2π it stays at |+⟩. The odds of 0 and 1 do not change yet.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "phi = π: at |−⟩"
+          }
+        },
+        {
+          "code": "    qc.h(0)",
+          "does": "Recombine the paths: in step they add on |0⟩, out of step they cancel there.",
+          "more": "Still the phi = π round: H sends |−⟩ to |1⟩, so P(0) is 0. With phi = 0 the paths come back in step and the arrow returns to |0⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "label": "phi = π: reads 1"
+          }
+        },
+        {
+          "code": "    p0 = Statevector(qc).probabilities()[0]\n    print(f'phi = {phi:.2f}  ->  P(0) = {p0:.3f}')",
+          "does": "Print the chance of 0 for each shift: 1, 0.5, 0, 0.5, 1.",
+          "more": "probabilities() gives a list [P(0), P(1)], and [0] picks the first. The f'...' string fills in the values in curly braces; :.2f and :.3f round to 2 and 3 decimals. In step gives 1, half a wave gives 0, a quarter wave gives 0.5.",
+          "sketch": null
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw the last circuit: H, a phase box P(2π), H.",
+          "more": "After the loop, qc is the last one built, with phi = 2π. A full wave is like no shift at all, so it reads 0 every time.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 1.0,
+              "1": 0.0
+            },
+            "label": "last circuit, phi = 2π"
+          }
+        }
+      ]
     },
     {
       "id": "bases",
@@ -1304,7 +1702,7 @@
       "misconception": "A 50/50 result in Z doesn't mean the qubit is 'random'. |+⟩ is perfectly definite. It just isn't lined up with the question you asked.",
       "qiskit": {
         "intro": "Qiskit measures in Z. To measure along X, apply `h` first; along Y, apply `sdg` then `h`.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler\n\ndef measure_along(axis):\n    qc = QuantumCircuit(1)\n    qc.h(0)                 # prepare |+>\n    if axis == 'X':\n        qc.h(0)             # rotate X onto Z\n    elif axis == 'Y':\n        qc.sdg(0)\n        qc.h(0)             # rotate Y onto Z\n    qc.measure_all()\n    return qc\n\nsampler = StatevectorSampler()\nfor axis in ['Z', 'X', 'Y']:\n    counts = sampler.run([measure_along(axis)], shots=1000).result()[0].data.meas.get_counts()\n    print(axis, counts)\n\nprint(measure_along('Y').draw())   # the Y measurement\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler  # runs shots for us\n\ndef measure_along(axis):  # a circuit that asks about one axis\n    qc = QuantumCircuit(1)\n    qc.h(0)  # prepare |+⟩: arrow points front\n    if axis == 'X':\n        qc.h(0)  # rotate X onto Z\n    elif axis == 'Y':\n        qc.sdg(0)  # turn Y onto X first\n        qc.h(0)  # then X onto Z\n    qc.measure_all()  # always asks: up (0) or down (1)?\n    return qc\n\nsampler = StatevectorSampler()\nfor axis in ['Z', 'X', 'Y']:  # ask the same |+⟩ three ways\n    counts = sampler.run([measure_along(axis)], shots=1000).result()[0].data.meas.get_counts()  # 1000 shots\n    print(axis, counts)\n\nprint(measure_along('Y').draw())  # the Y measurement\n",
         "notes": [
           [
             "qc.h(0) before measuring",
@@ -1380,7 +1778,90 @@
         "captures": "The same state can be certain along one axis and 50/50 along another; the measurement axis is a choice. (Photon polarization really is a qubit.)",
         "breaks": "A beam of light passes partly. A single photon passes or doesn't. If it passes, it's now lined up with the filter, which is the collapse."
       },
-      "takeaway": "A measurement asks about one axis; to ask about another, rotate it onto Z first."
+      "takeaway": "A measurement asks about one axis; to ask about another, rotate it onto Z first.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.primitives import StatevectorSampler",
+          "does": "Two tools: one builds circuits, one runs them many times and counts readings.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "def measure_along(axis):\n    qc = QuantumCircuit(1)\n    qc.h(0)",
+          "does": "A reusable recipe. H first tips the arrow from north to front, |+⟩.",
+          "more": "def makes a function: a named recipe you can reuse. measure_along('X') runs the indented lines with axis set to 'X' and hands back a circuit. Every call starts from the same |+⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "after H: |+⟩"
+          }
+        },
+        {
+          "code": "    if axis == 'X':\n        qc.h(0)",
+          "does": "Asking along X: H swaps front with north, so |+⟩ lands on |0⟩.",
+          "more": "if runs the indented line only when its test is true. == asks 'are these equal?', unlike = which stores a value. For 'Z' nothing is added: hardware already asks up or down.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "X question: |0⟩"
+          }
+        },
+        {
+          "code": "    elif axis == 'Y':\n        qc.sdg(0)\n        qc.h(0)",
+          "does": "Asking along Y: Sdg turns Y onto X, then H turns X onto Z.",
+          "more": "elif means 'else, if this instead'. The arrow was at front, halfway between right and left, so after the turns it sits on the equator: still 50/50.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "Y question: on equator"
+          }
+        },
+        {
+          "code": "    qc.measure_all()\n    return qc",
+          "does": "Measure up or down as usual, then hand the finished circuit back.",
+          "more": "return is how a function gives its result back to whoever called it.",
+          "sketch": null
+        },
+        {
+          "code": "sampler = StatevectorSampler()\nfor axis in ['Z', 'X', 'Y']:\n    counts = sampler.run([measure_along(axis)], shots=1000).result()[0].data.meas.get_counts()\n    print(axis, counts)",
+          "does": "Ask the same |+⟩ three questions, 1000 shots each. Only X is certain.",
+          "more": "for repeats the indented lines once per item in the list, with axis set to 'Z', then 'X', then 'Y'. Expect roughly Z {'0': 507, '1': 493}, X {'0': 1000}, Y {'1': 503, '0': 497}: the near-even splits change a little each run.",
+          "sketch": null
+        },
+        {
+          "code": "print(measure_along('Y').draw())",
+          "does": "Draw the Y circuit: H to prepare |+⟩, then Sdg and H, then measure.",
+          "more": "The first H only prepares |+⟩. The Sdg and H after it are the turn that points the Y axis up and down.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "registers",
@@ -1436,7 +1917,7 @@
       "misconception": "2ⁿ amplitudes doesn't mean you can read out 2ⁿ answers. A measurement still returns a single n-bit string.",
       "qiskit": {
         "intro": "Pass a larger number to `QuantumCircuit`. Gates take the index of the qubit they act on.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(3)\nqc.x(0)          # flip qubit 0\n\nprint(qc.draw())\nprint(Statevector(qc).probabilities_dict(decimals=3))   # {'001': 1.0}\n",
+        "code": "from qiskit import QuantumCircuit  # builds circuits\nfrom qiskit.quantum_info import Statevector  # works out the state\n\nqc = QuantumCircuit(3)  # three qubits, all start at |0⟩\nqc.x(0)  # flip qubit 0 only\n\nprint(qc.draw())  # q_0 is the top wire\nprint(Statevector(qc).probabilities_dict(decimals=3))  # {'001': 1.0}, q0 on the right\n",
         "notes": [
           [
             "QuantumCircuit(3)",
@@ -1486,7 +1967,78 @@
         "captures": "n qubits have 2ⁿ basis states, and each one gets its own amplitude.",
         "breaks": "A lock is set to exactly one combination. n qubits carry an amplitude for every combination at once, yet a measurement still shows you only one."
       },
-      "takeaway": "n qubits have 2ⁿ amplitudes, but a measurement shows one n-bit string."
+      "takeaway": "n qubits have 2ⁿ amplitudes, but a measurement shows one n-bit string.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The same two tools: one builds circuits, one works out the state.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(3)",
+          "does": "Three qubits, all at |0⟩. Like a lock with three wheels: eight readings.",
+          "more": "Each wheel doubles the count: 2 × 2 × 2 = 8, from 000 to 111. The state keeps one amplitude for each of those eight readings. Right now all the odds sit on 000.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "000": 1.0,
+              "001": 0.0,
+              "010": 0.0,
+              "011": 0.0,
+              "100": 0.0,
+              "101": 0.0,
+              "110": 0.0,
+              "111": 0.0
+            },
+            "label": "odds at the start"
+          }
+        },
+        {
+          "code": "qc.x(0)",
+          "does": "X on qubit 0 only: its arrow flips down to |1⟩. The others stay up.",
+          "more": "The number in qc.x(0) is the index of the qubit the gate acts on. Qiskit counts qubits from 0, so this circuit has qubits 0, 1 and 2.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "qubit 0 after X"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw it: three wires, with the X box on q_0, the top wire.",
+          "more": "In the drawing q_0 sits on top. In printed results it sits on the right. Same qubit, two different places, so it is worth checking which one you are looking at.",
+          "sketch": null
+        },
+        {
+          "code": "print(Statevector(qc).probabilities_dict(decimals=3))",
+          "does": "The reading is 001 every time: qubit 0 is the rightmost bit.",
+          "more": "Read the string right to left: q0 = 1, q1 = 0, q2 = 0, like the ones digit sitting on the right in 42. Python may print it as {np.str_('001'): np.float64(1.0)}, which just means {'001': 1.0}.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "000": 0.0,
+              "001": 1.0,
+              "010": 0.0,
+              "011": 0.0,
+              "100": 0.0,
+              "101": 0.0,
+              "110": 0.0,
+              "111": 0.0
+            },
+            "label": "odds after flipping q0"
+          }
+        }
+      ]
     },
     {
       "id": "entanglement",
@@ -1541,7 +2093,7 @@
       "misconception": "Entanglement can't be used to send messages faster than light. Each side alone sees random results; the correlation only shows up when the results are compared.",
       "qiskit": {
         "intro": "`qc.cx(control, target)` is CNOT. The Bloch-vector shrinkage can be checked with `partial_trace`.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace\n\nqc = QuantumCircuit(2)\nqc.h(0)\nqc.cx(0, 1)      # control q0, target q1\n\nprint(qc.draw())\n\nstate = Statevector(qc)\nprint(state.probabilities_dict(decimals=3))\nprint('q0 alone:', partial_trace(state, [1]).purity().real)  # 0.5 = maximally mixed\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace\n\nqc = QuantumCircuit(2)  # two qubits, both start at |0⟩\nqc.h(0)  # q0 becomes a fair coin\nqc.cx(0, 1)  # CNOT: control q0, target q1\n\nprint(qc.draw())\n\nstate = Statevector(qc)  # the shared state of the pair\nprint(state.probabilities_dict(decimals=3))  # 00 or 11, never a mismatch\nprint('q0 alone:', partial_trace(state, [1]).purity().real)  # 0.5 = q0 has no arrow\n",
         "notes": [
           [
             "qc.cx(0, 1)",
@@ -1618,7 +2170,98 @@
         "captures": "Each qubit alone is a coin flip, but the pair's results always agree; the state lives in the pair.",
         "breaks": "Dancers follow steps written in advance. Experiments (Bell tests) show entangled qubits can't be carrying pre-written answers, and neither one can be used to send the other a message."
       },
-      "takeaway": "Entangled qubits share one state: each alone is random, together they agree."
+      "takeaway": "Entangled qubits share one state: each alone is random, together they agree.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace",
+          "does": "Circuit builder, arrow calculator, and partial_trace to look at one qubit alone.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(2)",
+          "does": "Two qubits, both arrows pointing up: the pair starts as |00⟩.",
+          "more": "",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 1.0,
+              "01": 0.0,
+              "10": 0.0,
+              "11": 0.0
+            },
+            "label": "pair starts at 00"
+          }
+        },
+        {
+          "code": "qc.h(0)",
+          "does": "H on qubit 0: its arrow tips to the equator, a fair coin.",
+          "more": "Qubit 1 is untouched and still points at |0⟩. So far each qubit has its own arrow.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "qubit 0 after H"
+          }
+        },
+        {
+          "code": "qc.cx(0, 1)",
+          "does": "CNOT: if qubit 0 is 1, flip qubit 1. Both branches happen at once.",
+          "more": "In qc.cx(control, target) the first number is the control, the second the target. The part where qubit 0 is 0 stays put; the part where qubit 0 is 1 gets qubit 1 flipped too. The pair is now (|00⟩ + |11⟩)/√2, a Bell state.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "01": 0.0,
+              "10": 0.0,
+              "11": 0.5
+            },
+            "label": "the pair after CNOT"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw it: H on q_0, then a dot on q_0 wired to X on q_1.",
+          "more": "The dot marks the control qubit. The X box on the other wire is the target that gets flipped when the control is 1.",
+          "sketch": null
+        },
+        {
+          "code": "state = Statevector(qc)\nprint(state.probabilities_dict(decimals=3))",
+          "does": "Exact odds: 00 half the time, 11 half the time. Never a mismatch.",
+          "more": "Python prints np.str_('00') for the string '00' and np.float64(0.5) for 0.5. 01 and 10 are missing because their odds are 0: the two answers always agree.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "01": 0.0,
+              "10": 0.0,
+              "11": 0.5
+            },
+            "label": "odds of each reading"
+          }
+        },
+        {
+          "code": "print('q0 alone:', partial_trace(state, [1]).purity().real)",
+          "does": "Qubit 0 on its own: purity 0.5, so it has no arrow of its own.",
+          "more": "partial_trace(state, [1]) ignores qubit 1 and describes qubit 0 by itself. Purity 1 means a full arrow on the globe; 0.5 means the arrow has shrunk to nothing at the centre. 0.4999999999999998 is just 0.5 with a tiny rounding error, and .real drops an imaginary part that is zero.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 0.5,
+              "1": 0.5
+            },
+            "label": "qubit 0 alone"
+          }
+        }
+      ]
     },
     {
       "id": "no-cloning",
@@ -1672,7 +2315,7 @@
       "misconception": "No-cloning doesn't stop you making many qubits in the same known state: just run the same preparation again. It forbids copying a state you don't know.",
       "qiskit": {
         "intro": "Build the copier, then compare its output with two true copies using `state_fidelity`: 1 means identical.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, state_fidelity\n\ncopier = QuantumCircuit(2)\ncopier.h(0)           # the original: |+> on q0\ncopier.cx(0, 1)       # try to copy q0 into q1\n\nprint(copier.draw())\n\ntrue_copy = QuantumCircuit(2)\ntrue_copy.h([0, 1])   # what two real copies of |+> look like\n\nprint('copier:  ', Statevector(copier).probabilities_dict(decimals=3))\nprint('2 copies:', Statevector(true_copy).probabilities_dict(decimals=3))\nprint('fidelity:', round(state_fidelity(Statevector(copier), Statevector(true_copy)), 3))\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, state_fidelity  # compares two states\n\ncopier = QuantumCircuit(2)  # two qubits, both start at |0>\ncopier.h(0)           # the original: |+> on q0\ncopier.cx(0, 1)       # try to copy q0 into blank q1\n\nprint(copier.draw())  # H, then CNOT from q0 to q1\n\ntrue_copy = QuantumCircuit(2)  # a second circuit for comparison\ntrue_copy.h([0, 1])   # what two real copies of |+> look like\n\nprint('copier:  ', Statevector(copier).probabilities_dict(decimals=3))  # only 00 or 11\nprint('2 copies:', Statevector(true_copy).probabilities_dict(decimals=3))  # all four\nprint('fidelity:', round(state_fidelity(Statevector(copier), Statevector(true_copy)), 3))  # 1 = same\n",
         "notes": [
           [
             "copier.cx(0, 1)",
@@ -1753,7 +2396,80 @@
         "captures": "The copier works on 0 and 1 but entangles everything in between, and the original loses its own \"shade\".",
         "breaks": "Grey paper looks grey to anyone. A qubit's shade can't be seen at all, and that's exactly why a working copier would be so powerful, and why it can't exist."
       },
-      "takeaway": "No circuit copies an unknown state: CNOT copies 0 and 1, but entangles everything in between."
+      "takeaway": "No circuit copies an unknown state: CNOT copies 0 and 1, but entangles everything in between.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, state_fidelity",
+          "does": "The usual tools, plus state_fidelity: a score for how alike two states are.",
+          "more": "state_fidelity gives a number from 0 to 1. 1 means the two states are identical, 0 means completely different.",
+          "sketch": null
+        },
+        {
+          "code": "copier = QuantumCircuit(2)\ncopier.h(0)",
+          "does": "Two qubits. H tips q0's arrow onto the equator: our grey page, |+⟩.",
+          "more": "q1 stays at |0⟩: it is the blank sheet the copier will write on.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "q0 after H"
+          }
+        },
+        {
+          "code": "copier.cx(0, 1)",
+          "does": "CNOT tries to copy q0 into blank q1. It entangles them instead.",
+          "more": "For a plain 0 or 1, this CNOT is a perfect copier. For |+⟩ it makes the Bell state from Lesson 11, so neither qubit has an arrow of its own any more.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "11": 0.5
+            },
+            "label": "odds after CNOT"
+          }
+        },
+        {
+          "code": "print(copier.draw())",
+          "does": "Draw the copier: H on q0, then a CNOT from q0 to q1.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "true_copy = QuantumCircuit(2)\ntrue_copy.h([0, 1])",
+          "does": "What two real copies would be: H on both, two independent |+⟩ arrows.",
+          "more": "Passing a list [0, 1] applies H to both qubits in one line.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.25,
+              "01": 0.25,
+              "10": 0.25,
+              "11": 0.25
+            },
+            "label": "two real copies"
+          }
+        },
+        {
+          "code": "print('copier:  ', Statevector(copier).probabilities_dict(decimals=3))\nprint('2 copies:', Statevector(true_copy).probabilities_dict(decimals=3))",
+          "does": "Compare odds: the copier gives only 00 or 11, real copies give all four.",
+          "more": "Python prints np.str_('00') for '00' and np.float64(0.5) for 0.5. The copier's answers are locked together, which two separate copies never are.",
+          "sketch": null
+        },
+        {
+          "code": "print('fidelity:', round(state_fidelity(Statevector(copier), Statevector(true_copy)), 3))",
+          "does": "Score how alike they are: 0.5, not 1. The copy failed.",
+          "more": "round(x, 3) keeps 3 decimals. A perfect copier would score 1, and the no-cloning theorem says no circuit can do that for an unknown state.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "teleportation",
@@ -1807,7 +2523,7 @@
       "misconception": "Teleportation doesn't move matter or beat the speed of light. It needs a classical message, and it moves the state rather than copying it: Alice's original is destroyed.",
       "qiskit": {
         "intro": "On hardware, Bob's fixes depend on mid-circuit measurements. In a simulator you can use deferred measurement: each 'if the bit is 1, apply a gate' becomes a controlled gate.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace, state_fidelity\n\nqc = QuantumCircuit(3)\nqc.ry(1.1, 0)          # Alice's mystery state on q0\nqc.rz(0.7, 0)\n\nqc.h(1)                # shared Bell pair: q1 (Alice), q2 (Bob)\nqc.cx(1, 2)\n\nqc.cx(0, 1)            # Alice entangles her two qubits...\nqc.h(0)                # ...and would measure q0 and q1 here\n\nqc.cx(1, 2)            # Bob: X if q1 was 1  (deferred measurement)\nqc.cz(0, 2)            # Bob: Z if q0 was 1\n\nprint(qc.draw())\n\noriginal = QuantumCircuit(1)\noriginal.ry(1.1, 0)\noriginal.rz(0.7, 0)\nbob = partial_trace(Statevector(qc), [0, 1])\nprint('fidelity with Alice\\'s original:', round(state_fidelity(bob, Statevector(original)), 6))\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace, state_fidelity\n\nqc = QuantumCircuit(3)  # 3 qubits, all start at |0⟩\nqc.ry(1.1, 0)  # Alice's mystery arrow on q0...\nqc.rz(0.7, 0)  # ...tilted some odd way\n\nqc.h(1)  # Bell pair: q1 is Alice's half,\nqc.cx(1, 2)  # q2 is Bob's half\n\nqc.cx(0, 1)  # Alice links mystery qubit to her half\nqc.h(0)  # she would measure q0 and q1 here\n\nqc.cx(1, 2)  # Bob: X if q1 read 1 (deferred)\nqc.cz(0, 2)  # Bob: Z if q0 read 1\n\nprint(qc.draw())  # draw the circuit\n\noriginal = QuantumCircuit(1)  # rebuild Alice's state alone\noriginal.ry(1.1, 0)\noriginal.rz(0.7, 0)\nbob = partial_trace(Statevector(qc), [0, 1])  # keep only Bob's q2\nprint('fidelity with Alice\\'s original:', round(state_fidelity(bob, Statevector(original)), 6))  # 1.0 = same state\n",
         "notes": [
           [
             "qc.h(1); qc.cx(1, 2)",
@@ -1881,7 +2597,82 @@
         "captures": "The state moves rather than being copied, and Bob can't finish until Alice's ordinary message arrives.",
         "breaks": "A fax reads the page. Alice never learns her state, and her two bits alone say nothing about it. The state travels in the shared entanglement and the bits together."
       },
-      "takeaway": "Shared entanglement plus two ordinary bits move a state: nothing is copied, nothing outruns light."
+      "takeaway": "Shared entanglement plus two ordinary bits move a state: nothing is copied, nothing outruns light.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector, partial_trace, state_fidelity",
+          "does": "Tools: build circuits, work out states, compare Bob's qubit with Alice's.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(3)\nqc.ry(1.1, 0)\nqc.rz(0.7, 0)",
+          "does": "Three qubits; two turns tilt q0's arrow into Alice's mystery state.",
+          "more": "Ry(1.1) tips the arrow down from the north pole, then Rz(0.7) swings it around the globe. Any angles would do: the protocol works without anyone knowing them.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.6816,
+              0.5741,
+              0.4536
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "Alice's mystery state"
+          }
+        },
+        {
+          "code": "qc.h(1)\nqc.cx(1, 2)",
+          "does": "The Bell pair from lesson 11: q1 stays with Alice, q2 goes to Bob.",
+          "more": "On its own, Bob's half is now a fifty fifty coin flip. It has no arrow of its own yet.",
+          "sketch": null
+        },
+        {
+          "code": "qc.cx(0, 1)\nqc.h(0)",
+          "does": "Alice links her mystery qubit to her half: CNOT, then H.",
+          "more": "Here she would measure q0 and q1. Each of her four readings comes up one time in four, whatever her state was, so the bits alone say nothing about it. In the odds, q0 is the rightmost bit.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.25,
+              "01": 0.25,
+              "10": 0.25,
+              "11": 0.25
+            },
+            "label": "Alice's two readings"
+          }
+        },
+        {
+          "code": "qc.cx(1, 2)\nqc.cz(0, 2)",
+          "does": "Bob's fixes: X if q1 is 1, Z if q0 is 1. Arrow restored.",
+          "more": "On hardware Alice measures and phones Bob her two bits. In a simulator, 'if the bit is 1, apply a gate' becomes a controlled gate, so cx and cz stand in for the phone call.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.6816,
+              0.5741,
+              0.4536
+            ],
+            "before": null,
+            "label": "Bob's qubit after fix"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw it: mystery state, Bell pair, Alice's two gates, Bob's two fixes.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "original = QuantumCircuit(1)\noriginal.ry(1.1, 0)\noriginal.rz(0.7, 0)\nbob = partial_trace(Statevector(qc), [0, 1])\nprint('fidelity with Alice\\'s original:', round(state_fidelity(bob, Statevector(original)), 6))",
+          "does": "Rebuild Alice's state alone, keep only Bob's qubit, and compare: 1.0 means identical.",
+          "more": "partial_trace(..., [0, 1]) sets qubits 0 and 1 aside, leaving Bob's q2 on its own. state_fidelity scores how alike two states are, from 0 to 1. The \\' inside the quotes just puts an apostrophe in the text.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "superdense",
@@ -1935,7 +2726,7 @@
       "misconception": "Superdense coding doesn't beat light or squeeze bits out of nothing. The Bell pair had to be shared beforehand, and Alice's qubit still has to travel to Bob.",
       "qiskit": {
         "intro": "One function builds the whole protocol for any two-bit message: make the pair, apply Alice's twists, then Bob's decoding.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef superdense(message):          # message 'b1b0', read as q1 q0\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)                   # shared Bell pair: q0 Alice, q1 Bob\n    if message[0] == '1':\n        qc.x(0)                   # Alice's twists\n    if message[1] == '1':\n        qc.z(0)\n    qc.cx(0, 1)                   # Bob undoes the pair...\n    qc.h(0)                       # ...and reads two bits\n    return qc\n\nfor message in ['00', '01', '10', '11']:\n    print(message, '->', Statevector(superdense(message)).probabilities_dict(decimals=3))\n\nprint(superdense('11').draw())\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef superdense(message):          # message 'b1b0', read as q1 q0\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)                   # shared Bell pair: q0 Alice, q1 Bob\n    if message[0] == '1':\n        qc.x(0)                   # Alice's twists\n    if message[1] == '1':\n        qc.z(0)\n    qc.cx(0, 1)                   # Bob undoes the pair...\n    qc.h(0)                       # ...and reads two bits\n    return qc\n\nfor message in ['00', '01', '10', '11']:  # try all four messages\n    print(message, '->', Statevector(superdense(message)).probabilities_dict(decimals=3))\n\nprint(superdense('11').draw())  # the circuit for message '11'\n",
         "notes": [
           [
             "qc.x(0) / qc.z(0)",
@@ -2015,7 +2806,65 @@
         "captures": "A shared resource is set up in advance, only one object travels, and reading the message needs both halves together.",
         "breaks": "You could look at a posted key and see its position. Alice's qubit on its own looks completely random (it's half of an entangled pair), so anyone who intercepts it learns nothing. The message exists only in the pair."
       },
-      "takeaway": "With a shared Bell pair, sending one qubit delivers two bits. The second rides on the entanglement."
+      "takeaway": "With a shared Bell pair, sending one qubit delivers two bits. The second rides on the entanglement.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The same two tools: one builds circuits, one works out the odds.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "def superdense(message):\n    qc = QuantumCircuit(2)\n    qc.h(0)\n    qc.cx(0, 1)",
+          "does": "A recipe for any message. First the shared Bell pair: Alice q0, Bob q1.",
+          "more": "def makes a function: a named recipe you can run again with a different message. Everything indented below it belongs to the recipe. Here H then CNOT give the pair whose readings are random but always match.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "11": 0.5
+            },
+            "label": "odds of the Bell pair"
+          }
+        },
+        {
+          "code": "    if message[0] == '1':\n        qc.x(0)\n    if message[1] == '1':\n        qc.z(0)",
+          "does": "Alice sets her key: X, Z, both or nothing, all on her qubit q0.",
+          "more": "message[0] is the first character (the bit for q1) and decides X. message[1] is the second (the bit for q0) and decides Z. if runs the indented line only when the test is true. The odds shown are for message '11': still random on their own, the message hides in the pair.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "01": 0.5,
+              "10": 0.5
+            },
+            "label": "pair after '11' twists"
+          }
+        },
+        {
+          "code": "    qc.cx(0, 1)\n    qc.h(0)\n    return qc",
+          "does": "Bob holds both halves: CNOT then H, the pair's recipe run backwards.",
+          "more": "return hands the finished circuit back to whoever called the recipe. The odds shown are for message '11': it arrives for certain.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "11": 1.0
+            },
+            "label": "Bob reads '11'"
+          }
+        },
+        {
+          "code": "for message in ['00', '01', '10', '11']:\n    print(message, '->', Statevector(superdense(message)).probabilities_dict(decimals=3))",
+          "does": "Send all four messages. Each one arrives with odds 1.0: two bits, certain.",
+          "more": "A for loop runs the indented line once per item in the list, with message set to '00', then '01', and so on. In the printout, np.str_('01') just means '01' and np.float64(1.0) means 1.0.",
+          "sketch": null
+        },
+        {
+          "code": "print(superdense('11').draw())",
+          "does": "Draw the '11' circuit: H, CNOT, Alice's X and Z, then Bob's CNOT, H.",
+          "more": "",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "deutsch",
@@ -2069,7 +2918,7 @@
       "misconception": "The speed-up isn't 'evaluate both inputs and read both answers'. You never learn f(0) or f(1). You learn only a global property of f, extracted by interference.",
       "qiskit": {
         "intro": "Write the oracle as a small function that adds gates. The rest of the algorithm never changes.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef deutsch(oracle):\n    qc = QuantumCircuit(2)\n    qc.x(1)\n    qc.h([0, 1])          # q0 = |+>, q1 = |->\n    oracle(qc)            # one query to the black box\n    qc.h(0)\n    return qc\n\noracles = {\n    'constant 0': lambda qc: None,\n    'constant 1': lambda qc: qc.x(1),\n    'balanced x': lambda qc: qc.cx(0, 1),\n    'balanced NOT x': lambda qc: (qc.cx(0, 1), qc.x(1)),\n}\nfor name, oracle in oracles.items():\n    p1 = Statevector(deutsch(oracle)).probabilities([0])[1]\n    print(f'{name:15s} -> q0 reads {round(p1)}')\n\nprint(deutsch(oracles['balanced x']).draw())\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\n# The algorithm: the same for every box\ndef deutsch(oracle):\n    qc = QuantumCircuit(2)  # q0 = input, q1 = helper\n    qc.x(1)  # helper to |1>\n    qc.h([0, 1])          # q0 = |+>, q1 = |->\n    oracle(qc)            # one query to the black box\n    qc.h(0)  # arrows interfere: 0 or 1\n    return qc\n\n# Four boxes: two constant, two balanced\noracles = {\n    'constant 0': lambda qc: None,  # always 0: do nothing\n    'constant 1': lambda qc: qc.x(1),  # always 1: flip helper\n    'balanced x': lambda qc: qc.cx(0, 1),  # f(x) = x\n    'balanced NOT x': lambda qc: (qc.cx(0, 1), qc.x(1)),  # f(x) = NOT x\n}\nfor name, oracle in oracles.items():  # ask each box once\n    p1 = Statevector(deutsch(oracle)).probabilities([0])[1]  # odds q0 reads 1\n    print(f'{name:15s} -> q0 reads {round(p1)}')\n\nprint(deutsch(oracles['balanced x']).draw())  # draw one example\n",
         "notes": [
           [
             "qc.x(1); qc.h([0, 1])",
@@ -2148,7 +2997,90 @@
         "captures": "The question is about how the two answers relate, and one quantum query settles it.",
         "breaks": "You still never see either face: you only learn whether they differ. And no real coin lets you look at both sides in superposition; the oracle must accept quantum inputs."
       },
-      "takeaway": "Phase kickback writes f's answer into the input's phase; interference reads it in one query."
+      "takeaway": "Phase kickback writes f's answer into the input's phase; interference reads it in one query.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The same two tools: one builds circuits, one works out the arrows.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "def deutsch(oracle):\n    qc = QuantumCircuit(2)\n    qc.x(1)\n    qc.h([0, 1])",
+          "does": "Setup for kickback: input q0 goes to |+⟩, helper q1 to |−⟩.",
+          "more": "def makes a function: a recipe that only runs when called. Its input, oracle, is itself a function that adds the box's gates, so the rest of the algorithm never changes.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "q0 after H"
+          }
+        },
+        {
+          "code": "    oracle(qc)",
+          "does": "One query: a balanced box turns q0 over to |−⟩, a constant one leaves |+⟩.",
+          "more": "The box flips the helper when f(x) is 1. Because the helper is |−⟩, that flip comes out as a minus sign on q0 instead: phase kickback. The helper stays |−⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "q0, balanced box"
+          }
+        },
+        {
+          "code": "    qc.h(0)\n    return qc",
+          "does": "Final H: arrows add or cancel. |+⟩ lands on 0, |−⟩ lands on 1.",
+          "more": "return hands the finished circuit back to whoever called deutsch. For a constant box q0 ends at |0⟩ instead.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "label": "balanced: q0 at |1⟩"
+          }
+        },
+        {
+          "code": "oracles = {\n    'constant 0': lambda qc: None,\n    'constant 1': lambda qc: qc.x(1),\n    'balanced x': lambda qc: qc.cx(0, 1),\n    'balanced NOT x': lambda qc: (qc.cx(0, 1), qc.x(1)),\n}",
+          "does": "Four sealed boxes to test: two constant, two balanced, each a tiny function.",
+          "more": "lambda qc: ... is a one-line function with no name. In the last box, brackets with a comma let one lambda add two gates.",
+          "sketch": null
+        },
+        {
+          "code": "for name, oracle in oracles.items():\n    p1 = Statevector(deutsch(oracle)).probabilities([0])[1]\n    print(f'{name:15s} -> q0 reads {round(p1)}')",
+          "does": "Ask each box once and read q0: 0 means constant, 1 means balanced.",
+          "more": ".items() gives each name with its function. probabilities([0])[1] is the chance q0 alone reads 1; round tidies tiny leftovers (like 1e-33) to 0 or 1. {name:15s} pads the name to 15 characters so the -> signs line up.",
+          "sketch": null
+        },
+        {
+          "code": "print(deutsch(oracles['balanced x']).draw())",
+          "does": "Draw the balanced x circuit: X and H set up, the CNOT is the box.",
+          "more": "",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "bernstein-vazirani",
@@ -2202,7 +3134,7 @@
       "misconception": "The algorithm doesn't query every x and collect the answers. It asks once, with the inputs in superposition, and interference makes the secret the only possible outcome.",
       "qiskit": {
         "intro": "A function builds the circuit for any secret: one CNOT per 1 in the secret is the whole oracle.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef bernstein_vazirani(secret):     # secret written q(n-1) ... q0\n    n = len(secret)\n    qc = QuantumCircuit(n + 1)\n    qc.x(n)\n    qc.h(range(n + 1))               # inputs |+>, answer qubit |->\n    for i, bit in enumerate(reversed(secret)):\n        if bit == '1':\n            qc.cx(i, n)              # oracle: one CNOT per 1\n    qc.h(range(n))\n    return qc\n\nstate = Statevector(bernstein_vazirani('101'))\nprint(bernstein_vazirani('101').draw())\nprint(state.probabilities_dict([0, 1, 2], decimals=3))   # input qubits only\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\ndef bernstein_vazirani(secret):     # secret written q(n-1) ... q0\n    n = len(secret)                  # n input qubits, one per bit\n    qc = QuantumCircuit(n + 1)       # plus one answer qubit, number n\n    qc.x(n)                          # answer qubit flipped to |1>\n    qc.h(range(n + 1))               # inputs |+>, answer qubit |->\n    for i, bit in enumerate(reversed(secret)):  # walk the bits from q0 up\n        if bit == '1':\n            qc.cx(i, n)              # oracle: one CNOT per 1\n    qc.h(range(n))                   # H again: |+> to 0, |-> to 1\n    return qc                        # hand back the finished circuit\n\nstate = Statevector(bernstein_vazirani('101'))  # final state for secret 101\nprint(bernstein_vazirani('101').draw())  # draw the circuit\nprint(state.probabilities_dict([0, 1, 2], decimals=3))   # input qubits only\n",
         "notes": [
           [
             "qc.h(range(n + 1))",
@@ -2284,7 +3216,108 @@
         "captures": "The hidden rule is a parity, and one quantum query replaces n classical ones.",
         "breaks": "No real panel can be tested \"all at once\" like this: the inputs must be in superposition, and it only works because the hidden rule is a parity that interference can unpick. Most hidden rules aren't."
       },
-      "takeaway": "Phase kickback on every input at once: one query reveals the whole secret string."
+      "takeaway": "Phase kickback on every input at once: one query reveals the whole secret string.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The same two tools: one builds circuits, one works out the state.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "def bernstein_vazirani(secret):\n    n = len(secret)\n    qc = QuantumCircuit(n + 1)\n    qc.x(n)",
+          "does": "A recipe for any secret: one qubit per switch, plus a buzzer qubit flipped to |1⟩.",
+          "more": "def makes a function: a named recipe you can reuse with any secret, like '101' or '0110'. The indented lines are its body. len(secret) counts the bits, and the extra qubit, number n, is the buzzer (the answer qubit).",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "buzzer qubit after X"
+          }
+        },
+        {
+          "code": "    qc.h(range(n + 1))",
+          "does": "H on every qubit: each switch qubit goes to |+⟩, the buzzer to |−⟩.",
+          "more": "range(n + 1) means qubits 0, 1, ... up to n, so one line puts H on all of them. The buzzer was at |1⟩, and H turns |1⟩ into |−⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              -1.0
+            ],
+            "label": "buzzer qubit: |−⟩"
+          }
+        },
+        {
+          "code": "    for i, bit in enumerate(reversed(secret)):\n        if bit == '1':\n            qc.cx(i, n)",
+          "does": "The one question: a CNOT per wired switch flips |+⟩ to |−⟩.",
+          "more": "Each CNOT kicks a minus sign back onto its switch qubit. A for loop repeats its indented lines once per bit; reversed() reads the secret right to left (qubit 0 is the rightmost bit), and enumerate() gives each bit's position i. For '101': CNOTs from qubits 0 and 2, qubit 1 stays |+⟩, the buzzer stays |−⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "qubit 0 after kickback"
+          }
+        },
+        {
+          "code": "    qc.h(range(n))\n    return qc",
+          "does": "One more H on each switch qubit: |+⟩ back to 0, |−⟩ to 1.",
+          "more": "Before this H, measuring would give 50/50 on every qubit: the secret hides in the signs. The H makes paths add or cancel so only the secret is left. return hands the finished circuit back to whoever called the function.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "101": 1.0
+            },
+            "label": "switch qubits after H"
+          }
+        },
+        {
+          "code": "state = Statevector(bernstein_vazirani('101'))",
+          "does": "Build the circuit for secret 101 and work out its final state.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "print(bernstein_vazirani('101').draw())",
+          "does": "Draw it: H on each switch wire, CNOTs from q_0 and q_2 to q_3.",
+          "more": "q_3 is the buzzer qubit: X then H at the start, no H at the end. The CNOTs from q_0 and q_2 are the 1s in 101; q_1 has none because its bit is 0. q_1's two H boxes sit side by side because nothing happens on that wire between them.",
+          "sketch": null
+        },
+        {
+          "code": "print(state.probabilities_dict([0, 1, 2], decimals=3))",
+          "does": "Odds for the switch qubits only: 101 every time, from a single question.",
+          "more": "[0, 1, 2] keeps just the switch qubits and ignores the buzzer. Python prints {np.str_('101'): np.float64(1.0)}, which just means '101' with probability 1.0.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "101": 1.0
+            },
+            "label": "odds of each reading"
+          }
+        }
+      ]
     },
     {
       "id": "grover",
@@ -2339,7 +3372,7 @@
       "misconception": "A quantum computer doesn't check all answers at once and read them out. It reshapes amplitudes so one measurement is likely to give the right answer.",
       "qiskit": {
         "intro": "CZ (`qc.cz`) flips the phase of |11⟩, a ready-made oracle. The diffuser is H·X·CZ·X·H on both qubits.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)\nqc.h([0, 1])              # uniform superposition\n\nqc.cz(0, 1)               # oracle: mark |11>\n\nqc.h([0, 1])              # diffuser\nqc.x([0, 1])\nqc.cz(0, 1)\nqc.x([0, 1])\nqc.h([0, 1])\n\nprint(qc.draw())\nprint(Statevector(qc).probabilities_dict(decimals=3))\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector\n\nqc = QuantumCircuit(2)  # 2 qubits name 4 boxes: 00 01 10 11\nqc.h([0, 1])              # H on both: every box equally likely\n\nqc.cz(0, 1)               # oracle: flip the sign of |11⟩\n\nqc.h([0, 1])              # diffuser: reflect around the average\nqc.x([0, 1])\nqc.cz(0, 1)\nqc.x([0, 1])\nqc.h([0, 1])\n\nprint(qc.draw())  # H, oracle, then the 5-gate diffuser\nprint(Statevector(qc).probabilities_dict(decimals=3))  # 11 every time\n",
         "notes": [
           [
             "qc.h([0, 1])",
@@ -2418,7 +3451,72 @@
         "captures": "Each oracle-plus-diffuser round adds a bit more amplitude to the answer, and about √N rounds is the sweet spot. More overshoots.",
         "breaks": "A swing gains energy. Grover's state never grows: total probability stays 1, and the answer's share rises only because every other answer's share falls."
       },
-      "takeaway": "Mark the answer with a sign, reflect about the average, repeat about (π/4)√N times."
+      "takeaway": "Mark the answer with a sign, reflect about the average, repeat about (π/4)√N times.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit.quantum_info import Statevector",
+          "does": "The same two tools: one builds circuits, one works out the odds.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(2)\nqc.h([0, 1])",
+          "does": "Two qubits name four boxes. H on both: each box gets amplitude one half.",
+          "more": "qc.h([0, 1]) puts an H on qubit 0 and qubit 1 in one line: most gate methods accept a list of qubits. Amplitude one half, squared, is a one in four chance.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.25,
+              "01": 0.25,
+              "10": 0.25,
+              "11": 0.25
+            },
+            "label": "every box equal"
+          }
+        },
+        {
+          "code": "qc.cz(0, 1)",
+          "does": "The oracle: CZ quietly flips the sign of |11⟩, the prize box.",
+          "more": "Its amplitude goes from one half to minus one half. Squared, that is still a quarter, so the odds have not changed yet. The mark is a phase, like Lesson 7.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.25,
+              "01": 0.25,
+              "10": 0.25,
+              "11": 0.25
+            },
+            "label": "odds unchanged, sign flipped"
+          }
+        },
+        {
+          "code": "qc.h([0, 1])\nqc.x([0, 1])\nqc.cz(0, 1)\nqc.x([0, 1])\nqc.h([0, 1])",
+          "does": "The diffuser reflects every amplitude around the average: the prize jumps, the rest cancel.",
+          "more": "The average is now one quarter: the three other boxes sit a quarter above it and land at zero, while the prize sits three quarters below and is flung to one (Qiskit shows minus one, an overall sign that never changes the odds). The X gates around CZ move the sign flip to |00⟩. With the H's around them, that becomes the reflection around the average.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.0,
+              "01": 0.0,
+              "10": 0.0,
+              "11": 1.0
+            },
+            "label": "odds after the diffuser"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw it: H on both wires, the oracle's dot pair, then the diffuser.",
+          "more": "A CZ shows as two dots joined by a line. It has no top or bottom: it flips the sign only when both qubits are 1.",
+          "sketch": null
+        },
+        {
+          "code": "print(Statevector(qc).probabilities_dict(decimals=3))",
+          "does": "The odds: 11 with chance 1. One look always finds the prize.",
+          "more": "Python prints {np.str_('11'): np.float64(1.0)}, which just means {'11': 1.0}. The other boxes have chance 0, so they are left out. With four boxes, one round of oracle plus diffuser is exactly enough.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "qft",
@@ -2472,7 +3570,7 @@
       "misconception": "The QFT isn't a faster way to Fourier-transform your data. Its outputs are amplitudes you can only sample, so it helps algorithms that need one rhythm, not a whole spectrum.",
       "qiskit": {
         "intro": "`qc.cp(angle, control, target)` is a controlled phase turn, the QFT's building block. Qiskit also ships the whole transform as `QFTGate`, so you can check that yours matches.",
-        "code": "import math\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate\nfrom qiskit.quantum_info import Operator, Statevector\n\ndef qft2(qc):                  # QFT on qubits 0 and 1\n    qc.h(1)\n    qc.cp(math.pi / 2, 0, 1)   # quarter turn on q1 when q0 is 1\n    qc.h(0)\n    qc.swap(0, 1)              # put the bits back in order\n\nqc = QuantumCircuit(2)\nqc.h(1)                        # input |0> + |2>: period 2\nqft2(qc)\nprint(qc.draw())\nprint(Statevector(qc).probabilities_dict(decimals=3))\n\nmine = QuantumCircuit(2)\nqft2(mine)\nlibrary = QuantumCircuit(2)\nlibrary.append(QFTGate(2), [0, 1])\nprint('matches QFTGate:', Operator(mine).equiv(Operator(library)))\n",
+        "code": "import math  # for math.pi\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate  # Qiskit's ready-made QFT\nfrom qiskit.quantum_info import Operator, Statevector\n\ndef qft2(qc):                  # QFT on qubits 0 and 1\n    qc.h(1)  # H on q1: its clock hand\n    qc.cp(math.pi / 2, 0, 1)   # quarter turn on q1 when q0 is 1\n    qc.h(0)  # H on q0: its clock hand\n    qc.swap(0, 1)              # put the bits back in order\n\nqc = QuantumCircuit(2)  # two qubits, readings 0 to 3\nqc.h(1)                        # input |0⟩ + |2⟩: period 2\nqft2(qc)  # run the QFT on that rhythm\nprint(qc.draw())\nprint(Statevector(qc).probabilities_dict(decimals=3))  # peaks at 0 and 2\n\nmine = QuantumCircuit(2)  # a fresh circuit for our QFT\nqft2(mine)\nlibrary = QuantumCircuit(2)  # one for Qiskit's QFT\nlibrary.append(QFTGate(2), [0, 1])\nprint('matches QFTGate:', Operator(mine).equiv(Operator(library)))  # same?\n",
         "notes": [
           [
             "qc.cp(math.pi / 2, 0, 1)",
@@ -2551,7 +3649,75 @@
         "captures": "The QFT turns a repeating pattern in the amplitudes into peaks at its frequencies.",
         "breaks": "Your ear hears every note at once. A measurement after the QFT gives one frequency per run, picked at random from the peaks. That's plenty for algorithms that need one rhythm, but useless for reading a whole spectrum."
       },
-      "takeaway": "The QFT turns rhythm into position: a pattern with period r lands on multiples of N/r."
+      "takeaway": "The QFT turns rhythm into position: a pattern with period r lands on multiples of N/r.",
+      "walkthrough": [
+        {
+          "code": "import math\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate\nfrom qiskit.quantum_info import Operator, Statevector",
+          "does": "Our tools, plus math for π and Qiskit's own ready-made QFT to check against.",
+          "more": "Operator captures everything a circuit does, so two circuits can be compared as a whole.",
+          "sketch": null
+        },
+        {
+          "code": "def qft2(qc):\n    qc.h(1)\n    qc.cp(math.pi / 2, 0, 1)\n    qc.h(0)\n    qc.swap(0, 1)",
+          "does": "A recipe for the 2-qubit QFT: H gates plus one quarter-turn clock hand.",
+          "more": "def makes a function: a named recipe you can reuse. The indented lines are its steps, and they only run when you call qft2(...). cp(angle, control, target) turns the target's arrow by that angle, but only in the branch where the control is 1.",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(2)\nqc.h(1)",
+          "does": "Build the input: equal weight on readings 0 and 2, a rhythm repeating every 2.",
+          "more": "Qubit 1 is the left bit, so H on it splits 00 into 00 and 10, which are readings 0 and 2.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "01": 0.0,
+              "10": 0.5,
+              "11": 0.0
+            },
+            "label": "input: period 2"
+          }
+        },
+        {
+          "code": "qft2(qc)",
+          "does": "Run the QFT: clock hands add at outputs 0 and 2, cancel at 1 and 3.",
+          "more": "Calling the function runs its four lines on qc. With 4 readings and a rhythm of 2, the peaks land on multiples of 4 over 2: 0 and 2.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "01": 0.0,
+              "10": 0.5,
+              "11": 0.0
+            },
+            "label": "odds after QFT"
+          }
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw it: our input H, then the QFT's H, phase turn, H and swap.",
+          "more": "The P(π/2) line joining both wires is the controlled quarter turn. The X marks at the end are the swap.",
+          "sketch": null
+        },
+        {
+          "code": "print(Statevector(qc).probabilities_dict(decimals=3))",
+          "does": "The odds: half on 00, half on 10. Peaks at frequencies 0 and 2.",
+          "more": "np.str_('00') just means '00', and np.float64(0.5) means 0.5. Readings 01 and 11 are missing because their chance is 0.",
+          "sketch": null
+        },
+        {
+          "code": "mine = QuantumCircuit(2)\nqft2(mine)\nlibrary = QuantumCircuit(2)\nlibrary.append(QFTGate(2), [0, 1])",
+          "does": "Two clean circuits: one with our QFT recipe, one with Qiskit's QFTGate box.",
+          "more": "append places a whole gate on the listed qubits, here qubits 0 and 1. No input state this time, just the transform itself.",
+          "sketch": null
+        },
+        {
+          "code": "print('matches QFTGate:', Operator(mine).equiv(Operator(library)))",
+          "does": "Compare them: True means our recipe does exactly what Qiskit's QFT does.",
+          "more": "equiv checks every possible input at once, ignoring a global phase that no measurement can see.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "phase-estimation",
@@ -2605,7 +3771,7 @@
       "misconception": "Phase estimation can't read the phase of any qubit you hand it. The target has to be in a state U only turns (an eigenstate, here |1⟩ for S); otherwise you get a random one of U's phases.",
       "qiskit": {
         "intro": "Each controlled power of U is a `cp` with the matching angle, and `QFTGate(2).inverse()` reads out the digits.",
-        "code": "import math\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate\nfrom qiskit.quantum_info import Statevector\n\nphi = 1 / 4                          # S turns |1> by a quarter turn\n\nqc = QuantumCircuit(3)               # q0, q1 count; q2 is the target\nqc.x(2)                              # |1> is the state S turns\nqc.h([0, 1])\nqc.cp(2 * math.pi * phi, 0, 2)       # controlled-U\nqc.cp(2 * math.pi * phi * 2, 1, 2)   # controlled-U^2\nqc.append(QFTGate(2).inverse(), [0, 1])\n\nprint(qc.draw())\n\nprint(Statevector(qc).probabilities_dict([0, 1], decimals=3))\n",
+        "code": "import math  # for math.pi\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate  # the QFT from lesson 18\nfrom qiskit.quantum_info import Statevector\n\nphi = 1 / 4                          # S turns |1> by a quarter turn\n\nqc = QuantumCircuit(3)               # q0, q1 count; q2 is the target\nqc.x(2)                              # |1> is the state S turns\nqc.h([0, 1])  # counting qubits to |+>\nqc.cp(2 * math.pi * phi, 0, 2)       # controlled-U: q0 turns phi\nqc.cp(2 * math.pi * phi * 2, 1, 2)   # controlled-U^2: q1 turns 2 phi\nqc.append(QFTGate(2).inverse(), [0, 1])  # inverse QFT: hands to digits\n\nprint(qc.draw())\n\nprint(Statevector(qc).probabilities_dict([0, 1], decimals=3))  # odds of q0, q1\n",
         "notes": [
           [
             "qc.cp(2 * math.pi * phi, 0, 2)",
@@ -2686,7 +3852,105 @@
         "captures": "Each counting qubit sees the phase after a different power of U, and together they spell out its binary digits.",
         "breaks": "You can't simply look at a qubit's hand: the \"photos\" are phases that only the inverse QFT can combine into a readable number, and only if the target is in a state that U merely turns."
       },
-      "takeaway": "Kick U, U², U⁴… onto counting qubits; the inverse QFT reads off φ's binary digits."
+      "takeaway": "Kick U, U², U⁴… onto counting qubits; the inverse QFT reads off φ's binary digits.",
+      "walkthrough": [
+        {
+          "code": "import math\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit.library import QFTGate\nfrom qiskit.quantum_info import Statevector",
+          "does": "Our tools, plus math for π and the QFT from lesson 18.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "phi = 1 / 4",
+          "does": "The hidden fraction: S turns |1⟩ by a quarter turn.",
+          "more": "A quarter is 0.01 in binary. That is the pair of digits we hope to read at the end.",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(3)\nqc.x(2)\nqc.h([0, 1])",
+          "does": "Two counting qubits go to |+⟩; q2 is flipped to |1⟩, the state S only turns.",
+          "more": "q2 must be a state U only turns (an eigenstate). Hand it any other state and you get a random one of U's phases.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "q0 and q1 at |+⟩"
+          }
+        },
+        {
+          "code": "qc.cp(2 * math.pi * phi, 0, 2)",
+          "does": "Controlled-U once: kickback turns q0's hand a quarter turn, to |+i⟩.",
+          "more": "The angle is 2π times phi, so a full turn times a quarter. q2 stays at |1⟩; the turn lands on the control, as in lesson 15.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0,
+              1.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "q0 after 1 tick"
+          }
+        },
+        {
+          "code": "qc.cp(2 * math.pi * phi * 2, 1, 2)",
+          "does": "Controlled-U twice: q1's hand turns two ticks, a half turn, to |−⟩.",
+          "more": "Doubling slides phi's binary digits one place left, and whole turns vanish. So q1 shows a finer digit than q0.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "label": "q1 after 2 ticks"
+          }
+        },
+        {
+          "code": "qc.append(QFTGate(2).inverse(), [0, 1])",
+          "does": "Inverse QFT on q0, q1: turns the two hands into binary digits.",
+          "more": "Measuring a qubit gives 0 or 1, never its hand. The inverse QFT combines the hands so a plain reading spells out phi.",
+          "sketch": null
+        },
+        {
+          "code": "print(qc.draw())",
+          "does": "Draw it: H boxes, two controlled turns P(π/2) and P(π), then qft_dg.",
+          "more": "P(π/2) is the quarter turn of U, P(π) the half turn of U². qft_dg is the inverse QFT (dg means dagger, the undo).",
+          "sketch": null
+        },
+        {
+          "code": "print(Statevector(qc).probabilities_dict([0, 1], decimals=3))",
+          "does": "Odds for the counting qubits only: 01 every time, phi = 0.01 in binary.",
+          "more": "The list [0, 1] asks for just q0 and q1. Python prints np.str_('01') and np.float64(1.0): read them as '01' and 1.0. The digits 01 after the point are a quarter.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.0,
+              "01": 1.0,
+              "10": 0.0,
+              "11": 0.0
+            },
+            "label": "counting qubits read 01"
+          }
+        }
+      ]
     },
     {
       "id": "hardware",
@@ -2741,7 +4005,7 @@
       "misconception": "Error mitigation estimates a better answer from noisy data; it doesn't protect the quantum information the way fault-tolerant error correction does.",
       "qiskit": {
         "intro": "`transpile` rewrites a circuit for a target gate set. Compare the original and transpiled versions.",
-        "code": "from qiskit import QuantumCircuit\nfrom qiskit import transpile\n\nbell = QuantumCircuit(2)\nbell.h(0)\nbell.cx(0, 1)\n\nnative = transpile(bell, basis_gates=['rz', 'sx', 'cx'], optimization_level=1)\nprint(native.draw())\nprint('ops before:', dict(bell.count_ops()), 'depth', bell.depth())\nprint('ops after :', dict(native.count_ops()), 'depth', native.depth())\n",
+        "code": "from qiskit import QuantumCircuit\nfrom qiskit import transpile  # rewrites a circuit for a chip\n\nbell = QuantumCircuit(2)  # two qubits, both at |0⟩\nbell.h(0)  # tip qubit 0's arrow to |+⟩\nbell.cx(0, 1)  # link the pair: always 00 or 11\n\n# rewrite with only the chip's own gates\nnative = transpile(bell, basis_gates=['rz', 'sx', 'cx'], optimization_level=1)\nprint(native.draw())  # H became Rz, √X, Rz\n# count gates and time steps, before and after\nprint('ops before:', dict(bell.count_ops()), 'depth', bell.depth())\nprint('ops after :', dict(native.count_ops()), 'depth', native.depth())\n",
         "notes": [
           [
             "transpile(..., basis_gates=[...])",
@@ -2806,7 +4070,72 @@
         "captures": "Every gate adds a little error, so deeper circuits drift further from the ideal result.",
         "breaks": "In the whispering game the message changes into a different message. Quantum noise mostly shrinks the arrow toward the centre: the state gets less definite and the results drift toward random."
       },
-      "takeaway": "Every gate adds a little noise; the arrow shrinks and results drift toward random."
+      "takeaway": "Every gate adds a little noise; the arrow shrinks and results drift toward random.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit\nfrom qiskit import transpile",
+          "does": "Two tools: one builds circuits, transpile rewrites them for a real chip.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "bell = QuantumCircuit(2)\nbell.h(0)",
+          "does": "Two qubits at |0⟩. H tips qubit 0's arrow down to the equator, |+⟩.",
+          "more": "Qubit 1 has not moved yet, so its arrow still points up at |0⟩.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "qubit 0 after H"
+          }
+        },
+        {
+          "code": "bell.cx(0, 1)",
+          "does": "CNOT links the two qubits: a Bell pair that reads 00 or 11.",
+          "more": "The qubits are now linked, so one arrow per qubit no longer tells the story. The odds of each reading do. These are ideal odds, with no noise.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "11": 0.5
+            },
+            "label": "ideal Bell odds"
+          }
+        },
+        {
+          "code": "native = transpile(bell, basis_gates=['rz', 'sx', 'cx'], optimization_level=1)",
+          "does": "Rewrite the circuit using only the chip's native gates: rz, sx and cx.",
+          "more": "basis_gates is a list of the gates the chip allows, and optimization_level=1 asks for light tidying. The rewrite changes the steps, not the answer: on an ideal simulator the odds stay 50/50 for 00 and 11.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "00": 0.5,
+              "11": 0.5
+            },
+            "label": "same odds after rewrite"
+          }
+        },
+        {
+          "code": "print(native.draw())",
+          "does": "Draw it: the single H became three gates, Rz(π/2), √X, Rz(π/2).",
+          "more": "The line 'global phase: π/4' is a turn of the whole state that no reading can ever see. You can safely ignore it.",
+          "sketch": null
+        },
+        {
+          "code": "print('ops before:', dict(bell.count_ops()), 'depth', bell.depth())\nprint('ops after :', dict(native.count_ops()), 'depth', native.depth())",
+          "does": "Count gates and time steps: 2 gates became 4, depth 2 became 4.",
+          "more": "Each extra gate is one more whisper down the line: a small chance of error that shrinks the arrow toward random. Depth counts time steps, gates that must run one after another, so a waiting qubit has more time to leak.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "real-chip",
@@ -2861,7 +4190,7 @@
       "misconception": "A transpiled circuit that looks different isn't a different computation. Layout and routing permute and rewrite, but the ideal output is the same. Only the noise budget changes.",
       "qiskit": {
         "intro": "`GenericBackendV2` is a built-in fake chip with a coupling map and realistic errors. Transpile for it, then simulate its noise with Aer.",
-        "code": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit_aer import AerSimulator\n\n# a 5-qubit chip wired in a line\nbackend = GenericBackendV2(num_qubits=5, coupling_map=[[0, 1], [1, 2], [2, 3], [3, 4]], seed=42)\n\nqc = QuantumCircuit(3)\nqc.h(0)\nqc.cx(0, 1)\nqc.cx(1, 2)\nqc.measure_all()\n\nprint(qc.draw())\n\nnative = transpile(qc, backend=backend, optimization_level=1, seed_transpiler=7)\nprint('ops:', dict(native.count_ops()), ' depth:', native.depth())\n\nnoisy = AerSimulator.from_backend(backend)\ncounts = noisy.run(native, shots=2000, seed_simulator=1).result().get_counts()\nprint(counts)\n",
+        "code": "from qiskit import QuantumCircuit, transpile  # transpile fits a circuit to a chip\nfrom qiskit.providers.fake_provider import GenericBackendV2  # a fake chip\nfrom qiskit_aer import AerSimulator  # a simulator that can copy chip noise\n\n# a 5-qubit chip wired in a line\nbackend = GenericBackendV2(num_qubits=5, coupling_map=[[0, 1], [1, 2], [2, 3], [3, 4]], seed=42)\n\nqc = QuantumCircuit(3)  # three qubits, all at |0⟩\nqc.h(0)  # qubit 0's arrow to the equator, |+⟩\nqc.cx(0, 1)  # CNOT from 0 to its neighbour 1\nqc.cx(1, 2)  # CNOT from 1 to its neighbour 2\nqc.measure_all()  # read all three qubits\n\nprint(qc.draw())  # the circuit as you wrote it\n\nnative = transpile(qc, backend=backend, optimization_level=1, seed_transpiler=7)  # rewrite for the chip\nprint('ops:', dict(native.count_ops()), ' depth:', native.depth())  # gate counts and layers\n\nnoisy = AerSimulator.from_backend(backend)  # copies the chip's noise\ncounts = noisy.run(native, shots=2000, seed_simulator=1).result().get_counts()  # 2000 noisy runs\nprint(counts)  # mostly 000 and 111, a few strays\n",
         "notes": [
           [
             "GenericBackendV2(...)",
@@ -2932,7 +4261,71 @@
         "captures": "The coupling map decides who can interact; the transpiler adds SWAPs, and each SWAP adds noise.",
         "breaks": "Guests could always shout down the table. On a chip there's no shortcut: a two-qubit gate between non-neighbours simply can't happen until the states are moved next to each other."
       },
-      "takeaway": "Chips connect only neighbours; routing adds SWAPs, and every SWAP adds noise."
+      "takeaway": "Chips connect only neighbours; routing adds SWAPs, and every SWAP adds noise.",
+      "walkthrough": [
+        {
+          "code": "from qiskit import QuantumCircuit, transpile\nfrom qiskit.providers.fake_provider import GenericBackendV2\nfrom qiskit_aer import AerSimulator",
+          "does": "Three tools: build circuits, fit them to a chip, and copy a chip's noise.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "backend = GenericBackendV2(num_qubits=5, coupling_map=[[0, 1], [1, 2], [2, 3], [3, 4]], seed=42)",
+          "does": "A fake 5-qubit chip: guests at a long table, wired 0-1-2-3-4.",
+          "more": "coupling_map is a list of pairs, one per wire, and only those pairs can run a CNOT directly. seed=42 fixes the made-up error rates, so you get the same chip every time.",
+          "sketch": null
+        },
+        {
+          "code": "qc = QuantumCircuit(3)\nqc.h(0)",
+          "does": "Three qubits at |0⟩, then H tips qubit 0's arrow to the equator.",
+          "more": "",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "before": [
+              0.0,
+              0.0,
+              1.0
+            ],
+            "label": "qubit 0 after H"
+          }
+        },
+        {
+          "code": "qc.cx(0, 1)\nqc.cx(1, 2)",
+          "does": "CNOT 0 to 1, then 1 to 2: neighbours only. All three now agree.",
+          "more": "Each CNOT joins qubits that sit side by side on the chip's line, so nobody has to swap seats.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "000": 0.5,
+              "111": 0.5
+            },
+            "label": "ideal odds: 000 or 111"
+          }
+        },
+        {
+          "code": "qc.measure_all()\nprint(qc.draw())",
+          "does": "Measure all three and draw the circuit as you wrote it.",
+          "more": "measure_all also adds a barrier (the dotted ░ line) and a row of classical bits called meas.",
+          "sketch": null
+        },
+        {
+          "code": "native = transpile(qc, backend=backend, optimization_level=1, seed_transpiler=7)\nprint('ops:', dict(native.count_ops()), ' depth:', native.depth())",
+          "does": "Fit it to the chip: no SWAPs needed, just H rewritten in native gates.",
+          "more": "Qubits 0, 1, 2 already sit side by side, so cx stays at 2 and no SWAPs appear. The chip has no H gate, so H becomes rz, sx, rz, three turns that add up to H. depth: 6 means six layers of gates one after another.",
+          "sketch": null
+        },
+        {
+          "code": "noisy = AerSimulator.from_backend(backend)\ncounts = noisy.run(native, shots=2000, seed_simulator=1).result().get_counts()\nprint(counts)",
+          "does": "Run 2000 times with the chip's noise: mostly 000 and 111, 25 strays.",
+          "more": "Ideally only 000 and 111 appear, about 1000 each. Here you get 962 and 1013, plus 25 readings like 010 that noise produced. The chain .result().get_counts() waits for the run to finish, then tallies the readings.",
+          "sketch": null
+        }
+      ]
     },
     {
       "id": "qml",
@@ -2987,7 +4380,7 @@
       "misconception": "Quantum ML is not automatically better than classical ML. At today's scales it often ties or loses; the point is to understand the mechanism and where it might help.",
       "qiskit": {
         "intro": "`Parameter` creates a symbolic angle. `assign_parameters` binds numbers to it before simulation.",
-        "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import Statevector\n\ntheta = Parameter('theta')\nmodel = QuantumCircuit(1)\nmodel.ry(theta, 0)\n\nprint(model.draw())\n\ndef p1(t):\n    return Statevector(model.assign_parameters({theta: t})).probabilities()[1]\n\ntarget = 0.8      # we want P(1) = 0.8\nvalue = 0.1       # initial guess for theta\nfor step in range(40):\n    dp = (p1(value + np.pi / 2) - p1(value - np.pi / 2)) / 2   # parameter-shift rule\n    grad = 2 * (p1(value) - target) * dp                     # d/dtheta of (p1 - target)^2\n    value -= 1.0 * grad\n\nprint(f'trained theta = {value:.3f}, P(1) = {p1(value):.3f}')\n",
+        "code": "import numpy as np  # math tools, like pi\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter  # a named blank for an angle\nfrom qiskit.quantum_info import Statevector\n\ntheta = Parameter('theta')  # the knob, no number yet\nmodel = QuantumCircuit(1)  # one qubit, arrow at |0⟩\nmodel.ry(theta, 0)  # RY tilt by theta: the trainable knob\n\nprint(model.draw())  # Ry box, theta still blank\n\ndef p1(t):  # chance of reading 1 when theta = t\n    return Statevector(model.assign_parameters({theta: t})).probabilities()[1]\n\ntarget = 0.8      # we want P(1) = 0.8\nvalue = 0.1       # first guess for theta\nfor step in range(40):  # 40 rounds of run, check, nudge\n    dp = (p1(value + np.pi / 2) - p1(value - np.pi / 2)) / 2   # slope of P(1): parameter-shift rule\n    grad = 2 * (p1(value) - target) * dp                     # slope of the cost (p1 - target)^2\n    value -= 1.0 * grad  # step the knob downhill\n\nprint(f'trained theta = {value:.3f}, P(1) = {p1(value):.3f}')  # the tuned knob and its odds\n",
         "notes": [
           [
             "Parameter('theta')",
@@ -3062,7 +4455,80 @@
         "captures": "The rotation angles are pegs, the cost is how far off it sounds, and the gradient says which way to turn.",
         "breaks": "You hear a guitar's pitch at once. A circuit's cost is estimated from noisy shots, and even the gradient has to be measured (the parameter-shift rule), so every \"listen\" costs many runs."
       },
-      "takeaway": "A variational circuit has knobs; an optimizer turns them downhill on a measured cost."
+      "takeaway": "A variational circuit has knobs; an optimizer turns them downhill on a measured cost.",
+      "walkthrough": [
+        {
+          "code": "import numpy as np\nfrom qiskit import QuantumCircuit\nfrom qiskit.circuit import Parameter\nfrom qiskit.quantum_info import Statevector",
+          "does": "Our usual tools, plus Parameter: a blank to fill with an angle later.",
+          "more": "numpy (shortened to np) gives us pi as np.pi.",
+          "sketch": null
+        },
+        {
+          "code": "theta = Parameter('theta')\nmodel = QuantumCircuit(1)\nmodel.ry(theta, 0)",
+          "does": "One qubit with an RY knob whose angle, theta, is left free to turn.",
+          "more": "theta is not a number yet, just a named placeholder. That is what makes the circuit trainable: the same circuit can be run with any angle.",
+          "sketch": null
+        },
+        {
+          "code": "print(model.draw())",
+          "does": "Draw it: one wire with an Ry box, the angle still written as theta.",
+          "more": "",
+          "sketch": null
+        },
+        {
+          "code": "def p1(t):\n    return Statevector(model.assign_parameters({theta: t})).probabilities()[1]",
+          "does": "A helper that sets the knob to t and returns the chance of reading 1.",
+          "more": "def makes a function: a reusable recipe that takes t and hands back a result with return. assign_parameters makes a copy with theta set to t, and probabilities()[1] picks the odds of 1 from the list [P(0), P(1)].",
+          "sketch": null
+        },
+        {
+          "code": "target = 0.8\nvalue = 0.1",
+          "does": "Goal: read 1 eight times in ten. Start the knob at 0.1, near |0⟩.",
+          "more": "At theta = 0.1 the arrow barely leaves the north pole, so P(1) is only about 0.0025. Far out of tune. The video aimed for a quarter; this code picks a different goal and start, but the loop works the same way.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.0998,
+              0.0,
+              0.995
+            ],
+            "before": null,
+            "label": "start, theta = 0.1"
+          }
+        },
+        {
+          "code": "for step in range(40):\n    dp = (p1(value + np.pi / 2) - p1(value - np.pi / 2)) / 2\n    grad = 2 * (p1(value) - target) * dp\n    value -= 1.0 * grad",
+          "does": "Forty rounds: find the slope of the cost, then nudge the knob downhill.",
+          "more": "for step in range(40) repeats the indented lines 40 times. The slope of P(1) comes from rerunning with theta shifted pi/2 each way (the parameter-shift rule), and value -= 1.0 * grad means new theta = old theta minus a step times the slope. Here Statevector gives the exact odds; a real chip would estimate them from many shots.",
+          "sketch": {
+            "kind": "arrow",
+            "xyz": [
+              0.8,
+              0.0,
+              -0.6
+            ],
+            "before": [
+              0.0998,
+              0.0,
+              0.995
+            ],
+            "label": "after training"
+          }
+        },
+        {
+          "code": "print(f'trained theta = {value:.3f}, P(1) = {p1(value):.3f}')",
+          "does": "The tuned knob: theta about 2.214, and 1 now comes up 80% of the time.",
+          "more": "An f-string fills each {...} with a value; :.3f rounds it to 3 decimals. The cost is now about zero: we reached the bottom of the valley.",
+          "sketch": {
+            "kind": "odds",
+            "odds": {
+              "0": 0.2,
+              "1": 0.8
+            },
+            "label": "odds after training"
+          }
+        }
+      ]
     }
   ],
   "units": [

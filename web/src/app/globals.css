@@ -176,6 +176,8 @@ input[type="checkbox"], input[type="radio"] { width: auto; min-height: auto; acc
 .walkthrough-sketch .bloch { margin: 0; }
 .walkthrough-sketch .prob-bars { width: 100%; }
 .walkthrough-sketch .caption { margin: 2px 0 0; }
+.walkthrough + .code-details { margin-bottom: 14px; }
+.walkthrough ~ h3 { margin-top: 36px; }
 .python-basics { margin: 20px 0; padding: 18px 21px; border: 1px solid var(--hair); border-left: 3px solid var(--gold); border-radius: var(--radius); background: var(--raised); }
 .python-basics .eyebrow { margin: 0 0 8px; }
 .python-basics dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 0; }
