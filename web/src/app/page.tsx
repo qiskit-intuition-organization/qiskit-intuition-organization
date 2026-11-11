@@ -229,18 +229,31 @@ export default function Home() {
   const intuitionText = (
     <>
       {lesson.analogy && (
-        <aside className="analogy-card" aria-label="Everyday analogy">
-          <p className="eyebrow">Picture it like this</p>
-          <h3>{lesson.analogy.title}</h3>
-          <p>{lesson.analogy.picture}</p>
-          <p>
-            <strong>What it gets right: </strong>
-            {lesson.analogy.captures}
-          </p>
-          <details>
-            <summary>Where does this analogy break? Think first, then open.</summary>
-            <p>{lesson.analogy.breaks}</p>
-          </details>
+        <aside className={lesson.analogy.sketch ? "analogy-card has-sketch" : "analogy-card"} aria-label="Everyday analogy">
+          {lesson.analogy.sketch && (
+            // A still from the lesson's own video, so the card and the video share one picture.
+            <img
+              className="analogy-sketch"
+              src={lesson.analogy.sketch.src}
+              alt={lesson.analogy.sketch.alt}
+              width={lesson.analogy.sketch.width}
+              height={lesson.analogy.sketch.height}
+              loading="lazy"
+            />
+          )}
+          <div>
+            <p className="eyebrow">Picture it like this</p>
+            <h3>{lesson.analogy.title}</h3>
+            <p>{lesson.analogy.picture}</p>
+            <p>
+              <strong>What it gets right: </strong>
+              {lesson.analogy.captures}
+            </p>
+            <details>
+              <summary>Where does this analogy break? Think first, then open.</summary>
+              <p>{lesson.analogy.breaks}</p>
+            </details>
+          </div>
         </aside>
       )}
       <Paragraphs lines={lesson.intuition} />

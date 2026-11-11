@@ -136,7 +136,13 @@
         "title": "Water waves through a harbour wall",
         "picture": "Waves pass through two gaps in a harbour wall and spread out. Where a crest from one gap meets a trough from the other, the water stays flat; where crests meet, the waves grow. Move the gaps and you choose where the calm spots are.",
         "captures": "Outcomes come from paths adding up or cancelling, and a quantum algorithm places the \"calm spots\" on the wrong answers.",
-        "breaks": "Water waves are real ripples in space that you can watch. Quantum amplitudes live in the space of possible answers, and you never see the wave: each run shows you one outcome."
+        "breaks": "Water waves are real ripples in space that you can watch. Quantum amplitudes live in the space of possible answers, and you never see the wave: each run shows you one outcome.",
+        "sketch": {
+          "src": "/sketches/01-why-quantum.webp",
+          "alt": "Chalk sketch of straight waves reaching a harbour wall with gaps, spreading out as overlapping ripples, with calm spots marked as gold dots along the beach.",
+          "width": 840,
+          "height": 441
+        }
       },
       "takeaway": "Quantum speed-ups come from interference: wrong answers cancel, right ones reinforce.",
       "walkthrough": [
@@ -344,7 +350,13 @@
         "title": "A weather vane you may ask only one question",
         "picture": "A weather vane can point in any direction, but you're only allowed to ask \"north or south?\". It answers with one word, and the instant it answers it swings to point exactly that way.",
         "captures": "The state (a direction) holds far more than the answer (one bit), and asking changes the state.",
-        "breaks": "You could walk up and look at a real vane. Nobody can look at a qubit's arrow: you only learn where it points from the statistics of many identically prepared qubits."
+        "breaks": "You could walk up and look at a real vane. Nobody can look at a qubit's arrow: you only learn where it points from the statistics of many identically prepared qubits.",
+        "sketch": {
+          "src": "/sketches/02-qubit.webp",
+          "alt": "A chalk weathervane with N at the top and S at the bottom, its arrow pointing between them, and a bubble asking \"north or south?\".",
+          "width": 840,
+          "height": 643
+        }
       },
       "takeaway": "The state is the arrow; a measurement only ever hands you one bit.",
       "walkthrough": [
@@ -523,7 +535,13 @@
         "title": "Flipping a pancake",
         "picture": "Flip the pan and the top of the pancake becomes the bottom. Flip it again and you're back where you started.",
         "captures": "X is a half-turn: it swaps |0⟩ and |1⟩, it's predictable, and doing it twice undoes it.",
-        "breaks": "A pancake is either side up. X also turns every in-between direction of the arrow, swapping how much |0⟩ and how much |1⟩ it has."
+        "breaks": "A pancake is either side up. X also turns every in-between direction of the arrow, swapping how much |0⟩ and how much |1⟩ it has.",
+        "sketch": {
+          "src": "/sketches/03-flip.webp",
+          "alt": "A chalk sketch of a pancake in a frying pan under an X gate box, with the pancake's top side marked and a note reading \"flips: 2, back to the start\".",
+          "width": 840,
+          "height": 395
+        }
       },
       "takeaway": "Gates turn the arrow; X is a half-turn that swaps |0⟩ and |1⟩.",
       "walkthrough": [
@@ -720,7 +738,13 @@
         "title": "An opinion poll",
         "picture": "Asking one voter tells you almost nothing about an election. Ask a thousand and you know the percentages, give or take a margin of error that shrinks as the poll grows.",
         "captures": "Each shot is one vote; the fractions estimate the probabilities, with an error that shrinks like 1/√N.",
-        "breaks": "A voter already had an opinion before you asked. A qubit has no answer waiting: measuring creates it, and every \"vote\" needs a freshly prepared qubit."
+        "breaks": "A voter already had an opinion before you asked. A qubit has no answer waiting: measuring creates it, and every \"vote\" needs a freshly prepared qubit.",
+        "sketch": {
+          "src": "/sketches/04-measurement.webp",
+          "alt": "A chalk sketch of a crowd of 1,000 stick-figure voters next to a ballot box labelled poll, with a bar chart asking 'winner?' showing A at 58% and B at 42%.",
+          "width": 840,
+          "height": 339
+        }
       },
       "takeaway": "One shot is one vote; many shots reveal the odds.",
       "walkthrough": [
@@ -930,7 +954,13 @@
         "title": "A compass needle pointing east, not a spinning coin",
         "picture": "North means 0 and south means 1. A needle pointing east is in a perfectly definite direction; it's only the question \"north or south?\" that has no good answer, so you get either one, 50/50.",
         "captures": "|+⟩ is a definite state. The randomness comes from the question you ask, which is why a second H can bring the needle back to north exactly.",
-        "breaks": "A real needle pointing east would answer \"neither\". A qubit must answer 0 or 1, and then it really becomes that answer."
+        "breaks": "A real needle pointing east would answer \"neither\". A qubit must answer 0 or 1, and then it really becomes that answer.",
+        "sketch": {
+          "src": "/sketches/05-superposition.webp",
+          "alt": "A chalk compass with N = 0 at the top and S = 1 at the bottom, its needle pointing east, with dotted lines showing east is equally far from north and south, labelled \"north or south?\", \"a definite direction\" and \"equally far\".",
+          "width": 840,
+          "height": 521
+        }
       },
       "takeaway": "H tips the arrow onto the equator: a definite state with random answers. A second H undoes it.",
       "walkthrough": [
@@ -1151,7 +1181,13 @@
         "title": "A dimmer instead of a light switch",
         "picture": "X is an on/off switch. RY(θ) is a dimmer: turn the knob and you can set any level in between.",
         "captures": "Rotations give continuous control: the angle sets the probability of reading 1.",
-        "breaks": "A dimmer brightens evenly as you turn it; P(1) = sin²(θ/2) changes slowly near the ends and fast in the middle. And each measurement is still fully on or fully off, never half-bright."
+        "breaks": "A dimmer brightens evenly as you turn it; P(1) = sin²(θ/2) changes slowly near the ends and fast in the middle. And each measurement is still fully on or fully off, never half-bright.",
+        "sketch": {
+          "src": "/sketches/06-rotations.webp",
+          "alt": "A chalk light switch that is only ON or OFF, labelled \"X: on or off\", beside a dimmer dial from 0 to π that can stop anywhere, labelled \"RY(θ): any level\".",
+          "width": 840,
+          "height": 469
+        }
       },
       "takeaway": "RY(θ) is a dial: P(1) = sin²(θ/2).",
       "walkthrough": [
@@ -1350,7 +1386,13 @@
         "title": "Longitude on a globe",
         "picture": "Two cities on the same line of latitude are equally far north, whatever their longitude. Z moves the arrow along its line of latitude (east or west) without moving it north or south.",
         "captures": "Phase leaves the measurement odds untouched, yet it is a real difference that a later gate can turn into different odds.",
-        "breaks": "Longitude is printed on every map. Phase can't be read off directly: only interference reveals a relative phase, and turning the whole globe at once (a global phase) changes nothing at all."
+        "breaks": "Longitude is printed on every map. Phase can't be read off directly: only interference reveals a relative phase, and turning the whole globe at once (a global phase) changes nothing at all.",
+        "sketch": {
+          "src": "/sketches/07-phase.webp",
+          "alt": "A chalk globe with two little houses on the same dashed line of latitude, an equals sign between them, and two yellow meridians labelled 'longitude' showing they sit at different longitudes.",
+          "width": 769,
+          "height": 740
+        }
       },
       "takeaway": "Phase is the arrow's longitude: invisible now, decisive later.",
       "walkthrough": [
@@ -1554,7 +1596,13 @@
         "title": "Noise-cancelling headphones",
         "picture": "Headphones play a mirror image of the noise; crest meets trough and the sound disappears. Waves that line up instead get louder.",
         "captures": "Amplitudes with opposite signs cancel and amplitudes with the same sign reinforce, so H–Z–H sends everything to |1⟩.",
-        "breaks": "Headphones cancel sound in the air. Here what cancels are amplitudes (numbers attached to outcomes), and the probability that vanishes from one outcome reappears on the other."
+        "breaks": "Headphones cancel sound in the air. Here what cancels are amplitudes (numbers attached to outcomes), and the probability that vanishes from one outcome reappears on the other.",
+        "sketch": {
+          "src": "/sketches/08-interference.webp",
+          "alt": "A chalk sketch of headphones beside a white \"noise\" wave and a gold \"mirror image\" wave that dips wherever the noise wave rises.",
+          "width": 840,
+          "height": 235
+        }
       },
       "takeaway": "Amplitudes add like waves: in step they grow, out of step they cancel.",
       "walkthrough": [
@@ -1776,7 +1824,13 @@
         "title": "Polarized sunglasses",
         "picture": "Light that's polarized diagonally gets half-blocked by vertical sunglasses, but tilt the glasses to the diagonal and all of it passes.",
         "captures": "The same state can be certain along one axis and 50/50 along another; the measurement axis is a choice. (Photon polarization really is a qubit.)",
-        "breaks": "A beam of light passes partly. A single photon passes or doesn't. If it passes, it's now lined up with the filter, which is the collapse."
+        "breaks": "A beam of light passes partly. A single photon passes or doesn't. If it passes, it's now lined up with the filter, which is the collapse.",
+        "sketch": {
+          "src": "/sketches/09-bases.webp",
+          "alt": "A flashlight sends slanted light waves through tilted polarized sunglasses, a bubble crossing out \"upright?\" for \"slanted?\", and a meter shows all of the light getting through.",
+          "width": 840,
+          "height": 338
+        }
       },
       "takeaway": "A measurement asks about one axis; to ask about another, rotate it onto Z first.",
       "walkthrough": [
@@ -1965,7 +2019,13 @@
         "title": "A combination lock",
         "picture": "A lock with ten two-position wheels has 2¹⁰ = 1024 possible combinations. Every extra wheel doubles the count.",
         "captures": "n qubits have 2ⁿ basis states, and each one gets its own amplitude.",
-        "breaks": "A lock is set to exactly one combination. n qubits carry an amplitude for every combination at once, yet a measurement still shows you only one."
+        "breaks": "A lock is set to exactly one combination. n qubits carry an amplitude for every combination at once, yet a measurement still shows you only one.",
+        "sketch": {
+          "src": "/sketches/10-registers.webp",
+          "alt": "A chalk sketch of a combination lock with ten wheels, each set to 0 or 1, with 2 × 2 × … × 2 written underneath and the total 1,024 in gold.",
+          "width": 840,
+          "height": 259
+        }
       },
       "takeaway": "n qubits have 2ⁿ amplitudes, but a measurement shows one n-bit string.",
       "walkthrough": [
@@ -2168,7 +2228,13 @@
         "title": "Two dancers sharing one routine",
         "picture": "Watch either dancer alone and their moves look improvised. Watch both and they're perfectly coordinated: the choreography belongs to the pair, not to either dancer.",
         "captures": "Each qubit alone is a coin flip, but the pair's results always agree; the state lives in the pair.",
-        "breaks": "Dancers follow steps written in advance. Experiments (Bell tests) show entangled qubits can't be carrying pre-written answers, and neither one can be used to send the other a message."
+        "breaks": "Dancers follow steps written in advance. Experiments (Bell tests) show entangled qubits can't be carrying pre-written answers, and neither one can be used to send the other a message.",
+        "sketch": {
+          "src": "/sketches/11-entanglement.webp",
+          "alt": "Two stick-figure dancers on a stage, holding hands, with a dotted line joining their feet. A gold ring circles the pair under a box of shared dance notes, labelled \"belongs to the pair\".",
+          "width": 840,
+          "height": 413
+        }
       },
       "takeaway": "Entangled qubits share one state: each alone is random, together they agree.",
       "walkthrough": [
@@ -2394,7 +2460,13 @@
         "title": "A photocopier that only understands black and white",
         "picture": "It copies a pure black or pure white page perfectly. Feed it a grey page and, instead of a second grey page, it binds the original and the copy together so that whenever anyone looks, both come out black or both come out white.",
         "captures": "The copier works on 0 and 1 but entangles everything in between, and the original loses its own \"shade\".",
-        "breaks": "Grey paper looks grey to anyone. A qubit's shade can't be seen at all, and that's exactly why a working copier would be so powerful, and why it can't exist."
+        "breaks": "Grey paper looks grey to anyone. A qubit's shade can't be seen at all, and that's exactly why a working copier would be so powerful, and why it can't exist.",
+        "sketch": {
+          "src": "/sketches/12-no-cloning.webp",
+          "alt": "A chalk sketch of an eye looking down at two white pages tied together with a gold string bow.",
+          "width": 610,
+          "height": 547
+        }
       },
       "takeaway": "No circuit copies an unknown state: CNOT copies 0 and 1, but entangles everything in between.",
       "walkthrough": [
@@ -2595,7 +2667,13 @@
         "title": "A fax that shreds the original",
         "picture": "The page comes out at Bob's end, the original is destroyed at Alice's, and nothing gets through without the phone line.",
         "captures": "The state moves rather than being copied, and Bob can't finish until Alice's ordinary message arrives.",
-        "breaks": "A fax reads the page. Alice never learns her state, and her two bits alone say nothing about it. The state travels in the shared entanglement and the bits together."
+        "breaks": "A fax reads the page. Alice never learns her state, and her two bits alone say nothing about it. The state travels in the shared entanglement and the bits together.",
+        "sketch": {
+          "src": "/sketches/13-teleportation.webp",
+          "alt": "Chalk sketch of two fax machines, Alice's and Bob's, joined by a phone line, with the starred page coming out at Bob's end and the original shredded in a bin beside Alice's.",
+          "width": 840,
+          "height": 372
+        }
       },
       "takeaway": "Shared entanglement plus two ordinary bits move a state: nothing is copied, nothing outruns light.",
       "walkthrough": [
@@ -2804,7 +2882,13 @@
         "title": "A safe with two keys",
         "picture": "Bob already holds one key to a safe. Alice turns her key to one of four positions and posts it to him. With both keys in his hands, Bob can tell which of the four positions she chose.",
         "captures": "A shared resource is set up in advance, only one object travels, and reading the message needs both halves together.",
-        "breaks": "You could look at a posted key and see its position. Alice's qubit on its own looks completely random (it's half of an entangled pair), so anyone who intercepts it learns nothing. The message exists only in the pair."
+        "breaks": "You could look at a posted key and see its position. Alice's qubit on its own looks completely random (it's half of an entangled pair), so anyone who intercepts it learns nothing. The message exists only in the pair.",
+        "sketch": {
+          "src": "/sketches/14-superdense.webp",
+          "alt": "A chalk sketch of a safe with two keyholes, with Alice holding a key whose dial can turn to four positions on the left and Bob holding the other key on the right.",
+          "width": 840,
+          "height": 279
+        }
       },
       "takeaway": "With a shared Bell pair, sending one qubit delivers two bits. The second rides on the entanglement.",
       "walkthrough": [
@@ -2995,7 +3079,13 @@
         "title": "Spotting a two-headed coin",
         "picture": "A genuine coin has different faces (balanced); a trick coin has the same face twice (constant). Normally you have to look at both sides to tell.",
         "captures": "The question is about how the two answers relate, and one quantum query settles it.",
-        "breaks": "You still never see either face: you only learn whether they differ. And no real coin lets you look at both sides in superposition; the oracle must accept quantum inputs."
+        "breaks": "You still never see either face: you only learn whether they differ. And no real coin lets you look at both sides in superposition; the oracle must accept quantum inputs.",
+        "sketch": {
+          "src": "/sketches/15-deutsch.webp",
+          "alt": "Chalk sketch of a trick coin with a sun on both faces, labelled constant, beside a real coin with a sun and a moon, labelled balanced.",
+          "width": 840,
+          "height": 244
+        }
       },
       "takeaway": "Phase kickback writes f's answer into the input's phase; interference reads it in one query.",
       "walkthrough": [
@@ -3214,7 +3304,13 @@
         "title": "A wall of switches and a buzzer",
         "picture": "A panel of switches hides which ones are wired to a buzzer. The buzzer only tells you whether an odd or an even number of the wired switches are on. Classically you test one switch at a time; Bernstein–Vazirani tests them all at once and comes back with the full wiring diagram.",
         "captures": "The hidden rule is a parity, and one quantum query replaces n classical ones.",
-        "breaks": "No real panel can be tested \"all at once\" like this: the inputs must be in superposition, and it only works because the hidden rule is a parity that interference can unpick. Most hidden rules aren't."
+        "breaks": "No real panel can be tested \"all at once\" like this: the inputs must be in superposition, and it only works because the hidden rule is a parity that interference can unpick. Most hidden rules aren't.",
+        "sketch": {
+          "src": "/sketches/16-bernstein-vazirani.webp",
+          "alt": "A chalk sketch of a panel of three switches with dashed hidden wiring running from switches 1 and 3 to a buzzer labelled EVEN, with the note \"wired + on: 2\".",
+          "width": 840,
+          "height": 382
+        }
       },
       "takeaway": "Phase kickback on every input at once: one query reveals the whole secret string.",
       "walkthrough": [
@@ -3449,7 +3545,13 @@
         "title": "Pushing a swing",
         "picture": "Each well-timed push makes the swing go a little higher. Keep pushing at the right rhythm and it soars; keep going too long and it starts coming back down.",
         "captures": "Each oracle-plus-diffuser round adds a bit more amplitude to the answer, and about √N rounds is the sweet spot. More overshoots.",
-        "breaks": "A swing gains energy. Grover's state never grows: total probability stays 1, and the answer's share rises only because every other answer's share falls."
+        "breaks": "A swing gains energy. Grover's state never grows: total probability stays 1, and the answer's share rises only because every other answer's share falls.",
+        "sketch": {
+          "src": "/sketches/17-grover.webp",
+          "alt": "A chalk sketch of a stick figure on a swing hanging from an A-frame, swung high to one side above a dotted yellow arc that traces its path.",
+          "width": 756,
+          "height": 660
+        }
       },
       "takeaway": "Mark the answer with a sign, reflect about the average, repeat about (π/4)√N times.",
       "walkthrough": [
@@ -3647,7 +3749,13 @@
         "title": "Hearing the notes in a chord",
         "picture": "Strike a chord on a piano and your ear doesn't hear one messy wave. It hears three notes. Your inner ear is doing a Fourier transform: turning a wave into the list of frequencies inside it.",
         "captures": "The QFT turns a repeating pattern in the amplitudes into peaks at its frequencies.",
-        "breaks": "Your ear hears every note at once. A measurement after the QFT gives one frequency per run, picked at random from the peaks. That's plenty for algorithms that need one rhythm, but useless for reading a whole spectrum."
+        "breaks": "Your ear hears every note at once. A measurement after the QFT gives one frequency per run, picked at random from the peaks. That's plenty for algorithms that need one rhythm, but useless for reading a whole spectrum.",
+        "sketch": {
+          "src": "/sketches/18-qft.webp",
+          "alt": "A chalk sketch of piano keys playing a chord, sending out one tangled wave to an ear that splits it into three separate waves labelled slow, faster and fastest frequencies.",
+          "width": 840,
+          "height": 224
+        }
       },
       "takeaway": "The QFT turns rhythm into position: a pattern with period r lands on multiples of N/r.",
       "walkthrough": [
@@ -3850,7 +3958,13 @@
         "title": "Timing a clock hand with snapshots",
         "picture": "To find how far a clock hand moves per tick, take photos after 1 tick, 2 ticks and 4 ticks. The 1-tick photo gives a rough idea; the 4-tick photo magnifies small differences. Put together, the photos pin the speed down digit by digit.",
         "captures": "Each counting qubit sees the phase after a different power of U, and together they spell out its binary digits.",
-        "breaks": "You can't simply look at a qubit's hand: the \"photos\" are phases that only the inverse QFT can combine into a readable number, and only if the target is in a state that U merely turns."
+        "breaks": "You can't simply look at a qubit's hand: the \"photos\" are phases that only the inverse QFT can combine into a readable number, and only if the target is in a state that U merely turns.",
+        "sketch": {
+          "src": "/sketches/19-phase-estimation.webp",
+          "alt": "Three hand-drawn photo frames of a clock, labelled 1 tick, 2 ticks and 4 ticks, with the hand turned further each time and the 4-tick photo marked \"4× the gap\".",
+          "width": 840,
+          "height": 343
+        }
       },
       "takeaway": "Kick U, U², U⁴… onto counting qubits; the inverse QFT reads off φ's binary digits.",
       "walkthrough": [
@@ -4068,7 +4182,13 @@
         "title": "Whispering down a long line",
         "picture": "Pass a message down a line of people and every whisper adds a small mistake. A short line gets it through; a long line turns it into mush.",
         "captures": "Every gate adds a little error, so deeper circuits drift further from the ideal result.",
-        "breaks": "In the whispering game the message changes into a different message. Quantum noise mostly shrinks the arrow toward the centre: the state gets less definite and the results drift toward random."
+        "breaks": "In the whispering game the message changes into a different message. Quantum noise mostly shrinks the arrow toward the centre: the state gets less definite and the results drift toward random.",
+        "sketch": {
+          "src": "/sketches/20-hardware.webp",
+          "alt": "A chalk line of eight stick figures passes a whisper along, with \"blue cat\" drifting to \"blue hat\" and \"glue hat\" until the last bubble is just a scribble, and brackets mark a short line and a long line.",
+          "width": 840,
+          "height": 303
+        }
       },
       "takeaway": "Every gate adds a little noise; the arrow shrinks and results drift toward random.",
       "walkthrough": [
@@ -4259,7 +4379,13 @@
         "title": "Seating guests at a long dinner table",
         "picture": "Guests can only chat with their neighbours. To talk to someone at the far end, people have to swap seats, and every swap takes time and risks spilled drinks.",
         "captures": "The coupling map decides who can interact; the transpiler adds SWAPs, and each SWAP adds noise.",
-        "breaks": "Guests could always shout down the table. On a chip there's no shortcut: a two-qubit gate between non-neighbours simply can't happen until the states are moved next to each other."
+        "breaks": "Guests could always shout down the table. On a chip there's no shortcut: a two-qubit gate between non-neighbours simply can't happen until the states are moved next to each other.",
+        "sketch": {
+          "src": "/sketches/21-real-chip.webp",
+          "alt": "Chalk sketch of five stick-figure guests at a long dinner table, each chatting only with the guest beside them, with arrows between neighbours labelled \"neighbours\".",
+          "width": 840,
+          "height": 293
+        }
       },
       "takeaway": "Chips connect only neighbours; routing adds SWAPs, and every SWAP adds noise.",
       "walkthrough": [
@@ -4453,7 +4579,13 @@
         "title": "Tuning a guitar by ear",
         "picture": "Pluck the string, hear how far off it is, nudge the peg the right way, and pluck again, until it's in tune.",
         "captures": "The rotation angles are pegs, the cost is how far off it sounds, and the gradient says which way to turn.",
-        "breaks": "You hear a guitar's pitch at once. A circuit's cost is estimated from noisy shots, and even the gradient has to be measured (the parameter-shift rule), so every \"listen\" costs many runs."
+        "breaks": "You hear a guitar's pitch at once. A circuit's cost is estimated from noisy shots, and even the gradient has to be measured (the parameter-shift rule), so every \"listen\" costs many runs.",
+        "sketch": {
+          "src": "/sketches/22-qml.webp",
+          "alt": "A chalk sketch of a guitar being tuned by ear, with one tuning peg turning, a tuner dial between flat and sharp reading \"too low\", and an ear listening to the plucked string.",
+          "width": 840,
+          "height": 339
+        }
       },
       "takeaway": "A variational circuit has knobs; an optimizer turns them downhill on a measured cost.",
       "walkthrough": [

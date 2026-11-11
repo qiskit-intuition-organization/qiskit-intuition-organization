@@ -15,6 +15,7 @@ kept flat so they stay editable; richer fields are optional at render time.
 
 import re
 
+from frontend.analogy_sketches import sketch_for
 from frontend.code_walkthroughs import PYTHON_BASICS, WALKTHROUGHS
 
 UNITS = [
@@ -2597,6 +2598,9 @@ RUBRICS = {
 for _lesson in LESSONS:
     _lesson.update(RUBRICS.get(_lesson["id"], {"key_ideas": [], "watch_for": []}))
     _lesson.update(ANALOGIES[_lesson["id"]])
+    _sketch = sketch_for(_lesson["id"])
+    if _sketch:
+        _lesson["analogy"] = {**_lesson["analogy"], "sketch": _sketch}
     if _lesson["id"] in WALKTHROUGHS:
         _lesson["walkthrough"] = WALKTHROUGHS[_lesson["id"]]
 LESSONS[0]["python_basics"] = [list(pair) for pair in PYTHON_BASICS]
