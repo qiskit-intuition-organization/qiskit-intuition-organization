@@ -176,6 +176,7 @@ export function BlochSphere({
   label,
   trail = [],
   ghost,
+  sideLabels = true,
 }: {
   x: number;
   y: number;
@@ -184,6 +185,8 @@ export function BlochSphere({
   label?: string;
   trail?: [number, number, number][];
   ghost?: [number, number, number];
+  /** Small sketches hide the |+⟩ and |+i⟩ labels, which crowd the edge. */
+  sideLabels?: boolean;
 }) {
   const r = size * 0.36;
   const c = size / 2;
@@ -229,8 +232,12 @@ export function BlochSphere({
         <line x1={c} y1={c} x2={plusI[0]} y2={plusI[1]} stroke={INK} strokeWidth={0.8} opacity={0.35} />
         <text x={top[0]} y={top[1] - 7} textAnchor="middle" className="bloch-label">|0⟩</text>
         <text x={bottom[0]} y={bottom[1] + 17} textAnchor="middle" className="bloch-label">|1⟩</text>
-        <text x={plus[0] - 6} y={plus[1] + 15} textAnchor="middle" className="bloch-label small">|+⟩</text>
-        <text x={plusI[0] - 2} y={plusI[1] - 7} textAnchor="middle" className="bloch-label small">|+i⟩</text>
+        {sideLabels && (
+          <>
+            <text x={plus[0] - 6} y={plus[1] + 15} textAnchor="middle" className="bloch-label small">|+⟩</text>
+            <text x={plusI[0] - 2} y={plusI[1] - 7} textAnchor="middle" className="bloch-label small">|+i⟩</text>
+          </>
+        )}
         {trail.map(([tx, ty, tz], i) => {
           const [sx, sy] = pt(tx, ty, tz);
           return <circle key={i} cx={sx} cy={sy} r={3} fill={ACCENT_2} opacity={0.25 + (0.5 * (i + 1)) / (trail.length + 1)} />;

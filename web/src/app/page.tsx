@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
 import CircuitLab from "@/components/circuit-lab";
-import { CodeWalkthrough } from "@/components/code-walkthrough";
+import { CodeWalkthrough, PythonBasics } from "@/components/code-walkthrough";
 import { hasLessonVideo, LessonVideo } from "@/components/lesson-video";
 import IntuitionWidget from "@/components/intuition-widget";
 import MathBlock from "@/components/math";
@@ -490,6 +490,7 @@ export default function Home() {
               {stage === 4 && (
                 <>
                   <p>{lesson.qiskit.intro}</p>
+                  {lesson.python_basics && <PythonBasics pairs={lesson.python_basics} />}
                   {lesson.walkthrough?.length ? (
                     <>
                       <CodeWalkthrough steps={lesson.walkthrough} />

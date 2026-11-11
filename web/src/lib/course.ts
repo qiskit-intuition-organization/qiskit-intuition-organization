@@ -27,9 +27,19 @@ export type Lesson = {
   };
   qiskit: { intro: string; code: string; notes: string[][] };
   walkthrough?: WalkthroughStep[];
+  python_basics?: string[][];
   code_task: { prompt: string; starter: string; hint: string };
 };
-export type WalkthroughStep = { code: string; does: string; picture: string };
+export type Vec3 = [number, number, number];
+export type WalkthroughSketch =
+  | { kind: "arrow"; xyz: Vec3; before: Vec3 | null; label: string }
+  | { kind: "odds"; odds: Record<string, number>; label: string };
+export type WalkthroughStep = {
+  code: string;
+  does: string;
+  more: string;
+  sketch: WalkthroughSketch | null;
+};
 export type Practice = {
   title: string;
   goal: string;

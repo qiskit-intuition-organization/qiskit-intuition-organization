@@ -15,7 +15,7 @@ kept flat so they stay editable; richer fields are optional at render time.
 
 import re
 
-from frontend.code_walkthroughs import WALKTHROUGHS
+from frontend.code_walkthroughs import PYTHON_BASICS, WALKTHROUGHS
 
 UNITS = [
     {"id": "one-qubit", "title": "One qubit", "blurb": "What a qubit is, how measurement works, and how gates move the state."},
@@ -2494,3 +2494,4 @@ for _lesson in LESSONS:
     _lesson.update(ANALOGIES[_lesson["id"]])
     if _lesson["id"] in WALKTHROUGHS:
         _lesson["walkthrough"] = WALKTHROUGHS[_lesson["id"]]
+LESSONS[0]["python_basics"] = [list(pair) for pair in PYTHON_BASICS]

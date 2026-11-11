@@ -159,14 +159,29 @@ input[type="checkbox"], input[type="radio"] { width: auto; min-height: auto; acc
 .read-instead[open] > summary { margin-bottom: 14px; }
 .read-instead .goals-card { margin-top: 0; }
 .read-instead .analogy-card { background: var(--base, transparent); }
-/* "Code it" walkthrough: each code chunk at full width, then what it does and what it means
-   in the picture side by side (stacked on phones, where long lines also wrap). */
-.walkthrough { display: grid; gap: 26px; margin: 22px 0; padding: 0; list-style: none; }
-.walkthrough-step pre { margin: 0 0 12px; }
-.walkthrough-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.walkthrough-notes p { margin: 0; }
-.walkthrough-notes .eyebrow { display: block; margin-bottom: 4px; }
-.walkthrough-notes .walkthrough-picture { padding-left: 12px; border-left: 3px solid var(--gold); }
+/* "Code it" walkthrough: code chunk and its one-line meaning, with a small sketch of the
+   qubit beside it (under it on phones, where long code lines also wrap). */
+.walkthrough { display: grid; gap: 24px; margin: 22px 0; padding: 0; list-style: none; }
+.walkthrough-step { display: grid; grid-template-areas: "code" "text"; row-gap: 8px; }
+.walkthrough-step:is(.has-arrow, .has-odds) { grid-template-columns: minmax(0, 1fr) 210px; grid-template-areas: "code sketch" "text sketch"; column-gap: 24px; align-items: center; }
+.walkthrough-step pre { grid-area: code; margin: 0; }
+.walkthrough-text { grid-area: text; }
+.walkthrough-sketch { grid-area: sketch; }
+.walkthrough-sketch svg { width: 100%; max-width: 124px; height: auto; }
+.walkthrough-does { margin: 0; color: var(--text); }
+.walkthrough-step details { margin-top: 4px; font-size: 15px; }
+.walkthrough-step summary { cursor: pointer; color: var(--muted); }
+.walkthrough-step details p { margin: 6px 0 0; }
+.walkthrough-sketch { display: grid; justify-items: center; }
+.walkthrough-sketch .bloch { margin: 0; }
+.walkthrough-sketch .prob-bars { width: 100%; }
+.walkthrough-sketch .caption { margin: 2px 0 0; }
+.python-basics { margin: 20px 0; padding: 18px 21px; border: 1px solid var(--hair); border-left: 3px solid var(--gold); border-radius: var(--radius); background: var(--raised); }
+.python-basics .eyebrow { margin: 0 0 8px; }
+.python-basics dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 0; }
+.python-basics dl > div { display: contents; }
+.python-basics dl dt { margin: 0; color: var(--text); font-weight: 400; font-size: 14px; line-height: 1.6; padding-top: 2px; }
+.python-basics dd { margin: 0; }
 .takeaway { margin: 0 0 18px; padding: 14px 18px; border: 1px solid var(--hair); border-left: 3px solid var(--gold); border-radius: var(--radius); background: var(--raised); color: var(--text-2); }
 
 /* ---- Playground: circuit builder ---- */
@@ -223,7 +238,12 @@ input[type="file"]::file-selector-button:hover { background: var(--hover); }
   .sidebar-progress, .sidebar-lesson { display: none; }
   .site-main, .course-main { width: auto; margin: 12px 16px; padding: 28px 18px 40px; }
   .result-grid { grid-template-columns: 1fr; }
-  .walkthrough-notes { grid-template-columns: 1fr; gap: 12px; }
+  /* Phones: the globe sits beside the one-liner; the wider odds bars go under it. */
+  .walkthrough-step.has-arrow { grid-template-columns: minmax(0, 1fr) 96px; grid-template-areas: "code code" "text sketch"; column-gap: 14px; }
+  .walkthrough-step.has-odds { grid-template-columns: 1fr; grid-template-areas: "code" "text" "sketch"; }
+  .walkthrough-step.has-odds .walkthrough-sketch { justify-items: start; max-width: 260px; }
+  .python-basics dl { grid-template-columns: 1fr; gap: 2px; }
+  .python-basics dd { margin-bottom: 8px; }
   .walkthrough-step pre { padding: 12px 14px; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
   .builder-card { flex-wrap: wrap; }
   .builder-actions { width: 100%; }
