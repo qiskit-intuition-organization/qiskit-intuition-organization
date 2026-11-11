@@ -24,8 +24,8 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   RGB (27,29,33), resize to 840 wide, save WebP quality 88, then update the size in `analogy_sketches.py`.
 
 - **Accounts on the live site**: the backend project (`-mhye`) has `AUTH_FRONTEND_URL` and a Turso
-  database (`database-green-castle`, connected with prefix `TURSO_DATABASE`). `AUTH_JWT_SECRET` must be
-  set by Dhruv (Secret type). Resend (password-reset email) is not set up yet.
+  database (`database-green-castle`, connected with prefix `TURSO_DATABASE`) and `AUTH_JWT_SECRET`.
+  Sign-up and sign-in work live (Dhruv tested 2026-11-11, `f98ed36`). Resend (password-reset email) is not set up yet.
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
