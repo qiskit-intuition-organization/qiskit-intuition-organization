@@ -154,6 +154,11 @@ input[type="checkbox"], input[type="radio"] { width: auto; min-height: auto; acc
 .lesson-video { margin: 0 0 22px; }
 .lesson-video figcaption { margin: 0 0 8px; }
 .lesson-video video { display: block; width: 100%; max-height: 80vh; border: 1px solid var(--hair); border-radius: var(--radius); background: var(--inset); }
+.read-instead { margin-top: 28px; padding: 16px 21px; border: 1px solid var(--hair); border-radius: var(--radius); background: var(--raised); color: var(--text-2); }
+.read-instead > summary { cursor: pointer; color: var(--text); font-weight: 600; }
+.read-instead[open] > summary { margin-bottom: 14px; }
+.read-instead .goals-card { margin-top: 0; }
+.read-instead .analogy-card { background: var(--base, transparent); }
 .takeaway { margin: 0 0 18px; padding: 14px 18px; border: 1px solid var(--hair); border-left: 3px solid var(--gold); border-radius: var(--radius); background: var(--raised); color: var(--text-2); }
 
 /* ---- Playground: circuit builder ---- */

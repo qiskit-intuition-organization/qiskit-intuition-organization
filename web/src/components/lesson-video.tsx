@@ -2,6 +2,10 @@ import videos from "@/data/videos.json";
 
 const VIDEO_STEMS: Record<string, string> = videos;
 
+export function hasLessonVideo(lessonId: string): boolean {
+  return Boolean(VIDEO_STEMS[lessonId]);
+}
+
 // The hand-drawn explainer for a lesson, if it has one. Captions are burned into the video.
 // preload="none" keeps the page light: nothing downloads until the learner presses play.
 // Narrow screens get the 9:16 phone cut through the <source media> query.

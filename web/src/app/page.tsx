@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
 import CircuitLab from "@/components/circuit-lab";
-import { LessonVideo } from "@/components/lesson-video";
+import { hasLessonVideo, LessonVideo } from "@/components/lesson-video";
 import IntuitionWidget from "@/components/intuition-widget";
 import MathBlock from "@/components/math";
 import { course, parseContent } from "@/lib/course";
@@ -212,6 +212,39 @@ export default function Home() {
       if (activeOwner.current === owner) setBusy(false);
     }
   };
+  // A lesson with a video leads with it; the written goals, analogy and intuition (which the
+  // video already covers) fold into a "Prefer to read?" section under the Try-it widget.
+  const hasVideo = hasLessonVideo(lesson.id);
+  const goalsCard = (
+    <aside className="goals-card" aria-label="Lesson goals">
+      <strong>By the end of this lesson you can</strong>
+      <ul>
+        {lesson.objectives.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </aside>
+  );
+  const intuitionText = (
+    <>
+      {lesson.analogy && (
+        <aside className="analogy-card" aria-label="Everyday analogy">
+          <p className="eyebrow">Picture it like this</p>
+          <h3>{lesson.analogy.title}</h3>
+          <p>{lesson.analogy.picture}</p>
+          <p>
+            <strong>What it gets right: </strong>
+            {lesson.analogy.captures}
+          </p>
+          <details>
+            <summary>Where does this analogy break? Think first, then open.</summary>
+            <p>{lesson.analogy.breaks}</p>
+          </details>
+        </aside>
+      )}
+      <Paragraphs lines={lesson.intuition} />
+    </>
+  );
   const feedbackLink = `https://github.com/MeylinLeonario/qiskit-intuition-organization/issues/new?${new URLSearchParams({ title: `[Feedback] ${lesson.title}`, body: `Page: ${view}\nLesson: ${lesson.title}\nStage: ${STAGES[stage]}\n\nWhat happened?\n` })}`;
 
   if (!ready)
@@ -320,16 +353,7 @@ export default function Home() {
               </p>
               <h1>{lesson.title}</h1>
               <p>{lesson.summary}</p>
-              {stage === 0 && (
-                <aside className="goals-card" aria-label="Lesson goals">
-                  <strong>By the end of this lesson you can</strong>
-                  <ul>
-                    {lesson.objectives.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </aside>
-              )}
+              {stage === 0 && !hasVideo && goalsCard}
             </header>
             <nav className="course-stages" aria-label="Lesson stages">
               {STAGES.map((name, i) => (
@@ -348,24 +372,7 @@ export default function Home() {
               {stage === 0 && (
                 <>
                   <LessonVideo lessonId={lesson.id} />
-                  {lesson.analogy && (
-                    <aside className="analogy-card" aria-label="Everyday analogy">
-                      <p className="eyebrow">Picture it like this</p>
-                      <h3>{lesson.analogy.title}</h3>
-                      <p>{lesson.analogy.picture}</p>
-                      <p>
-                        <strong>What it gets right: </strong>
-                        {lesson.analogy.captures}
-                      </p>
-                      <details>
-                        <summary>
-                          Where does this analogy break? Think first, then open.
-                        </summary>
-                        <p>{lesson.analogy.breaks}</p>
-                      </details>
-                    </aside>
-                  )}
-                  <Paragraphs lines={lesson.intuition} />
+                  {!hasVideo && intuitionText}
                   <p className="widget-caption">
                     <strong>Try it: </strong>
                     {lesson.widget.caption}
@@ -375,6 +382,13 @@ export default function Home() {
                     widget={lesson.widget}
                     preset={lesson.preset}
                   />
+                  {hasVideo && (
+                    <details className="read-instead">
+                      <summary>Prefer to read? The same ideas in text</summary>
+                      {goalsCard}
+                      {intuitionText}
+                    </details>
+                  )}
                 </>
               )}
               {stage === 1 &&
