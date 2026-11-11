@@ -23,6 +23,10 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   To recut one: grab a frame with ffmpeg, crop above the captions (y < 870), trim to the ink on the board colour
   RGB (27,29,33), resize to 840 wide, save WebP quality 88, then update the size in `analogy_sketches.py`.
 
+- **Accounts on the live site**: the backend project (`-mhye`) has `AUTH_FRONTEND_URL` and a Turso
+  database (`database-green-castle`, connected with prefix `TURSO_DATABASE`). `AUTH_JWT_SECRET` must be
+  set by Dhruv (Secret type). Resend (password-reset email) is not set up yet.
+
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
    - Before every batch, check both the 5-hour **and the weekly** limit (`mcp__ccd_session_mgmt__get_usage`).

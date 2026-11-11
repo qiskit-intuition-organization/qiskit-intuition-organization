@@ -150,6 +150,19 @@ def engine_for(url: str, token: str | None = None):
     return engine
 
 
+# Vercel's Turso integration names the token after its variable prefix.
+TURSO_TOKEN_NAMES = ("TURSO_AUTH_TOKEN", "TURSO_DATABASE_TURSO_AUTH_TOKEN")
+
+
+def turso_token() -> str:
+    """The Turso access token, under the documented name or the integration's."""
+    for name in TURSO_TOKEN_NAMES:
+        value = os.getenv(name, "").strip()
+        if value:
+            return value
+    return ""
+
+
 @contextmanager
 def database():
     remote = os.getenv("TURSO_DATABASE_URL", "").strip()
@@ -167,7 +180,7 @@ def database():
             raise AuthConfigurationError(
                 "TURSO_DATABASE_URL must contain only the database origin"
             )
-        token = os.getenv("TURSO_AUTH_TOKEN", "").strip()
+        token = turso_token()
         if not token:
             raise AuthConfigurationError(
                 "TURSO_AUTH_TOKEN is required for hosted SQLite"

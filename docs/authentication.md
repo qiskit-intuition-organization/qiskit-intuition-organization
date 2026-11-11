@@ -46,6 +46,10 @@ these environment variables on the **backend project**, never in client code:
 | `RESEND_API_KEY` | Your Resend API key |
 | `AUTH_EMAIL_FROM` | A sender address on a domain verified with Resend |
 
+Connecting the database through Vercel's Turso integration with the variable prefix
+`TURSO_DATABASE` also works: it creates `TURSO_DATABASE_URL` and
+`TURSO_DATABASE_TURSO_AUTH_TOKEN`, and the backend reads either token name.
+
 On the **frontend project**, set `NEXT_PUBLIC_API_URL` to the backend's HTTPS
 origin. It is a public address, not a secret. JWT signing, Turso and Resend
 credentials are server-only. Deploy the backend from the repository root and
