@@ -15,5 +15,7 @@
   "superdense": "14-superdense",
   "deutsch": "15-deutsch",
   "bernstein-vazirani": "16-bernstein-vazirani",
-  "grover": "17-grover"
+  "grover": "17-grover",
+  "qft": "18-qft",
+  "hardware": "20-hardware"
 }
