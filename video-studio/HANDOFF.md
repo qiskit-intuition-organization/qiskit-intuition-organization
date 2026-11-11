@@ -43,14 +43,13 @@ Lesson 6 (Rotations) is the approved pilot; all the others follow its style.
 - Don't touch the rest of the repository. The app's design work on `main` belongs to someone else.
   Keep everything in `video-studio/` on this branch, and don't merge to `main` unless he asks.
 
-## Status (updated 2026-11-09)
+## Status (updated 2026-11-11)
 | Lessons | State | Next step |
 |---|---|---|
 | 01 to 05, 07 | Done: script reviewed, built, visual QA passed, rendered (78 to 90 s). Dhruv watched them and approved. On the live site since 2026-11-09 | None |
 | 06 | Done (pilot). Source in `pilot/`, MP4s on Dhruv's Mac in `~/Downloads/Qiskit Intuition - video pilot/Videos/`. On the live site since 2026-11-09 | None |
 | 08 to 17 | Done: script reviewed, built, visual QA passed, rendered (84 to 90 s), 2026-11-09. On the live site since 2026-11-09 | None |
-| 18 to 21 | Draft `narration.json` only (no `plan.md`) | Script stage again, then review, build, visual QA. A full lesson costs about 25 to 30% of the 5-hour limit |
-| 22 | Nothing yet | All stages |
+| 18 to 22 | Done: script reviewed, built, visual QA passed, rendered (83 to 90 s). On the live site since 2026-11-11 | None. All 22 lessons have a video. Check the weekly limit too before any new batch: a lesson costs about 20% of the 5-hour window and about 4% of the weekly limit |
 
 - Renders of 01 to 05 and 07 are on Dhruv's Mac in `video-studio/Videos/16x9` and
   `Videos/Phone 9x16` (git-ignored). `node kit/render.mjs lessons/NN-id` remakes them.
