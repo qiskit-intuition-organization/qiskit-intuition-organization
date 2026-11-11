@@ -1,20 +1,19 @@
 {
   "lines": [
-    { "say": "Start a qubit at zero and flip it twice. A perfect simulator says it always reads zero." },
-    { "say": "But on a real quantum chip, now and then, it reads one. Why?" },
-    { "say": "Think of the whispering game, where every whisper adds a small mistake." },
-    { "say": "A short line gets the message through. A long line turns it into mush." },
-    { "say": "Real gates are like whispers, each one slightly imperfect, and a waiting qubit slowly leaks its state." },
-    { "say": "Before it runs, your circuit is also transpiled, rewritten into the few gates the chip can do." },
-    { "say": "Two tidy gates can become ten, and each one is another whisper." },
-    { "say": "Now picture the qubit as an arrow in a globe, pointing straight up for zero." },
-    { "say": "Here's where the game breaks. Noise doesn't make a new message. It mostly shrinks the arrow toward the centre." },
-    { "say": "Say each gate has a small chance, lambda, of making the state fully random. So the arrow keeps one minus lambda of its length." },
-    { "say": "At one percent, ten gates leave about ninety percent, and a hundred leave just over a third." },
-    { "say": "A shorter arrow is less sure, so the readings drift toward fifty fifty." },
-    { "say": "Some wobble is just chance. Over a hundred runs, called shots, even a fair fifty fifty rarely gives exactly fifty ones." },
-    { "say": "A common mix up: error mitigation estimates a better answer from noisy results, but only error correction truly protects the qubit." },
-    { "say": "So always compare the chip with an ideal simulation of the same circuit." },
-    { "say": "Every gate adds a little noise. The arrow shrinks, and the results drift toward random." }
+    { "say": "Start a qubit, a quantum bit, at zero and flip it twice. It should always read zero." },
+    { "say": "An ideal simulator on a laptop agrees, but a real chip sometimes reads one. Why?" },
+    { "say": "Think of whispering a message down a line: each whisper adds a small mistake." },
+    { "say": "A short line gets it through. A long line turns it into mush." },
+    { "say": "Gates, a circuit's steps, whisper too: each is slightly off, and a waiting qubit leaks its state. That's noise." },
+    { "say": "Your circuit is transpiled: rewritten into the chip's few gates and fitted to its wiring. Here, two gates become ten." },
+    { "say": "Picture the qubit as an arrow in a ball: up is zero, down is one." },
+    { "say": "Here's where whispering breaks: noise doesn't swap in a new message; it mostly shrinks the arrow toward the fifty fifty centre." },
+    { "say": "If each gate makes the state random with a small chance, lambda, the arrow keeps one minus lambda of its length." },
+    { "say": "At one percent, ten gates leave about ninety percent, so it reads one about one time in twenty." },
+    { "say": "A hundred leave just over a third: it reads one nearly one time in three." },
+    { "say": "Some wobble is just chance: a hundred runs, called shots, of a fifty fifty qubit might give forty seven ones." },
+    { "say": "Always compare with an ideal simulation of the same circuit. The gap beyond that wobble is device noise." },
+    { "say": "Careful: error mitigation only estimates better answers from noisy results; protecting the qubit takes error correction and extra qubits." },
+    { "say": "Every gate adds a little noise: the arrow shrinks, and results drift toward random." }
   ]
 }

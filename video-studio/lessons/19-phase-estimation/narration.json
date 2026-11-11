@@ -1,52 +1,20 @@
 {
   "lines": [
-    {
-      "say": "Here's a puzzle. A gate secretly turns a special state by a fraction of a full turn."
-    },
-    {
-      "say": "That fraction is called the phase, and in chemistry, it's the number we want."
-    },
-    {
-      "say": "To read it, picture a clock hand that moves the same secret amount every tick."
-    },
-    {
-      "say": "Take photos after one, two and four ticks. The four tick photo magnifies tiny differences."
-    },
-    {
-      "say": "Phase estimation does this with extra counting qubits. Call the hidden fraction phi."
-    },
-    {
-      "say": "Each counting qubit controls the gate, called U, and phase kickback moves the turn onto it."
-    },
-    {
-      "say": "Run U once, and the first hand turns by phi. Twice, and the next turns by two phi."
-    },
-    {
-      "say": "Each doubling slides phi's binary digits one place left, so each qubit sees a finer digit."
-    },
-    {
-      "say": "Try the S gate, which turns ket one a quarter turn. In binary, a quarter is zero point zero one."
-    },
-    {
-      "say": "With two counting qubits, one hand turns a quarter, the other twice as far, a half."
-    },
-    {
-      "say": "The inverse Q F T from the last lesson combines them and reads out zero one, a quarter's digits."
-    },
-    {
-      "say": "Here the picture breaks. You can't just look at a hand, since measuring gives zero or one."
-    },
-    {
-      "say": "Only the inverse Q F T can combine those hidden turns into a number."
-    },
-    {
-      "say": "And the target must be a state that U only turns, called an eigenstate."
-    },
-    {
-      "say": "Hand it any other state, and you get a random one of U's phases."
-    },
-    {
-      "say": "So kick U, U twice and U four times onto counting qubits, and the inverse Q F T reads out phi."
-    }
+    { "say": "Here's a puzzle. A gate secretly turns a special state by a fraction of a turn." },
+    { "say": "That fraction is its phase, and in chemistry, it's the number we're after." },
+    { "say": "To read it, picture a clock hand moving the same secret amount every tick." },
+    { "say": "Photograph it after one, two and four ticks. The four tick photo magnifies tiny differences." },
+    { "say": "Phase estimation takes these photos with counting qubits. Call the gate U, and its fraction phi." },
+    { "say": "Each counting qubit starts in ket plus, an even mix of zero and one, and controls U." },
+    { "say": "Phase kickback, from lesson fifteen, moves the turn onto that qubit's hand." },
+    { "say": "Run U once, and the first hand turns phi. Run it twice, two phi, and four times, four phi." },
+    { "say": "Doubling slides phi's binary digits, its zeros and ones, one place left, and whole turns vanish, so each hand shows a finer digit." },
+    { "say": "Try the S gate, which turns ket one a quarter turn, zero point zero one in binary." },
+    { "say": "With two counting qubits, one hand turns a quarter, the other a half." },
+    { "say": "Here the picture breaks: measuring a qubit gives zero or one, never its hand." },
+    { "say": "Instead, the inverse Q F T from lesson eighteen combines the hands into the digits zero one." },
+    { "say": "The input must be a state U only turns, called an eigenstate, like ket one for S." },
+    { "say": "Hand it any other state, and you get a random one of U's phases." },
+    { "say": "So kick U, U twice and U four times onto counting qubits, and the inverse Q F T reads phi's binary digits." }
   ]
 }
