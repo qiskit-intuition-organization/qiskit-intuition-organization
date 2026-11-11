@@ -10,6 +10,12 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
 - **All 22 lessons have a hand-drawn explainer video on the live site** (16:9 and a phone 9:16 cut, 83 to 90 s each, Kokoro voice `bf_emma`).
   Last pushes: `a1f8277` (main: lessons 19, 21 and 22) and `aabe132` (video-lessons: handoff updated).
 - Dhruv watched and approved lessons 01 to 07. **Lessons 08 to 22 are live but he hasn't watched them yet.**
+- **Lessons lead with the video** (live, `a8dcd76`): stage 0 shows the video and Try-it widget; the goals,
+  analogy and intuition text fold into "Prefer to read?". Lessons without a video are unchanged.
+- **Code walkthroughs on every "Code it" step** (live, `9913873`, approved): each chunk of the example gets one
+  short line (max 16 words), an optional "Tell me more" fold and a sketch (arrow on the globe or odds bars).
+  Content lives in `frontend/code_walkthroughs.py`; `tests/test_code_walkthroughs.py` checks the chunks cover
+  every line of the example. Python basics are explained once, on lesson 1. Dhruv's direction: short and visual.
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
@@ -55,7 +61,7 @@ It is only needed if a video is remade.
 
 ## What's left (ask Dhruv which to start)
 1. **His review of lessons 08 to 22.** Fix and re-publish any he flags.
-2. **Trim the lesson text** so pages lead with the video. Cut what the video already says. Show before and after screenshots, then wait for approval before pushing.
+2. ~~Trim the lesson text~~ Done: lessons lead with the video, and every lesson has a code walkthrough.
 3. **Sketches in the analogy cards.** Small hand-drawn pictures in the video style (rough.js look, ink #e8e8e8, gold #d9b463, on #17191c).
 4. **Podcast clips.** On hold until outside approval comes in.
 5. **Video kit fixes** (only matter if more videos are made; every builder worked around them):
