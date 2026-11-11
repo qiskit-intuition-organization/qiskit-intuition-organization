@@ -15,6 +15,8 @@ kept flat so they stay editable; richer fields are optional at render time.
 
 import re
 
+from frontend.code_walkthroughs import WALKTHROUGHS
+
 UNITS = [
     {"id": "one-qubit", "title": "One qubit", "blurb": "What a qubit is, how measurement works, and how gates move the state."},
     {"id": "many-qubits", "title": "Many qubits", "blurb": "Registers, bit order, and entanglement: the part with no classical analogue."},
@@ -78,16 +80,22 @@ LESSONS = [
         "misconception": "Quantum computers aren't fast because they \"try everything in parallel\". A measurement shows one outcome; the speed-up comes from interference making the useful outcome likely.",
         "qiskit": {
             "intro": "Your first Qiskit program: build a one-qubit circuit, apply H once or twice, and ask for the exact chance of each outcome.",
-            "code": _IMPORTS
-            + "from qiskit.quantum_info import Statevector\n\n"
-            "once = QuantumCircuit(1)\n"
-            "once.h(0)                 # split into two paths\n\n"
-            "twice = QuantumCircuit(1)\n"
-            "twice.h(0)\n"
-            "twice.h(0)                # recombine: the paths to 1 cancel\n\n"
-            "print(twice.draw())\n\n"
-            "print('one H:  ', Statevector(once).probabilities_dict(decimals=3))\n"
-            "print('two Hs: ', Statevector(twice).probabilities_dict(decimals=3))\n",
+            "code": (
+                "from qiskit import QuantumCircuit  # the circuit builder\n"
+                "from qiskit.quantum_info import Statevector  # works out exact amplitudes\n"
+                "\n"
+                "once = QuantumCircuit(1)  # one qubit, starts at |0⟩\n"
+                "once.h(0)  # H on qubit 0: split into two paths\n"
+                "\n"
+                "twice = QuantumCircuit(1)  # a fresh qubit, also at |0⟩\n"
+                "twice.h(0)  # first H: two paths, 50/50\n"
+                "twice.h(0)  # second H: the paths to 1 cancel\n"
+                "\n"
+                "print(twice.draw())  # a text drawing of the circuit\n"
+                "\n"
+                "print('one H:  ', Statevector(once).probabilities_dict(decimals=3))  # 50/50\n"
+                "print('two Hs: ', Statevector(twice).probabilities_dict(decimals=3))  # always reads 0\n"
+            ),
             "notes": [
                 ("QuantumCircuit(1)", "A circuit with one qubit, which starts in |0⟩."),
                 ("once.h(0)", "The Hadamard gate splits the state into two paths, one to 0 and one to 1."),
@@ -158,13 +166,17 @@ LESSONS = [
         "misconception": "A qubit in superposition is not secretly 0 or 1 and we just don't know which. The arrow genuinely points somewhere in between, and that difference becomes measurable through interference.",
         "qiskit": {
             "intro": "Every Qiskit program starts with a `QuantumCircuit`: an ordered list of instructions for some number of qubits. `Statevector` simulates the circuit exactly and shows the amplitudes, something real hardware can never show you.",
-            "code": _IMPORTS
-            + "from qiskit.quantum_info import Statevector\n\n"
-            "qc = QuantumCircuit(1)       # one qubit, starts in |0>\n"
-            "state = Statevector(qc)      # exact amplitudes of the circuit's output\n\n"
-            "print(qc.draw())\n"
-            "print(state)\n"
-            "print(state.probabilities_dict(decimals=3))\n",
+            "code": (
+                "from qiskit import QuantumCircuit  # the tool for building circuits\n"
+                "from qiskit.quantum_info import Statevector  # shows the exact state (the arrow)\n"
+                "\n"
+                "qc = QuantumCircuit(1)  # one qubit, its arrow starts at |0⟩\n"
+                "state = Statevector(qc)  # the exact state: amplitudes α and β\n"
+                "\n"
+                "print(qc.draw())  # a picture of the circuit\n"
+                "print(state)  # the amplitudes for |0⟩ and |1⟩\n"
+                "print(state.probabilities_dict(decimals=3))  # the odds of reading 0 or 1\n"
+            ),
             "notes": [
                 ("QuantumCircuit(1)", "Create a circuit with one qubit. Qiskit always starts every qubit in |0⟩."),
                 ("Statevector(qc)", "Run an exact simulation and return the amplitudes α and β."),
@@ -229,12 +241,16 @@ LESSONS = [
         "misconception": "X is not 'measure and flip'. It acts on the whole arrow, including superpositions: X(α|0⟩ + β|1⟩) = β|0⟩ + α|1⟩.",
         "qiskit": {
             "intro": "Gates are methods on the circuit. The argument is the index of the qubit to act on.",
-            "code": _IMPORTS
-            + "from qiskit.quantum_info import Statevector\n\n"
-            "qc = QuantumCircuit(1)\n"
-            "qc.x(0)                      # apply X to qubit 0\n\n"
-            "print(qc.draw())\n"
-            "print(Statevector(qc).probabilities_dict(decimals=3))\n",
+            "code": (
+                "from qiskit import QuantumCircuit  # tool for building circuits\n"
+                "from qiskit.quantum_info import Statevector  # tool to work out the arrow\n"
+                "\n"
+                "qc = QuantumCircuit(1)  # one qubit, its arrow starts at |0⟩\n"
+                "qc.x(0)  # X on qubit 0: a half turn, |0⟩ to |1⟩\n"
+                "\n"
+                "print(qc.draw())  # picture of the circuit\n"
+                "print(Statevector(qc).probabilities_dict(decimals=3))  # chance of reading 0 or 1\n"
+            ),
             "notes": [
                 ("qc.x(0)", "Append an X gate acting on qubit 0. Gates run in the order you add them."),
                 ("qc.draw()", "Text drawing of the circuit: time flows left to right."),
@@ -2476,3 +2492,5 @@ RUBRICS = {
 for _lesson in LESSONS:
     _lesson.update(RUBRICS.get(_lesson["id"], {"key_ideas": [], "watch_for": []}))
     _lesson.update(ANALOGIES[_lesson["id"]])
+    if _lesson["id"] in WALKTHROUGHS:
+        _lesson["walkthrough"] = WALKTHROUGHS[_lesson["id"]]

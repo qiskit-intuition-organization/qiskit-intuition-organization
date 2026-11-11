@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
 import CircuitLab from "@/components/circuit-lab";
+import { CodeWalkthrough } from "@/components/code-walkthrough";
 import { hasLessonVideo, LessonVideo } from "@/components/lesson-video";
 import IntuitionWidget from "@/components/intuition-widget";
 import MathBlock from "@/components/math";
@@ -489,7 +490,17 @@ export default function Home() {
               {stage === 4 && (
                 <>
                   <p>{lesson.qiskit.intro}</p>
-                  <pre>{lesson.qiskit.code}</pre>
+                  {lesson.walkthrough?.length ? (
+                    <>
+                      <CodeWalkthrough steps={lesson.walkthrough} />
+                      <details className="code-details">
+                        <summary>The whole program in one piece</summary>
+                        <pre>{lesson.qiskit.code}</pre>
+                      </details>
+                    </>
+                  ) : (
+                    <pre>{lesson.qiskit.code}</pre>
+                  )}
                   <button
                     disabled={busy}
                     onClick={() =>
@@ -501,16 +512,18 @@ export default function Home() {
                   {feedback.source === "example" && (
                     <FeedbackPanel feedback={feedback} busy={busy} />
                   )}
-                  <dl>
-                    {lesson.qiskit.notes.map(([term, note], i) => (
-                      <div key={i}>
-                        <dt>
-                          <code>{term}</code>
-                        </dt>
-                        <dd>{note}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                  {!lesson.walkthrough?.length && (
+                    <dl>
+                      {lesson.qiskit.notes.map(([term, note], i) => (
+                        <div key={i}>
+                          <dt>
+                            <code>{term}</code>
+                          </dt>
+                          <dd>{note}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
                   <h3>Your exercise</h3>
                   <p>{lesson.code_task.prompt}</p>
                   <textarea

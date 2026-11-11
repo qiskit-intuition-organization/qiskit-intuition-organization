@@ -26,8 +26,10 @@ export type Lesson = {
     explanations: string[];
   };
   qiskit: { intro: string; code: string; notes: string[][] };
+  walkthrough?: WalkthroughStep[];
   code_task: { prompt: string; starter: string; hint: string };
 };
+export type WalkthroughStep = { code: string; does: string; picture: string };
 export type Practice = {
   title: string;
   goal: string;
