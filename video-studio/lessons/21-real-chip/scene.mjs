@@ -22,7 +22,7 @@ export default function scene(k) {
     circuit0: cue(0, "circuit"), run0: cue(0, "run"), real0: cue(0, "real"), chip0: cue(0, "chip"),
     catch1: cue(1, "catch"), chip1: cue(1, "chip"), qubit1: cue(1, "qubit"), wired1: cue(1, "wired"), other1: cue(1, "other"),
     picture2: cue(2, "picture"), dinner2: cue(2, "dinner"), guests2: cue(2, "guests"), chat2: cue(2, "chat"), neigh2: cue(2, "neighbo"),
-    reach3: cue(3, "reach"), far3: cue(3, "far"), swap3: cue(3, "swap"), swap3b: cue(3, "swap", 1), spilled3: cue(3, "spilled"), drink3: cue(3, "drink"),
+    reach3: cue(3, "reach"), far3: cue(3, "far"), swap3: cue(3, "swap"), swap3b: cue(3, "swap", 1), risks3: cue(3, "risks"), spilled3: cue(3, "spilled"), drink3: cue(3, "drink"),
     chip4: cue(4, "chip"), wires4: cue(4, "wires"), join4: cue(4, "join"), neigh4: cue(4, "neighbo"), coupling4: cue(4, "coupling"),
     l5: cue(5), gate5: cue(5, "gate"), cnot5: cue(5, "CNOT"), wire5: cue(5, "wire"),
     l6: cue(6), circuit6: cue(6, "circuit"), cnot6: cue(6, "CNOT"), neigh6: cue(6, "neighbo"),
@@ -245,7 +245,7 @@ export default function scene(k) {
     G("b-splash", splash);
   const s2 = wrap("b-s2", full("b-s2a", s2svg,
     C("b-neighl", 960, 742, 300, 48, "neighbours") + C("b-farq", 1630, 330, 80, 72, "?", `color:${GOLD}`) +
-    C("b-risk", 830, 760, 360, 48, "every swap: a risk")));
+    C("b-risk", 830, 762, 460, 56, "every swap: a risk")));
 
   // ===================== Scene 3: the coupling map; a CNOT along a wire (lines 4 to 6) =====================
   const ch3 = chip("b-k3", 560, 280, 800, 520, 1, { goldWires: true, lit: [0, 1, 7] });
@@ -355,7 +355,7 @@ export default function scene(k) {
     GX.map((x, i) => G(`b-g7${i}`, guest(x, 310, 34, i === 0))).join("") +
     tb7.top + tb7.fringe + tb7.cups +
     G("b-crack", r.linear([[972, 418], [948, 436], [976, 452], [944, 468], [970, 484], [952, 500]], pen({ strokeWidth: 4.6, roughness: 0.6 })) + r.line(948, 436, 918, 426, pen({ strokeWidth: 3 })) + r.line(976, 452, 1004, 446, pen({ strokeWidth: 3 }))) +
-    G("b-mouth", r.ellipse(360, 322, 22, 18, goldPen({ fill: GOLD, fillStyle: "solid", strokeWidth: 2 }))) +
+    G("b-mouth", r.ellipse(360, 323, 30, 26, goldPen({ fill: GROUND, fillStyle: "solid", strokeWidth: 3, roughness: 0.5 }))) +
     [0, 1, 2].map(shoutArc).join("") +
     G("b-g5tick", tick(1626, 250, 20));
   const s7 = wrap("b-s7", full("b-s7a", s7svg, C("b-hey", 960, 150, 300, 72, "HEY!", `color:${GOLD}`)));
@@ -550,10 +550,10 @@ export default function scene(k) {
     write("#b-yc0", T.circuit0 + 1.2, 0.7);
     drawP("#b-run", T.run0 - 0.1, 0.5);
     blurOut("#b-title", T.real0 - 0.1);
-    drawP("#b-mc-body", T.chip0 - 0.3, 1.0);
-    drawP("#b-mc-in", T.chip0 + 0.3, 0.5);
-    write("#b-chiplbl", T.chip0, 0.4);
-    drawP("#b-spark", T.chip0 + 0.6, 0.3);
+    drawP("#b-mc-body", T.real0 + 0.2, 0.7);
+    drawP("#b-mc-in", T.chip0 - 0.2, 0.45);
+    write("#b-chiplbl", T.chip0 - 0.25, 0.4);
+    drawP("#b-spark", T.chip0 + 0.25, 0.3);
     blurOut("#b-s0a", T.catch1);
     tl.to("#b-s0chip", { scale: 0.35, opacity: 0, filter: "blur(8px)", transformOrigin: "1350px 530px", duration: 0.45, ease: "power2.in" }, T.catch1);
 
@@ -564,9 +564,9 @@ export default function scene(k) {
     write("#b-qlbl", T.qubit1 - 0.1, 0.35);
     drawP("#b-qptr", T.qubit1, 0.3);
     [0, 1, 2, 3, 4, 5, 6, 7].forEach((i) => drawP("#b-k1-w" + i, T.wired1 + i * 0.1, 0.25));
-    drawP("#b-k1-try", T.other1 - 0.3, 0.3);
-    drawP("#b-k1-x", T.other1 + 0.05, 0.25);
-    blurOut("#b-s1", T.picture2 + 0.25);
+    drawP("#b-k1-try", T.other1 - 0.55, 0.3);
+    drawP("#b-k1-x", T.other1 - 0.15, 0.3);
+    blurOut("#b-s1", T.picture2 + 0.3);
 
     // ===== Line 2: the dinner table; neighbours chat =====
     drawP("#b-t-top", T.dinner2 - 0.3, 1.1);
@@ -588,7 +588,7 @@ export default function scene(k) {
     fade("#b-sa2", 0, T.swap3b + 0.95, 0.25);
     tl.to("#b-t-cup1", { rotation: 78, svgOrigin: "752 560", duration: 0.35, ease: "power2.in" }, T.spilled3 - 0.15);
     drawP("#b-splash", T.spilled3 + 0.15, 0.4);
-    write("#b-risk", T.drink3 - 0.1, 0.5);
+    write("#b-risk", T.risks3 - 0.05, 0.6);
     blurOut("#b-s2", T.chip4 - 0.2);
 
     // ===== Line 4: the chip again; wires join only neighbours: the coupling map =====
@@ -632,18 +632,18 @@ export default function scene(k) {
     drawP("#b-tin", T.transpiler7 + 0.3, 0.3);
     drawP("#b-gear", T.transpiler7 + 0.5, 0.7);
     drawP("#b-tchip", T.chip7 - 0.15, 0.4);
-    drawP("#b-tout", T.add7 - 0.1, 0.25);
-    drawP("#b-c4b-w", T.add7 + 0.05, 0.35);
-    drawP("#b-c4b-g0", T.add7 + 0.2, 0.15);
-    write("#b-c4b-g0-l", T.add7 + 0.3, 0.1);
-    drawP("#b-c4b-g1", T.swap7 - 0.1, 0.25);
-    drawP("#b-c4b-g2", T.swap7 + 0.12, 0.25);
-    write("#b-swl", T.swap7 + 0.05, 0.3);
-    drawP("#b-c4b-g3", T.swap7 + 0.35, 0.25);
-    blurOut("#b-s4", T.swap8 - 0.25);
+    drawP("#b-tout", T.add7 - 0.3, 0.25);
+    drawP("#b-c4b-w", T.add7 - 0.15, 0.3);
+    drawP("#b-c4b-g0", T.add7 + 0.05, 0.15);
+    write("#b-c4b-g0-l", T.add7 + 0.15, 0.1);
+    drawP("#b-c4b-g1", T.swap7 - 0.2, 0.25);
+    drawP("#b-c4b-g2", T.swap7 + 0.02, 0.25);
+    write("#b-swl", T.swap7 - 0.05, 0.3);
+    drawP("#b-c4b-g3", T.swap7 + 0.25, 0.2);
+    blurOut("#b-s4", T.swap8 - 0.15);
 
     // ===== Line 8: a SWAP trades the states; routing =====
-    drawP("#b-s5c", T.swap8, 0.4);
+    drawP("#b-s5c", T.swap8 + 0.08, 0.4);
     drawP("#b-s5w", T.swap8 + 0.15, 0.3);
     hide(["#b-vA-i", "#b-vB-i"]);
     pop("#b-vA-i", T.swap8 + 0.12);
@@ -702,7 +702,7 @@ export default function scene(k) {
     fade("#b-cnt1", 0, T.one11 - 0.2, 0.2);
     write("#b-cnt2", T.one11 - 0.05, 0.35);
     drawP("#b-cnar", T.seven11 - 0.3, 0.3);
-    write("#b-cnt3", T.seven11 - 0.05, 0.4);
+    write("#b-cnt3", T.seven11 - 0.2, 0.35);
     blurOut("#b-s6row", T.seven11 + 0.45);
     move("#b-strip", { y: 0 }, { y: -360 }, T.seven11 + 0.45, 0.6);
 
@@ -779,12 +779,12 @@ export default function scene(k) {
     drawP(["#b-c10-g0", "#b-c10-g1", "#b-c10-g2"], T.circuits16, 0.4);
     write("#b-c10-g0-l", T.circuits16 + 0.1, 0.1);
     drawP("#b-ruler", T.circuits16 + 0.2, 0.3);
-    write("#b-short", T.short16 - 0.05, 0.35);
-    fade(["#b-k10-lit0", "#b-k10-lit1"], 0, T.short16, 0.3);
-    blurOut("#b-s10", T.chips17 - 0.05);
+    write("#b-short", T.short16 - 0.25, 0.3);
+    fade(["#b-k10-lit0", "#b-k10-lit1"], 0, T.circuits16, 0.3);
+    blurOut("#b-s10", T.chips17 + 0.05);
 
     // ===== Line 17: the closing card, held to the end =====
-    write("#b-take1", T.chips17 + 0.1, 1.5);
+    write("#b-take1", T.chips17 + 0.25, 1.4);
     drawP("#b-e-row", T.connect17 - 0.1, 0.7);
     write("#b-e-rl", T.connect17 + 0.4, 0.5);
     drawP("#b-e-sw", T.routing17 - 0.1, 0.4);
