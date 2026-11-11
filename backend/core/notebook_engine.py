@@ -70,7 +70,18 @@ BLOCKED_ATTRS = {
     "multiprocessing", "system", "popen", "spawn", "fork",
     "load", "loads", "loadtxt", "genfromtxt", "fromfile", "tofile", "memmap",
     "save", "savez", "savez_compressed", "savetxt", "savefig", "ctypeslib",
+    # str.format templates walk attributes ("{0.__init__.__globals__}") at run
+    # time, out of reach of the AST check. f-strings are checked, so they stay.
+    "format", "format_map", "vformat", "Formatter",
 }
+FORMAT_ATTRS = {"format", "format_map"}
+
+# The only parts of this process's environment the worker needs. Everything
+# else (account secrets, database tokens, API keys) stays out of its reach.
+CHILD_ENV_KEYS = (
+    "PATH", "HOME", "LANG", "LC_ALL", "LC_CTYPE", "TMPDIR", "TEMP", "TMP",
+    "SYSTEMROOT", "MPLCONFIGDIR",
+)
 
 # Dunder attributes learners legitimately read.
 ALLOWED_DUNDERS = {"__name__", "__doc__", "__version__", "__init__", "__len__"}
@@ -139,6 +150,11 @@ def validate_code_safety(code_string: str):
         elif isinstance(node, ast.Attribute):
             attr = node.attr
             is_dunder = attr.startswith("__") and attr.endswith("__")
+            if attr in FORMAT_ATTRS:
+                return (
+                    f"Security Restriction: '.{attr}()' is not available in the sandbox. "
+                    'Use an f-string instead, for example f"{p:.3f}".'
+                )
             if attr in BLOCKED_ATTRS or (is_dunder and attr not in ALLOWED_DUNDERS):
                 return f"Security Restriction: Accessing '{attr}' is prohibited in the sandbox."
         elif isinstance(node, ast.Name):
@@ -225,14 +241,16 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 
 def _child_env() -> dict:
-    """Environment for the worker: single-threaded, and able to import what we can.
+    """Environment for the worker: minimal, single-threaded, able to import what we can.
 
-    The worker gets this process's import path as PYTHONPATH. Hosts that
-    install packages at startup (Vercel) put them on this process's
-    ``sys.path`` only, so a plain child interpreter would not find numpy.
+    Only the variables in CHILD_ENV_KEYS are passed on, so learner code never
+    sees backend secrets. The worker gets this process's import path as
+    PYTHONPATH: hosts that install packages at startup (Vercel) put them on
+    this process's ``sys.path`` only, so a plain child would not find numpy.
     """
-    env = {**os.environ, **_SINGLE_THREAD_ENV}
-    paths = [_PROJECT_ROOT, *sys.path, *env.get("PYTHONPATH", "").split(os.pathsep)]
+    env = {key: os.environ[key] for key in CHILD_ENV_KEYS if key in os.environ}
+    env.update(_SINGLE_THREAD_ENV)
+    paths = [_PROJECT_ROOT, *sys.path, *os.environ.get("PYTHONPATH", "").split(os.pathsep)]
     env["PYTHONPATH"] = os.pathsep.join(dict.fromkeys(path for path in paths if path))
     return env
 

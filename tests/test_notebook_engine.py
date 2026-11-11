@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from backend.core.notebook_engine import execute_notebook_code
+from backend.core.notebook_engine import _child_env, execute_notebook_code
 
 
 def test_simple_execution():
@@ -120,3 +120,41 @@ def test_worker_inherits_this_process_import_path(monkeypatch, tmp_path):
         env=notebook_engine._child_env(), capture_output=True, text=True, cwd=tmp_path, timeout=60,
     )
     assert child.stdout.strip() == "42", child.stderr
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        # str.format walks attributes inside the template, out of reach of the AST check.
+        'from qiskit import QuantumCircuit\nprint("{0.__init__.__globals__}".format(QuantumCircuit(1)))',
+        'print(str.format("{0.__class__}", 1))',
+        'print("{a}".format_map({"a": 1}))',
+        "from string import Formatter",
+        "import string\nprint(string.Formatter().vformat('{0}', [1], {}))",
+    ],
+)
+def test_format_templates_are_blocked(code):
+    result = execute_notebook_code(code)
+    assert result["success"] is False
+    assert "Security Restriction" in result["error"]
+
+
+def test_format_message_points_to_f_strings():
+    result = execute_notebook_code('print("{:.3f}".format(0.5))')
+    assert "f-string" in result["error"]
+
+
+def test_f_strings_still_work():
+    result = execute_notebook_code('p = 0.5\nprint(f"{p:.3f}")\n')
+    assert result["success"] is True, result["error"]
+    assert "0.500" in result["stdout"]
+
+
+def test_worker_never_receives_backend_secrets(monkeypatch):
+    for name in ["AUTH_JWT_SECRET", "TURSO_AUTH_TOKEN", "TURSO_DATABASE_TURSO_AUTH_TOKEN",
+                 "TURSO_DATABASE_URL", "RESEND_API_KEY", "GEMINI_API_KEY", "SOME_FUTURE_SECRET"]:
+        monkeypatch.setenv(name, "must-not-reach-learner-code")
+    env = _child_env()
+    assert "must-not-reach-learner-code" not in env.values()
+    assert env["OMP_NUM_THREADS"] == "1"
+    assert env["PYTHONPATH"]

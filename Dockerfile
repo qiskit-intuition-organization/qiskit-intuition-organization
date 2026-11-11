@@ -18,7 +18,7 @@ RUN --mount=type=secret,id=proxy_ca \
     pip install --no-cache-dir -r requirements.txt
 COPY backend/ backend/
 COPY agents/ agents/
-COPY frontend/learning_content.py frontend/site_content.json frontend/
+COPY frontend/learning_content.py frontend/code_walkthroughs.py frontend/analogy_sketches.py frontend/site_content.json frontend/
 COPY scripts/serve.py scripts/serve.py
 COPY --from=web-build /build/.next/standalone/ web/
 COPY --from=web-build /build/.next/static/ web/.next/static/
