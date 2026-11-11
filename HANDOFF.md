@@ -27,6 +27,16 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   database (`database-green-castle`, connected with prefix `TURSO_DATABASE`) and `AUTH_JWT_SECRET`.
   Sign-up and sign-in work live (Dhruv tested 2026-11-11, `f98ed36`). Resend (password-reset email) is not set up yet.
 
+- **Security (2026-11-12)**: the code sandbox leaked backend env secrets through `.format()` templates. Fixed in
+  `d62d2d3`: `.format`/`format_map` are blocked, and the worker gets only a minimal env (`CHILD_ENV_KEYS`).
+  `AUTH_JWT_SECRET` was rotated afterwards and the backend redeployed. Long-term fix still open: run learner code
+  in a separate project that holds no secrets. A daily cloud routine, "Daily security check - Qiskit Intuition"
+  (6:00 am IST, https://claude.ai/code/routines/trig_01SUoyFYHHcbUZR9UJC5xvBF), reviews the repo and opens PRs only.
+
+- **README** rewritten and fact-checked (`5fc9342`), with screenshots in `docs/images/`. Known bug found on the way:
+  after sign-in the **Import browser notebook** button never shows (`page.tsx` hides `NotebookSyncNotice` when the
+  status is saved/pending). Not fixed yet.
+
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
    - Before every batch, check both the 5-hour **and the weekly** limit (`mcp__ccd_session_mgmt__get_usage`).
