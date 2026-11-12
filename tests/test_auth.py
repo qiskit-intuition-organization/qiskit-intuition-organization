@@ -260,6 +260,19 @@ def test_csrf_and_login_throttle(client):
     assert login(client, "wrong").status_code == 429
 
 
+def test_course_address_on_the_quantum_economy_domain_is_trusted(client):
+    signup(client)
+    for origin, expected in [
+        ("https://learn.thequantumeconomy.com", 200),
+        ("https://learn.thequantumeconomy.com.attacker.example", 403),
+        ("http://learn.thequantumeconomy.com", 403),
+    ]:
+        response = client.post(
+            "/auth/profile", json={"display_name": "Alice"}, headers={"Origin": origin}
+        )
+        assert response.status_code == expected, origin
+
+
 def test_resend_delivery_is_used_without_persisting_email(client, monkeypatch):
     signup(client)
     monkeypatch.setenv("RESEND_API_KEY", "fake-test-key")

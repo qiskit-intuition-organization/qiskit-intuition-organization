@@ -48,12 +48,17 @@ from backend.auth.store import (
 )
 
 
+# The course's own address on The Quantum Economy's domain (embedded in thequantumeconomy.com).
+COURSE_ORIGINS = ("https://learn.thequantumeconomy.com",)
+
+
 def origin_check(request: Request):
     if request.method in {"GET", "HEAD", "OPTIONS"}:
         return
     origin = request.headers.get("origin")
     allowed = {
         mail.frontend_url(),
+        *COURSE_ORIGINS,
         *[
             url.strip().rstrip("/")
             for url in os.getenv("ALLOWED_ORIGINS", "").split(",")
