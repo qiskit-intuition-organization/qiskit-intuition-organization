@@ -25,6 +25,9 @@ export type SyncState = {
   importedGuestTag: string;
   cacheError: boolean;
 };
+export function shouldShowSyncNotice(
+  state: Pick<SyncState, "status" | "guestAvailable" | "cacheError">,
+): boolean;
 export function mergeNotebooks(
   base: unknown,
   local: unknown,

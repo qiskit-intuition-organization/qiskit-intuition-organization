@@ -73,6 +73,11 @@ function joinedConflicts(old, next) {
   ];
 }
 
+const QUIET_STATUSES = ["guest", "saved", "saving", "pending"];
+/** The sync notice stays hidden only when all is well and there is nothing to offer. */
+export function shouldShowSyncNotice({ status, guestAvailable, cacheError }) {
+  return !QUIET_STATUSES.includes(status) || !!guestAvailable || !!cacheError;
+}
 /** Account-scoped sync coordinator, independent of React for race-condition tests. */
 export class NotebookSync {
   constructor({ storage, transport, notify, delay = 800 }) {
