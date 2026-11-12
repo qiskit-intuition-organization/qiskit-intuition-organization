@@ -55,10 +55,9 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
 
 - **README** rewritten and fact-checked (`5fc9342`), screenshots in `docs/images/`.
 
-- **Import browser notebook fix**: branch `fix/import-notebook-button` (pushed, no PR yet). After sign-in the import
+- **Import browser notebook fix**: live since 2026-11-12 (Dhruv said push it; merged from `fix/import-notebook-button`). After sign-in the import
   offer never showed because `page.tsx` hid `NotebookSyncNotice` for quiet statuses. Now gated by
   `shouldShowSyncNotice` in `web/src/lib/notebook-sync.js`, with `web/tests/sync-notice.test.mjs`; full CI passed.
-  It changes what signed-in learners see, so it needs a local screenshot and Dhruv's "approved" before merging.
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
