@@ -48,6 +48,15 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   offer never showed because `page.tsx` hid `NotebookSyncNotice` for quiet statuses. Now gated by
   `shouldShowSyncNotice` in `web/src/lib/notebook-sync.js`, with `web/tests/sync-notice.test.mjs`; full CI passed.
 
+- **Certificates live (2026-11-12, `649f2be`, Dhruv approved the screenshots)**:
+  - A pass counts only when a signed-in learner passes `/course/exercise` through the server checker. Passes are stored in the `course_exercise_passes` table; notebook progress never counts.
+  - `backend/routers/certificate.py`: `GET /certificate/status`, `POST /certificate {name}` (one per user, ID `QE-QI-XXXX-XXXX`), and public `GET /certificate/verify/{id}`.
+  - Web: `/certificate` (Dark/Light switch, PDF via browser print, LinkedIn, verify link) and `/verify/[id]`. Lessons open from `/?lesson=<id>`.
+  - Frame rule `frame-ancestors 'self' https://thequantumeconomy.com https://*.thequantumeconomy.com` in `web/next.config.mjs`.
+  - Design draft in `docs/certificate/`. Waiting on Anders: the signature PNG and his OK on the logo and wording.
+  - Checked live as a guest. Not yet checked: a signed-in pass and issuing (Dhruv's own account).
+- **thequantumeconomy.com integration**: Anders has the Learn page and a course page (`/qiskitintuition/`, iframe) as WordPress drafts. Waiting on the DNS record `learn` CNAME, then add the domain in Vercel.
+
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
    - Before every batch, check both the 5-hour **and the weekly** limit (`mcp__ccd_session_mgmt__get_usage`).
@@ -71,8 +80,8 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
 ```bash
 .venv/bin/python scripts/export_course.py --check
 .venv/bin/ruff check .
-.venv/bin/pytest tests -q                 # 228 passed, 1 skipped
-cd web && npm test && npm run lint && npm run build   # 16 pass
+.venv/bin/pytest tests -q                 # 468 passed, 3 skipped
+cd web && npm test && npm run lint && npm run build   # 29 pass
 ```
 `web/` is Next.js 16: read `web/AGENTS.md` before changing it, because this version has breaking changes.
 After pushing, confirm that both Vercel statuses on the commit say `success`.
