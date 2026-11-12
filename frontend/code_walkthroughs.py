@@ -35,10 +35,13 @@ PYTHON_BASICS = [
     ("{'0': 0.5, '1': 0.5}", "A dictionary: each outcome with its chance. 0.5 means 50%."),
 ]
 
-_NUMPY_NOTE = (
-    "Python may print np.float64(0.5) instead of 0.5. That's just NumPy, a maths library "
-    "Qiskit uses, labelling the number's type. Read it as 0.5."
-)
+def _numpy_note(outcome: str, chance: str) -> str:
+    """Explain NumPy's printed types, using the step's own first result."""
+    return (
+        f"Python may print np.str_('{outcome}') and np.float64({chance}) instead of "
+        f"'{outcome}' and {chance}. That's just NumPy, a maths library Qiskit uses, "
+        f"labelling each value's type. Read them as '{outcome}' and {chance}."
+    )
 
 WALKTHROUGHS: dict[str, list[dict]] = {
     "why-quantum": [
@@ -70,7 +73,7 @@ WALKTHROUGHS: dict[str, list[dict]] = {
             "print('two Hs: ', Statevector(twice).probabilities_dict(decimals=3))",
             "Print the exact odds: 50/50 after one H, always 0 after two.",
             "probabilities_dict leaves out outcomes with zero chance, so '1' is missing from "
-            "the second line. " + _NUMPY_NOTE,
+            "the second line. " + _numpy_note("0", "0.5"),
         ),
     ],
     "qubit": [
@@ -101,7 +104,7 @@ WALKTHROUGHS: dict[str, list[dict]] = {
         _step(
             "print(state.probabilities_dict(decimals=3))",
             "Square each amplitude to get the odds: 0, every time.",
-            _NUMPY_NOTE,
+            _numpy_note("0", "1.0"),
             _odds({"0": 1, "1": 0}, "odds of each reading"),
         ),
     ],
@@ -128,7 +131,7 @@ WALKTHROUGHS: dict[str, list[dict]] = {
         _step(
             "print(Statevector(qc).probabilities_dict(decimals=3))",
             "The odds: 1 every time, 0 never. X is the quantum NOT.",
-            _NUMPY_NOTE,
+            _numpy_note("1", "1.0"),
             _odds({"0": 0, "1": 1}, "odds of each reading"),
         ),
     ],
@@ -226,7 +229,7 @@ WALKTHROUGHS: dict[str, list[dict]] = {
         _step(
             "print('HH|0> =', Statevector(back))",
             "Two H's: weights 1 and 0, so it reads 0 every time.",
-            "The randomness was never lost. The arrow just pointed along the equator, and the second H turned it back to the pole.",
+            "Nothing random happened to the arrow. It just pointed along the equator, and the second H turned it back to the pole.",
             _odds({"0": 1.0, "1": 0.0}, "odds after two H's"),
         ),
     ],
@@ -269,7 +272,7 @@ WALKTHROUGHS: dict[str, list[dict]] = {
         _step(
             "print(qc.draw())",
             "Draw the last circuit from the loop: one wire with an Ry(π) box.",
-            "After the loop ends, qc still holds the circuit from the final round, theta = pi. That is a half turn, the same flip as X.",
+            "After the loop ends, qc still holds the circuit from the final round, theta = pi. That is a half turn that lands on |1⟩ just like X, though around a different axis.",
         ),
     ],
     "phase": [
@@ -979,7 +982,7 @@ WALKTHROUGHS: dict[str, list[dict]] = {
         ),
         _step(
             "native = transpile(bell, basis_gates=['rz', 'sx', 'cx'], optimization_level=1)",
-            "Rewrite the circuit using only the chip's native gates: rz, sx and cx.",
+            "Rewrite the circuit for a pretend chip whose only native gates are rz, sx and cx.",
             "basis_gates is a list of the gates the chip allows, and optimization_level=1 asks for light tidying. The rewrite changes the steps, not the answer: on an ideal simulator the odds stay 50/50 for 00 and 11.",
             _odds({"00": 0.5, "11": 0.5}, "same odds after rewrite"),
         ),

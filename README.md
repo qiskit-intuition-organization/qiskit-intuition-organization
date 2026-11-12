@@ -68,7 +68,7 @@ Every lesson walks through the same six stages.
 | | **Algorithms** · using interference on purpose | | |
 | 15 | Phase kickback: Deutsch's algorithm | Spotting a two-headed coin | 15 min |
 | 16 | A secret string in one question | A wall of switches and a buzzer | 15 min |
-| 17 | Your first algorithm: Grover search | Pushing a swing | 20 min |
+| 17 | Searching with interference: Grover search | Pushing a swing | 20 min |
 | 18 | The quantum Fourier transform | Hearing the notes in a chord | 18 min |
 | 19 | Phase estimation: reading a hidden angle | Timing a clock hand with snapshots | 18 min |
 | | **Real hardware & beyond** · noise, compilation and trainable circuits | | |

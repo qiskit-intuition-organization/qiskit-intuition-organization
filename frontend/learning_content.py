@@ -39,7 +39,7 @@ LESSONS = [
         "intuition": [
             "A popular story says a quantum computer \"tries every answer at once\". If that were the whole story it would be useless: a measurement hands you just one answer, picked at random.",
             "The real trick is **interference**. Quantum states carry amplitudes that behave like waves: they can add up or cancel out. A quantum algorithm is choreographed so that the paths to wrong answers cancel and the paths to the right answer reinforce.",
-            "That only pays off for problems with a hidden structure to exploit: factoring, searching, simulating molecules. For everyday tasks your laptop stays the right tool. This course builds the idea from a single qubit up.",
+            "That only pays off for certain problems: factoring, simulating molecules and, with a smaller speed-up, searching. For everyday tasks your laptop stays the right tool. This course builds the idea from a single qubit up.",
         ],
         "widget": {
             "type": "interference",
@@ -203,8 +203,8 @@ LESSONS = [
         "summary": "Gates rotate the arrow. The X gate is a half-turn that swaps the poles: the quantum version of NOT.",
         "intuition": [
             "A **gate** is an action that rotates the arrow. Gates never stretch or shrink it; they only turn it.",
-            "The **X gate** spins the sphere half a turn around its left-right (x) axis. The north pole lands on the south pole and vice versa, so |0⟩ ↔ |1⟩. That's exactly a classical NOT.",
-            "Because X is a rotation, doing it twice brings you back where you started. Most quantum gates are reversible like this.",
+            "The **X gate** spins the sphere half a turn around its front-back (x) axis. The north pole lands on the south pole and vice versa, so |0⟩ ↔ |1⟩. That's exactly a classical NOT.",
+            "Because X is a half-turn, doing it twice makes a full turn and brings you back where you started. Every quantum gate can be undone, though some need a different gate to undo them.",
         ],
         "widget": {
             "type": "gate_play",
@@ -358,7 +358,7 @@ LESSONS = [
         "intuition": [
             "Start with the arrow pointing straight up at |0⟩ and tip it over until it lies flat on the equator, facing you. It now points at neither pole, so the question \"0 or 1?\" has no favourite answer: you get each one half the time.",
             "That tipping move is the **Hadamard (H)** gate: a half-turn around a diagonal axis halfway between x and z. It carries the north pole to the front of the equator (called |+⟩) and the south pole to the back (|−⟩). Either way, a measurement now gives 50/50.",
-            "Here's the surprise: apply H again and the arrow goes **straight back** to the pole. The 'randomness' was never lost. It was a definite direction all along.",
+            "Here's the surprise: apply H again and the arrow goes **straight back** to the pole. Nothing random ever happened to the arrow. It was a definite direction all along.",
         ],
         "widget": {
             "type": "gate_play",
@@ -711,7 +711,7 @@ LESSONS = [
             "H swaps the X and Z axes, so 'H, then measure' is an X measurement. S† followed by H maps the Y axis onto Z. Every basis measurement in Qiskit is 'rotate, then measure in Z'.",
         ],
         "equation": "P(+ along n) = (1 + r.n)/2",
-        "latex": r"P(+\ \text{along}\ \hat n) = \frac{1 + \vec r\cdot\hat n}{2},\qquad X\text{ basis: } H\text{, measure},\quad Y\text{ basis: } S^\dagger H\text{, measure}",
+        "latex": r"P(+\ \text{along}\ \hat n) = \frac{1 + \vec r\cdot\hat n}{2},\qquad X\text{ basis: } H\text{, measure},\quad Y\text{ basis: } S^\dagger\text{ then } H\text{, measure}",
         "misconception": "A 50/50 result in Z doesn't mean the qubit is 'random'. |+⟩ is perfectly definite. It just isn't lined up with the question you asked.",
         "qiskit": {
             "intro": "Qiskit measures in Z. To measure along X, apply `h` first; along Y, apply `sdg` then `h`.",
@@ -792,7 +792,7 @@ LESSONS = [
             "Address individual qubits in multi-qubit circuits.",
         ],
         "explanation": [
-            "The state of n qubits lives in a 2ⁿ-dimensional space. For independent qubits, the joint state is the tensor product: (α₀|0⟩ + β₀|1⟩) ⊗ (α₁|0⟩ + β₁|1⟩).",
+            "The state of n qubits lives in a 2ⁿ-dimensional space. For independent qubits, the joint state is the tensor product, with qubit 0 written last: (α₁|0⟩ + β₁|1⟩) ⊗ (α₀|0⟩ + β₀|1⟩).",
             "Qiskit orders tensor factors so that qubit 0 is the least significant (rightmost) bit. The basis state |q₁q₀⟩ = |10⟩ means q1 = 1 and q0 = 0.",
         ],
         "equation": "|q1 q0>,  2 qubits -> 4 amplitudes",
@@ -831,10 +831,10 @@ LESSONS = [
         "title": "Entanglement",
         "eyebrow": "Multi-qubit systems",
         "duration": "18 min",
-        "summary": "Use CNOT on a superposition and two qubits stop having their own arrows. They share one state.",
+        "summary": "Put the control in superposition, apply CNOT, and two qubits stop having their own arrows. They share one state.",
         "intuition": [
             "Here's the goal: two qubits whose answers always match, even though each one, on its own, is a fair coin flip.",
-            "The tool is **CNOT**, a conditional flip: if the control qubit is 1, flip the target. On plain 0s and 1s it's ordinary logic. Give it a control in superposition and both branches happen: |00⟩ stays |00⟩ and |10⟩ becomes |11⟩. The pair is now (|00⟩ + |11⟩)/√2, a **Bell state**.",
+            "The tool is **CNOT**, a conditional flip: if the control qubit is 1, flip the target. On plain 0s and 1s it's ordinary logic. Give it a control in superposition and both branches happen: where the control is 0 nothing changes, and where it is 1 the target flips to 1 as well. The pair is now (|00⟩ + |11⟩)/√2, a **Bell state**.",
             "Measure either qubit and you get a coin flip. Measure both and they **always agree**. Neither qubit has an arrow of its own any more: the information lives in the pair.",
         ],
         "widget": {"type": "entangle", "caption": "Run 10 shots of two separate coins and of a Bell pair. Both look random one qubit at a time, but only one pair always agrees."},
@@ -943,7 +943,7 @@ LESSONS = [
         ],
         "explanation": [
             "Suppose a unitary U copied every state: U|ψ⟩|0⟩ = |ψ⟩|ψ⟩. Unitaries preserve overlaps, so for any two states ⟨φ|ψ⟩ = ⟨φ|ψ⟩². That only holds if the overlap is 0 or 1: the states are identical or perfectly distinguishable. A machine that copies |0⟩ and |1⟩ therefore can't copy |+⟩.",
-            "Concretely, CNOT(|+⟩|0⟩) = (|00⟩ + |11⟩)/√2, while a true copy is |+⟩|+⟩ = (|00⟩ + |01⟩ + |10⟩ + |11⟩)/2, and their fidelity is only ½. Known states can be prepared as often as you like; it's unknown states that can't be copied. That is what makes quantum key distribution secure.",
+            "Concretely, CNOT(|+⟩|0⟩) = (|00⟩ + |11⟩)/√2, while a true copy is |+⟩|+⟩ = (|00⟩ + |01⟩ + |10⟩ + |11⟩)/2, and their fidelity is only ½. Known states can be prepared as often as you like; it's unknown states that can't be copied. That is a big part of why quantum key distribution can be secure.",
         ],
         "equation": "U|psi>|0> = |psi>|psi> for every psi  =>  <phi|psi> = <phi|psi>^2",
         "latex": r"U|\psi\rangle|0\rangle = |\psi\rangle|\psi\rangle\ \ \forall\psi \;\Rightarrow\; \langle\phi|\psi\rangle = \langle\phi|\psi\rangle^{2}",
@@ -1027,11 +1027,11 @@ LESSONS = [
             "Build teleportation in Qiskit using deferred measurement.",
         ],
         "explanation": [
-            "The no-cloning theorem forbids copying an unknown state. Teleportation sidesteps it: |ψ⟩ ⊗ |Φ⁺⟩ can be rewritten as four equally weighted terms, each pairing one of Alice's outcomes (m₀, m₁) with Bob holding X^{m₁}Z^{m₀}|ψ⟩.",
-            "Bob undoes that with X^{m₁} and then Z^{m₀}. In a simulator you can replace 'measure, then fix if the bit is 1' with controlled gates: CX from q1 and CZ from q0. This is the deferred measurement principle, and the final state is the same.",
+            "The no-cloning theorem forbids copying an unknown state. Teleportation sidesteps it: after Alice's CNOT and H, |ψ⟩ ⊗ |Φ⁺⟩ becomes four equally weighted terms, each pairing one of Alice's outcomes (m₀, m₁) with Bob holding X^{m₁}Z^{m₀}|ψ⟩.",
+            "Bob undoes that with X^{m₁} and then Z^{m₀}. In a simulator you can replace 'measure, then fix if the bit is 1' with controlled gates: CX from q1 and CZ from q0. This is the deferred measurement principle, and Bob's final qubit comes out the same.",
         ],
-        "equation": "|psi>|Phi+> = 1/2 sum |m0 m1> X^m1 Z^m0 |psi>",
-        "latex": r"|\psi\rangle\,|\Phi^+\rangle = \tfrac12 \sum_{m_0, m_1} |m_0 m_1\rangle \otimes X^{m_1} Z^{m_0}|\psi\rangle",
+        "equation": "(H x I x I)(CNOT x I) |psi>|Phi+> = 1/2 sum |m0 m1> X^m1 Z^m0 |psi>",
+        "latex": r"(H\otimes I\otimes I)(\mathrm{CNOT}\otimes I)\,|\psi\rangle\,|\Phi^+\rangle = \tfrac12 \sum_{m_0, m_1} |m_0 m_1\rangle \otimes X^{m_1} Z^{m_0}|\psi\rangle",
         "misconception": "Teleportation doesn't move matter or beat the speed of light. It needs a classical message, and it moves the state rather than copying it: Alice's original is destroyed.",
         "qiskit": {
             "intro": "On hardware, Bob's fixes depend on mid-circuit measurements. In a simulator you can use deferred measurement: each 'if the bit is 1, apply a gate' becomes a controlled gate.",
@@ -1340,7 +1340,7 @@ LESSONS = [
         "id": "grover",
         "number": 10,
         "unit": "algorithms",
-        "title": "Your first algorithm: Grover search",
+        "title": "Searching with interference: Grover search",
         "eyebrow": "Algorithms",
         "duration": "20 min",
         "summary": "Mark the answer with a phase, then use interference to amplify it. With 4 items, one round finds it with certainty.",
@@ -1554,11 +1554,11 @@ LESSONS = [
             "Build phase estimation with Qiskit's controlled phase gate and inverse QFT.",
         ],
         "explanation": [
-            "If U|ψ⟩ = e^{2πiφ}|ψ⟩, a controlled-U^{2ʲ} kicks the phase e^{2πi·2ʲφ} onto its control. With t counting qubits in |+⟩ controlling U, U², U⁴, …, the counting register ends up in (1/√2ᵗ) Σₖ e^{2πiφk}|k⟩, which is exactly the QFT of the number 2ᵗφ.",
-            "So the inverse QFT returns |2ᵗφ⟩: the first t binary digits of φ. If φ has more digits than you have counting qubits, you get the nearest t-digit value with high probability. Shor's algorithm uses this to find the period of modular multiplication, and chemistry algorithms use it to read off energy levels.",
+            "If U|ψ⟩ = e^{2πiφ}|ψ⟩, a controlled-U^{2ʲ} kicks the phase e^{2πi·2ʲφ} onto its control. With t counting qubits in |+⟩ controlling U, U², U⁴, …, the counting register ends up in (1/√2ᵗ) Σₖ e^{2πiφk}|k⟩, which, when 2ᵗφ is a whole number, is exactly the QFT of that number.",
+            "So the inverse QFT returns |2ᵗφ⟩: the first t binary digits of φ. If φ has more digits than you have counting qubits, the nearest t-digit value is the most likely reading (at least about 40% of the time), and a few extra counting qubits make it reliable. Shor's algorithm uses this to find the period of modular multiplication, and chemistry algorithms use it to read off energy levels.",
         ],
         "equation": "U|psi> = e^{2 pi i phi}|psi>;  after the inverse QFT the counting register reads 2^t phi",
-        "latex": r"U|\psi\rangle = e^{2\pi i\varphi}|\psi\rangle,\qquad \mathrm{QFT}^{\dagger}\,\frac{1}{\sqrt{2^t}}\sum_{k} e^{2\pi i\varphi k}|k\rangle = |2^t\varphi\rangle",
+        "latex": r"U|\psi\rangle = e^{2\pi i\varphi}|\psi\rangle,\qquad \mathrm{QFT}^{\dagger}\,\frac{1}{\sqrt{2^t}}\sum_{k} e^{2\pi i\varphi k}|k\rangle = |2^t\varphi\rangle\ \ (2^t\varphi\text{ a whole number})",
         "misconception": "Phase estimation can't read the phase of any qubit you hand it. The target has to be in a state U only turns (an eigenstate, here |1⟩ for S); otherwise you get a random one of U's phases.",
         "qiskit": {
             "intro": "Each controlled power of U is a `cp` with the matching angle, and `QFTGate(2).inverse()` reads out the digits.",
@@ -1608,7 +1608,7 @@ LESSONS = [
         "duration": "15 min",
         "summary": "Real qubits are fragile, and your circuit gets rewritten before it runs. Learn to separate ideal results from noise.",
         "intuition": [
-            "Every real gate is slightly imperfect, and qubits slowly lose their state to the environment. On the Bloch sphere, noise **shrinks the arrow** toward the center, toward pure randomness.",
+            "Every real gate is slightly imperfect, and qubits slowly lose their state to the environment. On the Bloch sphere, noise mostly **shrinks the arrow** toward the center, toward pure randomness (energy loss also pulls it toward |0⟩).",
             "Before running, your circuit is **transpiled**: rewritten into the few gates the chip actually supports and routed around its wiring. A tidy 2-gate circuit can become 10 native gates, each one a chance for error.",
             "Good practice: always compare hardware results against the ideal simulation of the same circuit.",
         ],
@@ -1642,7 +1642,7 @@ LESSONS = [
         ],
         "explanation": [
             "Noise is modelled with channels such as depolarizing noise, which replaces the state with a random one with probability λ: ρ → (1 − λ)ρ + λ I/d. On the Bloch sphere this shrinks the vector by (1 − λ).",
-            "Transpilation maps your gates to the device's basis (for example rz, sx, cx) and inserts swaps for qubits that aren't physically connected. Deeper circuits accumulate more noise.",
+            "Transpilation maps your gates to the device's basis (for example rz, sx and a two-qubit gate such as cz, which IBM's current chips use, or cx as in our example) and inserts swaps for qubits that aren't physically connected. Deeper circuits accumulate more noise.",
         ],
         "equation": "rho -> (1 - lambda) rho + lambda I/d",
         "latex": r"\rho \;\to\; (1-\lambda)\,\rho + \lambda\,\tfrac{I}{d}",
@@ -1688,7 +1688,7 @@ LESSONS = [
         "duration": "15 min",
         "summary": "Real chips only connect some qubits to each other. See how Qiskit maps and routes your circuit, then run it on a simulated IBM-style backend.",
         "intuition": [
-            "On a chip, qubits are physical objects laid out on a grid, and a two-qubit gate only works between **neighbours**. The wiring diagram is called the **coupling map**.",
+            "On a superconducting chip like IBM's, qubits are physical objects laid out on a grid, and a two-qubit gate only works between **neighbours**. The wiring diagram is called the **coupling map**.",
             "If your circuit needs a CNOT between qubits that aren't neighbours, the transpiler inserts **SWAPs** to shuffle states next to each other. Each SWAP costs three CNOTs, and every CNOT adds noise.",
             "So writing good hardware circuits means thinking like the chip: keep interacting qubits close, keep circuits shallow, and always compare with the ideal result.",
         ],
@@ -1823,11 +1823,11 @@ LESSONS = [
         ],
         "explanation": [
             "A variational circuit U(θ) prepares |ψ(θ)⟩. A cost C(θ), such as the distance between measured and target probabilities, is estimated from shots and minimized by a classical optimizer.",
-            "Gradients can be measured on the quantum device itself with the parameter-shift rule: ∂C/∂θ = [C(θ + π/2) − C(θ − π/2)]/2 for rotation gates.",
+            "Gradients can be measured on the quantum device itself with the parameter-shift rule: for a rotation gate, ∂P/∂θ = [P(θ + π/2) − P(θ − π/2)]/2 for any measured probability P, and the chain rule turns that into the slope of the cost.",
             "Where to go next: you now have every building block (states, gates, measurement, entanglement, interference, algorithms, noise and training). Create a free IBM Quantum account and run one of your circuits on a real chip with the qiskit-ibm-runtime package, work through IBM's Qiskit tutorials, or try the qiskit-machine-learning package for larger trainable circuits.",
         ],
         "equation": "theta <- theta - eta * dC/dtheta",
-        "latex": r"\theta \leftarrow \theta - \eta\,\frac{\partial C}{\partial \theta},\qquad \frac{\partial C}{\partial \theta} = \frac{C(\theta+\frac{\pi}{2}) - C(\theta-\frac{\pi}{2})}{2}",
+        "latex": r"\theta \leftarrow \theta - \eta\,\frac{\partial C}{\partial \theta},\qquad \frac{\partial P}{\partial \theta} = \frac{P(\theta+\frac{\pi}{2}) - P(\theta-\frac{\pi}{2})}{2}",
         "misconception": "Quantum ML is not automatically better than classical ML. At today's scales it often ties or loses; the point is to understand the mechanism and where it might help.",
         "qiskit": {
             "intro": "`Parameter` creates a symbolic angle. `assign_parameters` binds numbers to it before simulation.",
@@ -2150,7 +2150,7 @@ GLOSSARY = [
     ("Oracle", "A black box that marks the answer by flipping its sign.", "A unitary that applies a phase of −1 to marked basis states."),
     ("Transpilation", "Rewriting your circuit into the gates the chip actually has.", "Compilation to a backend's basis gates and connectivity."),
     ("Coupling map", "Which qubits on the chip are wired to each other.", "The graph of physical qubit pairs that support two-qubit gates."),
-    ("Noise", "Imperfections that shrink the arrow toward randomness.", "Non-unitary channels such as depolarizing or amplitude damping."),
+    ("Noise", "Imperfections that shrink the arrow toward randomness or let it drift back up to |0⟩.", "Non-unitary channels such as depolarizing or amplitude damping."),
     ("Parameter", "A knob: a gate angle left as a variable.", "A symbolic value bound to a number before execution."),
     ("No-cloning", "You can't photocopy an unknown qubit. Trying to just entangles the copy with the original.", "No unitary maps |ψ⟩|0⟩ to |ψ⟩|ψ⟩ for every state |ψ⟩."),
     ("Bell states", "The four maximally entangled two-qubit states, like four dances a pair can share.", "|Φ±⟩ = (|00⟩ ± |11⟩)/√2 and |Ψ±⟩ = (|01⟩ ± |10⟩)/√2, an orthonormal basis."),
@@ -2172,7 +2172,7 @@ ANALOGIES = {
         "A weather vane you may ask only one question",
         "A weather vane can point in any direction, but you're only allowed to ask \"north or south?\". It answers with one word, and the instant it answers it swings to point exactly that way.",
         "The state (a direction) holds far more than the answer (one bit), and asking changes the state.",
-        "You could walk up and look at a real vane. Nobody can look at a qubit's arrow: you only learn where it points from the statistics of many identically prepared qubits.",
+        "You could walk up and look at a real vane. Nobody can look at a qubit's arrow: you learn where it points only from the statistics of many identically prepared qubits, asked along more than one axis.",
         "The state is the arrow; a measurement only ever hands you one bit.",
     ),
     "flip": _analogy(
@@ -2186,7 +2186,7 @@ ANALOGIES = {
         "An opinion poll",
         "Asking one voter tells you almost nothing about an election. Ask a thousand and you know the percentages, give or take a margin of error that shrinks as the poll grows.",
         "Each shot is one vote; the fractions estimate the probabilities, with an error that shrinks like 1/√N.",
-        "A voter already had an opinion before you asked. A qubit has no answer waiting: measuring creates it, and every \"vote\" needs a freshly prepared qubit.",
+        "A voter already had an opinion before you asked. A qubit in superposition has no answer waiting: measuring creates it, and every \"vote\" needs a freshly prepared qubit.",
         "One shot is one vote; many shots reveal the odds.",
     ),
     "superposition": _analogy(
@@ -2207,7 +2207,7 @@ ANALOGIES = {
         "Longitude on a globe",
         "Two cities on the same line of latitude are equally far north, whatever their longitude. Z moves the arrow along its line of latitude (east or west) without moving it north or south.",
         "Phase leaves the measurement odds untouched, yet it is a real difference that a later gate can turn into different odds.",
-        "Longitude is printed on every map. Phase can't be read off directly: only interference reveals a relative phase, and turning the whole globe at once (a global phase) changes nothing at all.",
+        "Longitude is printed on every map. Phase can't be read off directly: only interference reveals a relative phase, and multiplying the whole state by one phase (a global phase) doesn't move the arrow and changes nothing.",
         "Phase is the arrow's longitude: invisible now, decisive later.",
     ),
     "interference": _analogy(
@@ -2255,7 +2255,7 @@ ANALOGIES = {
     "grover": _analogy(
         "Pushing a swing",
         "Each well-timed push makes the swing go a little higher. Keep pushing at the right rhythm and it soars; keep going too long and it starts coming back down.",
-        "Each oracle-plus-diffuser round adds a bit more amplitude to the answer, and about √N rounds is the sweet spot. More overshoots.",
+        "Each oracle-plus-diffuser round adds a bit more amplitude to the answer, and about (π/4)√N rounds is the sweet spot. More overshoots.",
         "A swing gains energy. Grover's state never grows: total probability stays 1, and the answer's share rises only because every other answer's share falls.",
         "Mark the answer with a sign, reflect about the average, repeat about (π/4)√N times.",
     ),
