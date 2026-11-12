@@ -32,23 +32,12 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   "Daily security check - Qiskit Intuition" (6:00 am IST, connectors removed,
   https://claude.ai/code/routines/trig_01SUoyFYHHcbUZR9UJC5xvBF), reviews the repo and opens PRs only.
 
-- **IN PROGRESS, CRITICAL: PR #21** (`security/sandbox-hardening`, supersedes the routine's PR #20). The routine
-  found learner code could still read server files (`np.lib.npyio.DataSource().open('/proc/<ppid>/environ')`).
-  Two local red-team rounds found ~10 more escapes. PR #21 moves the boundary into the worker process:
-  seccomp (no execve/ptrace, Linux), an audit hook in `backend/core/sandbox_guard.py` (reads only from Python,
-  `sys.path` and the worker folder, matched by device+inode; no sockets, ctypes, processes; writes only in the
-  worker folder), `fork_exec`/`mkfifo`/`mknod` removed, JSON results instead of pickle, undumpable server
-  process, and many more AST blocks. Tests: `tests/test_sandbox_guard.py`; 389 pass locally, Linux CI green.
-  - Vercel preview testing found two Lambda-only breakages, both fixed: Aer reads `/proc/meminfo` (now allowed),
-    and `/dev` shares a device with `/var/lang` on Lambda (`9534da1`). On the preview after `9534da1`, the Aer
-    Bell state and StatevectorSampler run. The full 22-lesson run on the preview was interrupted: re-run it.
-  - To test the preview: it is behind Vercel sign-in, so use Claude in Chrome (Dhruv is signed in) on
-    https://qiskit-intuition-organization-mhye-git-sec-597fa9-lucifer041205.vercel.app/health and `fetch('/execute')`
-    from that page. Lesson example code is `lessons[].qiskit.code` in `web/src/data/course.json`; also try
-    `POST /course/exercise` with `{"lesson_id": "superposition", "code": "...qc.x(0)\nqc.h(0)"}`.
-  - Dhruv said "merge when green". Auto-merge is not allowed on this repo, so merge by hand
-    (`gh pr merge 21 --squash`) once CI and the preview checks pass, then close PR #20.
-  - After the merge Dhruv must: rotate `AUTH_JWT_SECRET`, create a new Turso token and paste it into
+- **PR #21 merged and live (2026-11-12, `44db000`)**: the sandbox boundary now sits in the worker process
+  (audit hook in `backend/core/sandbox_guard.py`, seccomp on Linux, minimal env, JSON results, more AST blocks;
+  tests in `tests/test_sandbox_guard.py`). PR #20 closed as superseded. Checked on the live site after the merge:
+  all 22 lesson examples run, the exercise checker works, and the `/proc/.../environ` read (numpy `DataSource`),
+  `open()` and `.format()` are all refused.
+  - **Still to do by Dhruv:** rotate `AUTH_JWT_SECRET`, create a new Turso token and paste it into
     `TURSO_DATABASE_TURSO_AUTH_TOKEN` (backend project `-mhye`), then redeploy the backend.
   - Known residual: name blocking is only a first filter; after an escape, code can still read files under
     Python/`sys.path`. Long-term: run learner code in a separate project with no secrets.
