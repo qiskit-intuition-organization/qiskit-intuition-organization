@@ -21,7 +21,11 @@ const paths = new Set([
   "auth/change-password",
   "auth/forgot-password",
   "auth/reset-password",
+  "certificate",
+  "certificate/status",
 ]);
+// Public certificate lookups; the backend decides whether the ID exists.
+const certificateLookup = /^certificate\/verify\/[A-Za-z0-9-]{1,40}$/;
 export const runtime = "nodejs";
 
 async function proxy(
@@ -30,9 +34,15 @@ async function proxy(
 ) {
   const { path } = await context.params;
   const route = path.join("/");
-  if (!paths.has(route))
+  const lookup = certificateLookup.test(route);
+  if (!paths.has(route) && !lookup)
     return Response.json({ detail: "Not found" }, { status: 404 });
-  const authentication = route.startsWith("auth/");
+  // These routes act for the signed-in learner, so they carry the session cookie.
+  const authentication =
+    route.startsWith("auth/") ||
+    route === "certificate" ||
+    route === "certificate/status" ||
+    route === "course/exercise";
   if (authentication && request.method === "POST") {
     const origin = request.headers.get("origin");
     // Next's internal URL can use localhost behind a reverse proxy. The browser
@@ -56,6 +66,8 @@ async function proxy(
     route === "health" ||
     route === "course" ||
     route === "auth/me" ||
+    route === "certificate/status" ||
+    lookup ||
     (["auth/avatar", "auth/notebook"].includes(route) &&
       request.method === "GET");
   if (request.method !== (readOnly ? "GET" : "POST")) {
@@ -129,10 +141,15 @@ async function proxy(
         headers: responseHeaders,
       });
     }
-    if (route === "auth/notebook" && upstream.status === 409) {
-      // Preserve the server snapshot needed for an explicit three-way merge.
+    if (
+      (route === "auth/notebook" && upstream.status === 409) ||
+      (route === "certificate" && upstream.status === 409) ||
+      (lookup && upstream.status === 404)
+    ) {
+      // Keep the notebook snapshot for a merge, the missing lessons, and the
+      // clean "not found" answer for a certificate lookup.
       return Response.json(await upstream.json(), {
-        status: 409,
+        status: upstream.status,
         headers: responseHeaders,
       });
     }

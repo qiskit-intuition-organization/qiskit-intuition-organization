@@ -59,6 +59,28 @@ class UserNotebook(Base):
     updated_at: Mapped[int] = mapped_column(Integer)
 
 
+class ExercisePass(Base):
+    """First time a signed-in learner passed a lesson's server-checked exercise."""
+
+    __tablename__ = "course_exercise_passes"
+    user_id: Mapped[str] = mapped_column(
+        ForeignKey("auth_users.id", ondelete="CASCADE"), primary_key=True
+    )
+    lesson_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    passed_at: Mapped[int] = mapped_column(Integer)
+
+
+class Certificate(Base):
+    __tablename__ = "course_certificates"
+    id: Mapped[str] = mapped_column(String(16), primary_key=True)
+    user_id: Mapped[str] = mapped_column(
+        ForeignKey("auth_users.id", ondelete="CASCADE"), unique=True, index=True
+    )
+    name: Mapped[str] = mapped_column(String(80))
+    course: Mapped[str] = mapped_column(String(80))
+    issued_at: Mapped[int] = mapped_column(Integer)
+
+
 class AuthSession(Base):
     __tablename__ = "auth_sessions"
     id: Mapped[str] = mapped_column(String(128), primary_key=True)

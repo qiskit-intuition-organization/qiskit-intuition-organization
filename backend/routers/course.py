@@ -1,12 +1,13 @@
 """Course endpoints; reference exercise solutions remain on the server."""
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from backend.core.course_content import course_content, find_lesson
 from backend.core.exercise_checker import check_code_task
 from backend.core.explanation_review import review_explanation
+from backend.routers.certificate import record_pass
 
 router = APIRouter(prefix="/course")
 
@@ -41,11 +42,14 @@ def require_lesson(lesson_id: str) -> dict:
 
 
 @router.post("/exercise")
-def check_exercise(req: ExerciseRequest):
+def check_exercise(req: ExerciseRequest, request: Request):
     lesson = require_lesson(req.lesson_id)
     if not lesson.get("code_task"):
         raise HTTPException(status_code=404, detail="Exercise not found")
-    return check_code_task(req.code, lesson["code_task"])
+    result = check_code_task(req.code, lesson["code_task"])
+    # Only this server-side check counts towards a certificate.
+    recorded = bool(result.get("passed")) and record_pass(request, lesson["id"])
+    return {**result, "recorded": recorded}
 
 
 @router.post("/reflect")
