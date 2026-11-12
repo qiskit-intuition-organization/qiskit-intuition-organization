@@ -134,10 +134,14 @@ def build_guard(writable_dirs, cwd=None, readable_dirs=None):
     ``readable_dirs`` (by default Python's own folders and ``sys.path``).
     """
     here = cwd or os.getcwd()
+    readable_dirs = default_readable_dirs() if readable_dirs is None else readable_dirs
+    # A device counts as a pseudo filesystem only when nothing we rely on lives
+    # on it: on AWS Lambda /dev shares a device with Python itself.
+    shared_devices = {found[0] for found in (identity(path) for path in ["/", *writable_dirs, *readable_dirs]) if found}
     filesystems = []
     for root in DENIED_FILESYSTEMS:
         found = identity(root)
-        if found:
+        if found and found[0] not in shared_devices:
             filesystems.append(found[0])
     settings = (
         _identities(writable_dirs), here, _identities(DENIED_ROOTS), frozenset(filesystems),
@@ -147,7 +151,7 @@ def build_guard(writable_dirs, cwd=None, readable_dirs=None):
         # the worker TMPDIR points at its own folder, so gettempdir() won't do.)
         _identities(os.path.dirname(os.path.abspath(d)) for d in writable_dirs if d),
         WORKER_FOLDER_PREFIX,
-        _identities([*writable_dirs, *(default_readable_dirs() if readable_dirs is None else readable_dirs)]),
+        _identities([*writable_dirs, *readable_dirs]),
         DATABASE_SUFFIXES,
         _identities(SAFE_SYSTEM_TREES),
     )

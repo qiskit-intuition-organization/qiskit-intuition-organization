@@ -229,6 +229,16 @@ def test_guard_allows_ordinary_events(tmp_path, event, args):
     guard(event, args)
 
 
+def test_a_device_shared_with_python_is_not_treated_as_a_pseudo_filesystem(tmp_path, monkeypatch):
+    """On AWS Lambda /dev lives on the same device as Python's own files."""
+    python_home = tmp_path / "lang"
+    python_home.mkdir()
+    (python_home / "zoneinfo.py").write_text("x = 1\n")
+    monkeypatch.setattr(sandbox_guard, "DENIED_FILESYSTEMS", (str(tmp_path),))
+    guard = sandbox_guard.build_guard([str(tmp_path / "work")], cwd=str(tmp_path), readable_dirs=[str(python_home)])
+    guard("open", (str(python_home / "zoneinfo.py"), "r", 0))
+
+
 def test_guard_refuses_climbing_out_of_the_worker_folder(tmp_path):
     guard = sandbox_guard.build_guard([str(tmp_path)], cwd=str(tmp_path))
     with pytest.raises(PermissionError):
