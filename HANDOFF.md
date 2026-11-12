@@ -60,7 +60,7 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   The repo, Vercel projects and folders keep the old name. Anders was asked (Gmail draft) to rename his WordPress pages.
 - **thequantumeconomy.com integration (2026-11-12)**: `learn.thequantumeconomy.com` is live (Anders added the CNAME; Dhruv added
   the domain to the `qiskit-intuition-organization` Vercel project; HTTPS OK). The backend trusts it via `COURSE_ORIGINS` in
-  `backend/routers/auth.py` (`389f602`). Anders' pages: `/learn/` and `/qiskitintuition/` (iframe). Dhruv emailed him to switch
+  `backend/routers/auth.py` (`389f602`). Anders' pages: `/learn/` and `/quantumintuition/` (iframe; `/qiskitintuition/` redirects). Done by Anders: switch
   the iframe script to `var B="https://learn.thequantumeconomy.com"`, rename his pages to Quantum Intuition and use Dhruv's
   statement. After he does: Dhruv signs in inside the page once to confirm sign-in and certificates end to end.
 
