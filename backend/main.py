@@ -18,7 +18,7 @@ from backend.routers import agents, auth, certificate, course, execute, simulate
 from backend.auth.notebook import router as notebook_router
 
 app = FastAPI(
-    title="Qiskit Intuition Lab API",
+    title="Quantum Intuition Lab API",
     description="Decoupled backend service for quantum simulation, code execution, and offline educational helpers.",
     version="1.0.0"
 )

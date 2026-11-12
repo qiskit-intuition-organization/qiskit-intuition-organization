@@ -17,7 +17,7 @@ def course_content() -> dict:
         if "solution" not in lesson.get("code_task", {}) and original.get("code_task"):
             lesson["code_task"] = {**original["code_task"], **lesson.get("code_task", {})}
     return {
-        "brand": overrides.get("brand", {"name": "Qiskit Intuition"}),
+        "brand": overrides.get("brand", {"name": "Quantum Intuition"}),
         "lessons": lessons,
         "units": UNITS,
         "presets": PRESETS,

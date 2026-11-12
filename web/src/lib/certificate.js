@@ -1,6 +1,6 @@
 /** Pure helpers for the certificate page and the public verify page. */
 
-export const CERTIFICATE_NAME = "Qiskit Intuition, certificate of completion";
+export const CERTIFICATE_NAME = "Quantum Intuition, certificate of completion";
 export const ISSUER = "The Quantum Economy";
 
 // Mirrors backend/routers/certificate.py: no 0/O, 1/I/L.

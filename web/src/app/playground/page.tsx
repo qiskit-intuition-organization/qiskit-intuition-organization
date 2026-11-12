@@ -430,7 +430,7 @@ export default function Home() {
     <div className="site-shell">
       <aside className="site-sidebar">
         <div className="site-brand">
-          <strong>Qiskit Intuition</strong>
+          <strong>Quantum Intuition</strong>
         </div>
         <AccountMenu />
         <nav aria-label="Primary navigation">

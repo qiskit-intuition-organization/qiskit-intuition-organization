@@ -39,7 +39,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
   return (
     <main className="auth-paper course-main">
       <Link href="/">← Back to the learning path</Link>
-      <p className="eyebrow">Your Qiskit Intuition account</p>
+      <p className="eyebrow">Your Quantum Intuition account</p>
       <h1>{TITLES[mode]}</h1>
       {mode === "forgot-password" && (
         <p>

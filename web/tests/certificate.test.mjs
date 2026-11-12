@@ -88,7 +88,7 @@ test("the LinkedIn link pre-fills the certification", () => {
   assert.equal(url.origin + url.pathname, "https://www.linkedin.com/profile/add");
   assert.deepEqual(Object.fromEntries(url.searchParams), {
     startTask: "CERTIFICATION_NAME",
-    name: "Qiskit Intuition, certificate of completion",
+    name: "Quantum Intuition, certificate of completion",
     organizationName: "The Quantum Economy",
     issueYear: "2026",
     issueMonth: "11",

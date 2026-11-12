@@ -1,4 +1,4 @@
-# Qiskit Intuition
+# Quantum Intuition
 
 **Learn quantum computing and Qiskit from zero: picture first, math second, code third.**
 

@@ -3,14 +3,14 @@
 ## 1. Module Overview
 
 **Module:** `backend/routers/agents.py`  
-**Project:** Qiskit Intuition  
+**Project:** Quantum Intuition  
 **Architectural Layer:** API / Presentation Layer  
 **Framework:** FastAPI  
 **Communication Protocol:** HTTP / Server-Sent Events (SSE)
 
 ### 1.1 Purpose
 
-The `agents.py` module provides HTTP endpoints that expose the AI-powered educational capabilities of Qiskit Intuition.
+The `agents.py` module provides HTTP endpoints that expose the AI-powered educational capabilities of Quantum Intuition.
 
 It acts as an interface between client applications and the underlying AI agents, allowing users to request conceptual explanations, circuit coaching, answer evaluation, code generation, learning challenges, and contextual tutoring.
 
@@ -33,7 +33,7 @@ The module does not directly implement AI inference, quantum circuit simulation,
 
 ## 2. Architectural Integration
 
-The module belongs to the API layer of Qiskit Intuition's modular architecture.
+The module belongs to the API layer of Quantum Intuition's modular architecture.
 
 It communicates with specialised agents and the teaching assistant service while remaining independent of their internal implementations.
 

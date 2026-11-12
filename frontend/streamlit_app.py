@@ -1,4 +1,4 @@
-"""Public learning experience for Qiskit Intuition.
+"""Public learning experience for Quantum Intuition.
 
 The app runs as a single Streamlit process on Hugging Face Spaces. Simulation,
 safe code execution, and tutoring all have in-process paths, so a separate API
@@ -43,7 +43,7 @@ from frontend.bloch3d import bloch_view_3d
 from frontend.learning_content import GLOSSARY, LESSONS, PRACTICE, PRESETS, UNITS
 
 st.set_page_config(
-    page_title="Qiskit Intuition — Learn quantum computing",
+    page_title="Quantum Intuition — Learn quantum computing",
     page_icon="Q",
     layout="wide",
     initial_sidebar_state="auto",  # open on desktop, tucked away on phones
@@ -76,7 +76,7 @@ def init_state() -> None:
         saved_content = {}
 
     default_brand = {
-        "name": "Qiskit Intuition",
+        "name": "Quantum Intuition",
         "tagline": "Quantum computing, intuition first",
     }
     defaults = {
@@ -175,7 +175,7 @@ def next_lesson_index() -> int:
 
 def sidebar() -> str:
     brand = st.session_state.site_brand
-    brand_name = html.escape(str(brand.get("name", "Qiskit Intuition")))
+    brand_name = html.escape(str(brand.get("name", "Quantum Intuition")))
     brand_tagline = html.escape(str(brand.get("tagline", "Quantum computing, intuition first")))
     st.sidebar.markdown(
         f"""
@@ -1254,11 +1254,11 @@ def render_content_studio() -> None:
     st.subheader("Site identity")
     name_col, tagline_col = st.columns(2)
     with name_col:
-        brand_name = st.text_input("Site name", value=st.session_state.site_brand.get("name", "Qiskit Intuition"))
+        brand_name = st.text_input("Site name", value=st.session_state.site_brand.get("name", "Quantum Intuition"))
     with tagline_col:
         brand_tagline = st.text_input("Tagline", value=st.session_state.site_brand.get("tagline", ""))
     if st.button("Update site identity"):
-        st.session_state.site_brand = {"name": brand_name.strip() or "Qiskit Intuition", "tagline": brand_tagline.strip()}
+        st.session_state.site_brand = {"name": brand_name.strip() or "Quantum Intuition", "tagline": brand_tagline.strip()}
         st.success("Site identity updated for this session.")
 
     st.subheader("Lesson editor")
@@ -1393,7 +1393,7 @@ def render_content_studio() -> None:
                 saved_content = json.loads(CONTENT_PATH.read_text(encoding="utf-8"))
             except (OSError, ValueError, TypeError):
                 saved_content = {}
-            st.session_state.site_brand = saved_content.get("brand", {"name": "Qiskit Intuition", "tagline": "Quantum computing, built from first principles"})
+            st.session_state.site_brand = saved_content.get("brand", {"name": "Quantum Intuition", "tagline": "Quantum computing, built from first principles"})
             st.session_state.site_lessons = saved_content.get("lessons", deepcopy(LESSONS))
             st.rerun()
 

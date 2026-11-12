@@ -1,6 +1,6 @@
-# Contributing to Qiskit Intuition
+# Contributing to Quantum Intuition
 
-Qiskit Intuition teaches quantum computing **intuition first**: every idea starts as a picture the learner can play with, becomes a prediction they test, and only then turns into math and Qiskit code.
+Quantum Intuition teaches quantum computing **intuition first**: every idea starts as a picture the learner can play with, becomes a prediction they test, and only then turns into math and Qiskit code.
 
 ## Adding or editing a lesson
 

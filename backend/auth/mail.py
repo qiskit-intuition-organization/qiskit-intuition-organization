@@ -41,9 +41,9 @@ def mail_ready():
 
 def deliver_reset(recipient: str, token: str):
     url = f"{frontend_url()}/reset-password#token={token}"
-    subject = "Reset your Qiskit Intuition password"
+    subject = "Reset your Quantum Intuition password"
     body = (
-        f"Someone requested a password reset for your Qiskit Intuition account.\n\n"
+        f"Someone requested a password reset for your Quantum Intuition account.\n\n"
         f"Open this link to choose a new password:\n{url}\n\n"
         "This link expires in 30 minutes and can only be used once. "
         "If you did not request this, you can ignore this email.\n"

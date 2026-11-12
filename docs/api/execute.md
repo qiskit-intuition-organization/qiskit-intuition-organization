@@ -3,7 +3,7 @@
 ## 1. Module Overview
 
 **Module:** `backend/routers/execute.py`
-**Project:** Qiskit Intuition
+**Project:** Quantum Intuition
 **Architectural Layer:** API / Presentation Layer
 **Framework:** FastAPI
 **Communication Protocol:** HTTP
@@ -11,7 +11,7 @@
 
 ### 1.1 Purpose
 
-The `execute.py` module provides an HTTP endpoint for executing Python code within Qiskit Intuition's notebook execution environment.
+The `execute.py` module provides an HTTP endpoint for executing Python code within Quantum Intuition's notebook execution environment.
 
 It acts as an interface between client applications and the notebook execution engine, allowing users to submit code and retrieve its execution results, including standard output, error information, and generated figures.
 
@@ -32,7 +32,7 @@ The module does not directly implement the code execution environment or manage 
 
 ## 2. Architectural Integration
 
-The module belongs to the API layer of Qiskit Intuition's modular architecture.
+The module belongs to the API layer of Quantum Intuition's modular architecture.
 
 It delegates execution responsibilities to the `notebook_engine` module, maintaining separation between HTTP request handling and execution logic.
 
@@ -67,7 +67,7 @@ It delegates execution responsibilities to the `notebook_engine` module, maintai
 
 ```json
 {
-  "code": "print('Hello, Qiskit Intuition!')"
+  "code": "print('Hello, Quantum Intuition!')"
 }
 ```
 

@@ -3,7 +3,7 @@
 ## 1. Module Overview
 
 **Module:** `backend/routers/simulate.py`  
-**Project:** Qiskit Intuition  
+**Project:** Quantum Intuition  
 **Architectural Layer:** API / Presentation Layer  
 **Framework:** FastAPI  
 **Communication Protocol:** HTTP  
@@ -35,7 +35,7 @@ The module does not directly implement quantum gate operations, statevector calc
 
 ## 2. Architectural Integration
 
-The module belongs to the API layer of Qiskit Intuition's modular architecture.
+The module belongs to the API layer of Quantum Intuition's modular architecture.
 
 It delegates quantum simulation and code generation to the `QuantumEngine` class, maintaining separation between HTTP request handling and quantum computing logic.
 

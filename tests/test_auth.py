@@ -263,7 +263,7 @@ def test_csrf_and_login_throttle(client):
 def test_resend_delivery_is_used_without_persisting_email(client, monkeypatch):
     signup(client)
     monkeypatch.setenv("RESEND_API_KEY", "fake-test-key")
-    monkeypatch.setenv("AUTH_EMAIL_FROM", "Qiskit Intuition <accounts@example.com>")
+    monkeypatch.setenv("AUTH_EMAIL_FROM", "Quantum Intuition <accounts@example.com>")
     calls = []
 
     class Delivered:
