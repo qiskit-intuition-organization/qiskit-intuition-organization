@@ -1,4 +1,4 @@
-# Hand-off: Qiskit Intuition (2026-11-11)
+# Hand-off: Quantum Intuition, formerly Qiskit Intuition (2026-11-12)
 
 Read this first if you are picking up from another account. For deeper detail on the video
 pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also merged into `main`).
@@ -55,7 +55,10 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   - Frame rule `frame-ancestors 'self' https://thequantumeconomy.com https://*.thequantumeconomy.com` in `web/next.config.mjs`.
   - Design draft in `docs/certificate/`. Waiting on Anders: the signature PNG and his OK on the logo and wording.
   - Checked live as a guest. Not yet checked: a signed-in pass and issuing (Dhruv's own account).
-- **thequantumeconomy.com integration**: Anders has the Learn page and a course page (`/qiskitintuition/`, iframe) as WordPress drafts. Waiting on the DNS record `learn` CNAME, then add the domain in Vercel.
+- **Renamed to Quantum Intuition (2026-11-12, `b8c69fa`, Dhruv approved)** because Qiskit is IBM's trademark. Only the visible name changed:
+  the storage key `qiskit-intuition-notebook-v1` and the JWT issuer/audience stay, so guests keep progress and nobody is signed out.
+  The repo, Vercel projects and folders keep the old name. Anders was asked (Gmail draft) to rename his WordPress pages.
+- **thequantumeconomy.com integration**: Anders published the Learn page and a course page (`/qiskitintuition/`, iframe loading the vercel.app address). Sign-in inside it fails until the DNS record exists; his statement for Dhruv still needs Dhruv's words. Waiting on the DNS record `learn` CNAME, then add the domain in Vercel.
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
