@@ -15,6 +15,7 @@ import {
   useNotebook,
   NotebookSyncNotice,
 } from "@/components/notebook-provider";
+import { shouldShowSyncNotice } from "@/lib/notebook-sync";
 import { api } from "@/services/api";
 
 const STAGES = [
@@ -105,7 +106,15 @@ function FeedbackPanel({ feedback, busy }: { feedback: Feedback; busy: boolean }
 export default function Home() {
   const [lessons, setLessons] = useState<Lesson[]>(course.lessons);
   const [brand, setBrand] = useState(course.brand);
-  const { notebook, setNotebook, ready, owner, status } = useNotebook();
+  const {
+    notebook,
+    setNotebook,
+    ready,
+    owner,
+    status,
+    guestAvailable,
+    cacheError,
+  } = useNotebook();
   const activeOwner = useRef(owner);
   activeOwner.current = owner;
   const [view, setView] = useState(() =>
@@ -351,7 +360,7 @@ export default function Home() {
         </a>
       </aside>
       <main className="course-main">
-        {!["guest", "saved", "saving", "pending"].includes(status) && (
+        {shouldShowSyncNotice({ status, guestAvailable, cacheError }) && (
           <NotebookSyncNotice />
         )}
         {notice && (
