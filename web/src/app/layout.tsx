@@ -3,6 +3,7 @@ import "katex/dist/katex.min.css";
 import "./globals.css";
 import "./notebook.css";
 import "./auth.css";
+import "./certificate.css";
 import { NotebookProvider } from "@/components/notebook-provider";
 import { AuthProvider } from "@/components/auth-provider";
 

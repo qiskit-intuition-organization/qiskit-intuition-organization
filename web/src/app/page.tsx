@@ -26,6 +26,7 @@ const STAGES = [
   "Code it",
   "Reflect",
 ];
+const CODE_STAGE = STAGES.indexOf("Code it");
 function download(name: string, text: string, type = "application/json") {
   const url = URL.createObjectURL(new Blob([text], { type }));
   const anchor = document.createElement("a");
@@ -139,6 +140,26 @@ export default function Home() {
     setBusy(false);
   }, [owner]);
   useEffect(() => setChoice(undefined), [lesson.id]);
+  // The certificate page links to a lesson's exercise as /?lesson=<id>.
+  const linkedLesson = useRef(false);
+  useEffect(() => {
+    if (!ready || linkedLesson.current) return;
+    linkedLesson.current = true;
+    const id = new URLSearchParams(window.location.search).get("lesson");
+    const target = lessons.findIndex((item) => item.id === id);
+    if (id) window.history.replaceState(null, "", window.location.pathname);
+    if (target < 0) return;
+    setNotebook((current) => ({
+      ...current,
+      selected_lesson: target,
+      learning_stage: CODE_STAGE,
+      lesson_max_stage: {
+        ...current.lesson_max_stage,
+        [id!]: Math.max(CODE_STAGE, current.lesson_max_stage[id!] || 0),
+      },
+    }));
+    setView("course");
+  }, [ready, lessons, setNotebook]);
   const go = (next: string) => {
     setView(next);
     setMenuOpen(false);
@@ -314,6 +335,7 @@ export default function Home() {
             </button>
           ))}
           <Link href="/playground">Playground & code coach</Link>
+          <Link href="/certificate">Certificate</Link>
         </nav>
         <label className="sidebar-lesson">
           Current lesson
