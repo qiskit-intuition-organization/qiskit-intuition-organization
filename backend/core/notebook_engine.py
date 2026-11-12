@@ -70,6 +70,10 @@ BLOCKED_ATTRS = {
     "multiprocessing", "system", "popen", "spawn", "fork",
     "load", "loads", "loadtxt", "genfromtxt", "fromfile", "tofile", "memmap",
     "save", "savez", "savez_compressed", "savetxt", "savefig", "ctypeslib",
+    # Other library helpers that open a path the learner names, such as
+    # /proc/<ppid>/environ (the backend's own environment).
+    "DataSource", "fromregex", "recfromcsv", "recfromtxt", "from_qasm_file",
+    "rc_params_from_file", "open", "imread", "get_sample_data",
     # str.format templates walk attributes ("{0.__init__.__globals__}") at run
     # time, out of reach of the AST check. f-strings are checked, so they stay.
     "format", "format_map", "vformat", "Formatter",

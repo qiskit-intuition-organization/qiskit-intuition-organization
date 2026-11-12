@@ -158,3 +158,20 @@ def test_worker_never_receives_backend_secrets(monkeypatch):
     assert "must-not-reach-learner-code" not in env.values()
     assert env["OMP_NUM_THREADS"] == "1"
     assert env["PYTHONPATH"]
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        # numpy's DataSource opens any path the worker can read, e.g. /proc/<ppid>/environ.
+        "import numpy as np\nprint(np.lib.npyio.DataSource().open('/etc/hostname').read())",
+        "from numpy.lib.npyio import DataSource\nprint(DataSource().open('/etc/hostname').read())",
+        "import numpy as np\nprint(np.fromregex('/etc/hostname', r'(.)', [('c', 'S1')]))",
+        "from qiskit import QuantumCircuit\nQuantumCircuit.from_qasm_file('/etc/hostname')",
+        "import matplotlib\nmatplotlib.rc_params_from_file('/etc/hostname')",
+    ],
+)
+def test_file_reading_helpers_are_blocked(code):
+    result = execute_notebook_code(code)
+    assert not result["success"]
+    assert "Security Restriction" in result["error"]
