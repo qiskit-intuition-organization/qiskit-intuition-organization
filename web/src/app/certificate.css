@@ -1,0 +1,168 @@
+/* Certificate of completion: the A4 sheet, the certificate page and the verify page.
+   Design source: docs/certificate/certificate-template.html and certificate-page.html. */
+
+/* ---- The A4 landscape sheet ----
+   The box is a size container and --mm is one millimetre of A4 at the box's width,
+   so the preview scales without script and prints at exactly 297 × 210 mm. */
+.cert-sheet-box { container-type: inline-size; width: 100%; }
+.cert-sheet {
+  --mm: calc(100cqw / 297);
+  --c-bg: #000;
+  --c-ink: #fff;
+  --c-soft: rgba(255, 255, 255, 0.66);
+  --c-faint: rgba(255, 255, 255, 0.4);
+  --c-hair: rgba(255, 255, 255, 0.14);
+  --c-gold: #d9b463;
+  --c-logo-filter: none;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 297 / 210;
+  overflow: hidden;
+  padding: calc(var(--mm) * 18) calc(var(--mm) * 20) calc(var(--mm) * 14);
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: "TASA Orbiter", system-ui, sans-serif;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.cert-sheet.light {
+  --c-bg: #fbfaf6;
+  --c-ink: #151b1b;
+  --c-soft: rgba(21, 27, 27, 0.72);
+  --c-faint: rgba(21, 27, 27, 0.5);
+  --c-hair: rgba(21, 27, 27, 0.16);
+  --c-gold: #a77f2e;
+  --c-logo-filter: invert(1) hue-rotate(180deg);
+}
+.cert-sheet :where(p) { margin: 0; }
+.cert-frame { position: absolute; inset: calc(var(--mm) * 9); border: calc(var(--mm) * 0.3) solid var(--c-hair); pointer-events: none; }
+.cert-frame i { position: absolute; width: calc(var(--mm) * 7); height: calc(var(--mm) * 7); border: 0 solid var(--c-gold); }
+.cert-frame i:nth-child(1) { top: calc(var(--mm) * -0.3); left: calc(var(--mm) * -0.3); border-top-width: calc(var(--mm) * 0.6); border-left-width: calc(var(--mm) * 0.6); }
+.cert-frame i:nth-child(2) { top: calc(var(--mm) * -0.3); right: calc(var(--mm) * -0.3); border-top-width: calc(var(--mm) * 0.6); border-right-width: calc(var(--mm) * 0.6); }
+.cert-frame i:nth-child(3) { bottom: calc(var(--mm) * -0.3); left: calc(var(--mm) * -0.3); border-bottom-width: calc(var(--mm) * 0.6); border-left-width: calc(var(--mm) * 0.6); }
+.cert-frame i:nth-child(4) { bottom: calc(var(--mm) * -0.3); right: calc(var(--mm) * -0.3); border-bottom-width: calc(var(--mm) * 0.6); border-right-width: calc(var(--mm) * 0.6); }
+
+.cert-top { display: flex; justify-content: space-between; align-items: center; }
+.cert-logo { height: calc(var(--mm) * 9); filter: var(--c-logo-filter); }
+.cert-kicker { font-size: calc(var(--mm) * 3); letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-faint); }
+.cert-kicker b { color: var(--c-gold); font-weight: 500; }
+.cert-sheet .cert-body strong { color: var(--c-ink); font-weight: 600; }
+
+.cert-main { display: grid; grid-template-columns: 1fr calc(var(--mm) * 62); gap: calc(var(--mm) * 12); align-items: center; margin-top: calc(var(--mm) * 25); }
+.cert-label { font-size: calc(var(--mm) * 3.4); letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-gold); margin-bottom: calc(var(--mm) * 7); }
+.cert-certifies { font-size: calc(var(--mm) * 4.6); color: var(--c-soft); margin-bottom: calc(var(--mm) * 2); }
+.cert-name { font-size: calc(var(--mm) * 17); line-height: 1.02; font-weight: 700; letter-spacing: -0.01em; color: var(--c-ink); overflow-wrap: anywhere; margin-bottom: calc(var(--mm) * 7); }
+.cert-dot { color: var(--c-gold); }
+.cert-body { font-size: calc(var(--mm) * 4.6); line-height: 1.5; color: var(--c-soft); max-width: calc(var(--mm) * 170); margin-bottom: calc(var(--mm) * 6); }
+.cert-topics { font-family: "Space Mono", ui-monospace, monospace; font-size: calc(var(--mm) * 2.7); color: var(--c-faint); white-space: nowrap; }
+.cert-topics span + span::before { content: " / "; color: var(--c-gold); }
+
+.cert-sketch { width: calc(var(--mm) * 62); height: calc(var(--mm) * 62); }
+.cert-sketch .ink { stroke: var(--c-ink); opacity: 0.75; }
+.cert-sketch .gold { stroke: var(--c-gold); }
+.cert-sketch .dot { fill: var(--c-gold); }
+.cert-sketch text { font-family: "Space Mono", monospace; font-size: 5.2px; fill: var(--c-soft); }
+
+.cert-bottom { position: absolute; left: calc(var(--mm) * 20); right: calc(var(--mm) * 20); bottom: calc(var(--mm) * 19); display: flex; justify-content: space-between; align-items: flex-end; gap: calc(var(--mm) * 8); }
+.cert-facts { display: flex; gap: calc(var(--mm) * 11); }
+.cert-facts .k { font-size: calc(var(--mm) * 2.5); letter-spacing: 0.24em; text-transform: uppercase; color: var(--c-faint); margin-bottom: calc(var(--mm) * 1.6); }
+.cert-facts .v { font-size: calc(var(--mm) * 3.6); color: var(--c-ink); white-space: nowrap; }
+.cert-facts .v.mono { font-family: "Space Mono", monospace; font-size: calc(var(--mm) * 3.2); }
+.cert-sign { flex: 0 0 calc(var(--mm) * 66); }
+.cert-sign .script { height: calc(var(--mm) * 9); }
+.cert-sign .line { border-top: calc(var(--mm) * 0.3) solid var(--c-soft); margin-bottom: calc(var(--mm) * 2); }
+.cert-sign .who { font-size: calc(var(--mm) * 3.8); font-weight: 600; }
+.cert-sign .role { font-size: calc(var(--mm) * 3); color: var(--c-soft); margin-top: calc(var(--mm) * 0.6); }
+.cert-fine { position: absolute; left: calc(var(--mm) * 20); right: calc(var(--mm) * 20); bottom: calc(var(--mm) * 11.5); font-size: calc(var(--mm) * 2.2); color: var(--c-faint); letter-spacing: 0.02em; }
+
+/* ---- The certificate and verify pages ---- */
+.cert-page { max-width: 1040px; margin: 0 auto; padding: 40px 32px 56px; color: var(--text-2); }
+.cert-page .back { display: inline-block; margin-bottom: 28px; font-size: 15px; }
+.cert-page .kicker { margin: 0 0 14px; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+.cert-page .kicker b { color: var(--gold); font-weight: 500; }
+.cert-page h1 { max-width: none; margin: 0 0 10px; font-size: clamp(32px, 5vw, 44px); line-height: 1.05; letter-spacing: 0; text-transform: none; }
+.cert-page h1 .dot { color: var(--gold); }
+.cert-page > p { max-width: 720px; }
+.cert-page .lede { max-width: 640px; margin: 0 0 28px; font-size: 17px; }
+.cert-page h2 { margin: 32px 0 12px; font-size: 20px; }
+.cert-page .label { font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+
+.cert-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin: 0 0 20px; }
+.cert-switch { display: inline-flex; padding: 3px; border: 1px solid var(--strong); border-radius: 999px; }
+.cert-switch button { min-height: 36px; padding: 0 16px; border: 0; border-radius: 999px; color: var(--text-2); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; }
+.cert-switch .swatch { width: 12px; height: 12px; border: 1px solid var(--muted); border-radius: 50%; }
+.cert-switch button[data-theme="dark"] .swatch { background: #000; }
+.cert-switch button[data-theme="light"] .swatch { background: #fbfaf6; }
+.cert-switch button[aria-pressed="true"],
+.cert-switch button[aria-pressed="true"]:hover:not(:disabled) { background: var(--text); color: #000; }
+.cert-switch button[aria-pressed="true"] .swatch { border-color: #000; }
+.cert-hint { color: var(--muted); font-size: 14px; }
+
+.cert-preview { padding: 18px; border: 1px solid var(--hair); border-radius: var(--radius); background: var(--raised); }
+.cert-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.cert-actions .btn {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 22px;
+  border: 1px solid var(--strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.cert-actions .btn:hover { background: var(--hover); }
+.cert-actions .btn.primary,
+.cert-actions .btn.primary:hover:not(:disabled) { background: var(--gold); border-color: var(--gold); color: #151b1b; font-weight: 600; }
+.cert-note { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+.cert-note code { color: var(--text-2); overflow-wrap: anywhere; }
+.cert-note a { color: var(--text-2); }
+
+.cert-progress { display: grid; gap: 8px; max-width: 520px; margin: 0 0 8px; }
+.cert-progress progress { width: 100%; height: 10px; accent-color: var(--gold); }
+.cert-missing { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.cert-missing a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--text);
+  text-decoration: none;
+}
+.cert-missing a:hover { background: var(--hover); }
+.cert-missing small { flex: none; color: var(--gold); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.cert-form { display: grid; gap: 16px; max-width: 560px; }
+.cert-form label { display: grid; gap: 7px; color: var(--text); }
+.cert-form small { color: var(--muted); }
+.cert-form .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+.cert-warning { margin: 0; padding: 12px 16px; border: 1px solid var(--gold); border-left-width: 3px; border-radius: var(--radius); background: rgba(217, 180, 99, 0.1); color: var(--text); }
+.cert-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+
+@media (max-width: 540px) {
+  .cert-page { padding: 24px 16px 40px; }
+  .cert-preview { padding: 8px; }
+  .cert-actions .btn { flex: 1 1 100%; }
+  .cert-missing a { flex-direction: column; align-items: flex-start; gap: 2px; }
+}
+
+/* ---- Download PDF: the browser prints only the sheet, on one A4 landscape page ---- */
+@media print {
+  html, body { margin: 0; background: none; }
+  .cert-print-hide { display: none !important; }
+  .cert-page { max-width: none; margin: 0; padding: 0; }
+  .cert-preview { padding: 0; border: 0; border-radius: 0; background: none; }
+  .cert-sheet-box { width: 297mm; }
+  .cert-sheet { height: 210mm; aspect-ratio: auto; break-inside: avoid; }
+}

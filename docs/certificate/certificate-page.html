@@ -1,0 +1,86 @@
+<!doctype html>
+<!--
+  Mock-up of the "Your certificate" page inside the course (draft for Anders).
+  The learner picks Dark or Light, then downloads the PDF in that style.
+  Open with #light to show the Light choice selected.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your certificate</title>
+<style>
+  @font-face { font-family: "TASA Orbiter"; font-weight: 400 800; src: url("../../web/public/fonts/TASAOrbiter-latin-wght.woff2") format("woff2"); }
+  :root { --bg: #000; --panel: #0d0f10; --ink: #fff; --soft: rgba(255,255,255,.66); --faint: rgba(255,255,255,.4); --hair: rgba(255,255,255,.14); --gold: #d9b463; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "TASA Orbiter", system-ui, sans-serif; font-weight: 500; }
+  main { max-width: 1040px; margin: 0 auto; padding: 48px 32px 56px; }
+  .kicker { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
+  .kicker b { color: var(--gold); font-weight: 500; }
+  h1 { font-size: 44px; line-height: 1.05; margin: 0 0 10px; font-weight: 700; }
+  h1 .dot { color: var(--gold); }
+  .lede { color: var(--soft); font-size: 17px; margin: 0 0 28px; max-width: 640px; }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin: 0 0 20px; }
+  .label { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--faint); }
+  /* The light/dark choice: a two-option switch */
+  .switch { display: inline-flex; border: 1px solid var(--hair); border-radius: 999px; padding: 3px; }
+  .switch button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+  .switch button .swatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--faint); }
+  .switch button[data-theme="dark"] .swatch { background: #000; }
+  .switch button[data-theme="light"] .swatch { background: #fbfaf6; }
+  .switch button[aria-pressed="true"] { background: var(--ink); color: #000; }
+  .switch button[aria-pressed="true"] .swatch { border-color: #000; }
+  .hint { color: var(--faint); font-size: 14px; }
+
+  .preview { border: 1px solid var(--hair); background: var(--panel); padding: 18px; border-radius: 4px; }
+  .frame { position: relative; width: 100%; aspect-ratio: 297 / 210; overflow: hidden; }
+  .frame iframe { position: absolute; top: 0; left: 0; width: 1123px; height: 794px; border: 0; transform-origin: 0 0; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .btn { all: unset; cursor: pointer; padding: 13px 22px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; border: 1px solid var(--hair); color: var(--ink); }
+  .btn.primary { background: var(--gold); color: #151b1b; border-color: var(--gold); }
+  .verify { margin-top: 18px; color: var(--faint); font-size: 14px; }
+  .verify code { color: var(--soft); }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">Learn / <b>Qiskit Intuition</b></p>
+  <h1>You did it, Alex<span class="dot">.</span></h1>
+  <p class="lede">All 22 lessons and every coding exercise are done. Choose a style for your certificate, then download it or add it to LinkedIn.</p>
+
+  <div class="controls">
+    <span class="label">Style</span>
+    <div class="switch" role="group" aria-label="Certificate style">
+      <button type="button" data-theme="dark" aria-pressed="true"><span class="swatch"></span>Dark</button>
+      <button type="button" data-theme="light" aria-pressed="false"><span class="swatch"></span>Light</button>
+    </div>
+    <span class="hint" id="hint">Best for screens and LinkedIn</span>
+  </div>
+
+  <div class="preview"><div class="frame"><iframe id="cert" title="Certificate preview" src="certificate-template.html"></iframe></div></div>
+
+  <div class="actions">
+    <button class="btn primary" type="button" id="download">Download PDF (dark)</button>
+    <button class="btn" type="button">Add to LinkedIn</button>
+    <button class="btn" type="button">Copy verify link</button>
+  </div>
+  <p class="verify">Anyone can check it at <code>learn.thequantumeconomy.com/verify/QE-QI-7K2F-9XMB</code></p>
+</main>
+<script>
+  const frame = document.querySelector(".frame"), cert = document.getElementById("cert");
+  const fit = () => { cert.style.transform = `scale(${frame.clientWidth / 1123})`; };
+  addEventListener("resize", fit); fit();
+  const HINT = { dark: "Best for screens and LinkedIn", light: "Best for printing" };
+  const choose = (theme) => {
+    document.querySelectorAll(".switch button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.theme === theme)));
+    document.getElementById("hint").textContent = HINT[theme];
+    document.getElementById("download").textContent = `Download PDF (${theme})`;
+    cert.src = `certificate-template.html?theme=${theme}`;
+  };
+  document.querySelectorAll(".switch button").forEach((b) => b.addEventListener("click", () => choose(b.dataset.theme)));
+  if (location.hash === "#light") choose("light");
+</script>
+</body>
+</html>
