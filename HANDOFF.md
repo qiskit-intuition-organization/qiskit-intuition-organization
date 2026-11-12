@@ -58,7 +58,11 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
 - **Renamed to Quantum Intuition (2026-11-12, `b8c69fa`, Dhruv approved)** because Qiskit is IBM's trademark. Only the visible name changed:
   the storage key `qiskit-intuition-notebook-v1` and the JWT issuer/audience stay, so guests keep progress and nobody is signed out.
   The repo, Vercel projects and folders keep the old name. Anders was asked (Gmail draft) to rename his WordPress pages.
-- **thequantumeconomy.com integration**: Anders published the Learn page and a course page (`/qiskitintuition/`, iframe loading the vercel.app address). Sign-in inside it fails until the DNS record exists; his statement for Dhruv still needs Dhruv's words. Waiting on the DNS record `learn` CNAME, then add the domain in Vercel.
+- **thequantumeconomy.com integration (2026-11-12)**: `learn.thequantumeconomy.com` is live (Anders added the CNAME; Dhruv added
+  the domain to the `qiskit-intuition-organization` Vercel project; HTTPS OK). The backend trusts it via `COURSE_ORIGINS` in
+  `backend/routers/auth.py` (`389f602`). Anders' pages: `/learn/` and `/qiskitintuition/` (iframe). Dhruv emailed him to switch
+  the iframe script to `var B="https://learn.thequantumeconomy.com"`, rename his pages to Quantum Intuition and use Dhruv's
+  statement. After he does: Dhruv signs in inside the page once to confirm sign-in and certificates end to end.
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
