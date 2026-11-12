@@ -26,6 +26,18 @@ test("printed names are trimmed, spaces collapsed, accents and punctuation allow
   });
   assert.deepEqual(checkPrintedName("D'Angelo"), { name: "D'Angelo" });
   assert.deepEqual(checkPrintedName("José Ñúñez"), { name: "José Ñúñez" });
+  // Combining marks with no precomposed form, as the server accepts them.
+  assert.deepEqual(checkPrintedName("ध्रुव सचदेवा"), { name: "ध्रुव सचदेवा" });
+  assert.deepEqual(checkPrintedName("Adébáyọ̀"), { name: "Adébáyọ̀" });
+});
+
+test("combining marks must follow a letter and not pile up", () => {
+  for (const bad of [
+    "́Ada Lovelace",
+    "Ada - ́Lovelace",
+    "Ax́́́́da Lovelace",
+  ])
+    assert.ok(checkPrintedName(bad).error, `should refuse ${JSON.stringify(bad)}`);
 });
 
 test("printed names outside the rules are refused", () => {

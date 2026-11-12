@@ -219,6 +219,9 @@ def test_issuing_again_returns_the_same_certificate(make_client):
         "Ada Lovelace 3",
         "...",
         "",
+        "\u0301Ada Lovelace",
+        "Ada - \u0301Lovelace",
+        "Ax\u0301\u0301\u0301\u0301da Lovelace",
     ],
 )
 def test_invalid_names_are_rejected(make_client, name):
@@ -233,7 +236,16 @@ def test_invalid_names_are_rejected(make_client, name):
 
 @pytest.mark.parametrize(
     "name",
-    ["José Ñúñez", "Zoë O'Brien-Smith", "Dr. Jean-Luc Picard", "Ångström", "Łukasz"],
+    [
+        "José Ñúñez",
+        "Zoë O'Brien-Smith",
+        "Dr. Jean-Luc Picard",
+        "Ångström",
+        "Łukasz",
+        # Combining marks with no precomposed form must still be accepted.
+        "ध्रुव सचदेवा",
+        "Adébáyọ̀",
+    ],
 )
 def test_accented_names_are_accepted(make_client, name):
     learner = make_client("ada@example.com")

@@ -8,6 +8,8 @@ const ID_PATTERN =
   /^QE-QI-[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}-[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}$/;
 const NAME_PUNCTUATION = new Set([" ", "'", "’", "-", "."]);
 const LETTER = /^\p{L}$/u;
+const MARK = /^\p{M}$/u;
+const MAX_MARKS = 3;
 export const NAME_RULES =
   "Enter the name to print using 2 to 80 letters, spaces, apostrophes, hyphens or dots.";
 
@@ -18,14 +20,31 @@ export function normalizeCertificateId(value) {
 }
 
 /**
+ * Letters and name punctuation. A combining mark (an accent with no
+ * precomposed form, a Devanagari vowel sign) must follow a letter, and at
+ * most MAX_MARKS stack on one letter.
+ */
+function allowedCharacters(chars) {
+  let marks = MAX_MARKS + 1; // No letter yet, so no mark may come first.
+  for (const c of chars) {
+    if (MARK.test(c)) {
+      marks += 1;
+      if (marks > MAX_MARKS) return false;
+    } else if (LETTER.test(c)) marks = 0;
+    else if (NAME_PUNCTUATION.has(c)) marks = MAX_MARKS + 1;
+    else return false;
+  }
+  return true;
+}
+
+/**
  * The name as the server will print it, or an error. Same rules as the
  * backend; the server still decides.
  */
 export function checkPrintedName(value) {
   const trimmed = String(value ?? "").normalize("NFC").trim();
   const chars = Array.from(trimmed);
-  if (!chars.every((c) => LETTER.test(c) || NAME_PUNCTUATION.has(c)))
-    return { error: NAME_RULES };
+  if (!allowedCharacters(chars)) return { error: NAME_RULES };
   const name = trimmed.replace(/ +/g, " ");
   const length = Array.from(name).length;
   const letters = chars.filter((c) => LETTER.test(c)).length;

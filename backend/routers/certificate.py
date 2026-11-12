@@ -32,6 +32,7 @@ ID_PREFIX = "QE-QI-"
 ID_PATTERN = re.compile(rf"^{ID_PREFIX}[{ALPHABET}]{{4}}-[{ALPHABET}]{{4}}$")
 ID_ATTEMPTS = 5
 NAME_PUNCTUATION = frozenset(" '’-.")
+MAX_MARKS = 3  # Combining marks on one letter: enough for real names, not for "Zalgo" text.
 NAME_RULES = (
     "Enter the name to print using 2 to 80 letters, spaces, apostrophes, "
     "hyphens or dots."
@@ -58,9 +59,28 @@ def new_certificate_id() -> str:
     return f"{ID_PREFIX}{block()}-{block()}"
 
 
+def allowed_characters(name: str) -> bool:
+    """Letters and name punctuation. A combining mark (an accent with no
+    precomposed form, a Devanagari vowel sign) must follow a letter, and at
+    most MAX_MARKS stack on one letter."""
+    marks = MAX_MARKS + 1  # No letter yet, so no mark may come first.
+    for char in name:
+        if unicodedata.category(char).startswith("M"):
+            marks += 1
+            if marks > MAX_MARKS:
+                return False
+        elif char.isalpha():
+            marks = 0
+        elif char in NAME_PUNCTUATION:
+            marks = MAX_MARKS + 1
+        else:
+            return False
+    return True
+
+
 def printed_name(value: str) -> str:
     name = unicodedata.normalize("NFC", value).strip()
-    if not all(char.isalpha() or char in NAME_PUNCTUATION for char in name):
+    if not allowed_characters(name):
         raise HTTPException(422, NAME_RULES)
     name = re.sub(" +", " ", name)
     if not 2 <= len(name) <= 80 or sum(char.isalpha() for char in name) < 2:
