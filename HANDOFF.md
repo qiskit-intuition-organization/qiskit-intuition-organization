@@ -62,7 +62,7 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   the domain to the `qiskit-intuition-organization` Vercel project; HTTPS OK). The backend trusts it via `COURSE_ORIGINS` in
   `backend/routers/auth.py` (`389f602`). Anders' pages: `/learn/` and `/quantumintuition/` (iframe; `/qiskitintuition/` redirects). Done by Anders: switch
   the iframe script to `var B="https://learn.thequantumeconomy.com"`, rename his pages to Quantum Intuition and use Dhruv's
-  statement. After he does: Dhruv signs in inside the page once to confirm sign-in and certificates end to end.
+  statement. Dhruv confirmed sign-in works inside the embedded page (2026-11-12).
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
