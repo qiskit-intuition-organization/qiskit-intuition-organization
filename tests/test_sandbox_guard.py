@@ -105,6 +105,14 @@ def test_database_files_cannot_be_read():
     assert refused(escaped(f"print(opener({tempfile.gettempdir() + '/auth.sqlite3'!r}).read())"))
 
 
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="/proc exists on Linux only")
+def test_hardware_facts_aer_needs_can_be_read():
+    """Qiskit Aer sizes simulations from /proc/meminfo (through psutil)."""
+    result = escaped("print(opener('/proc/meminfo').read()[:8], len(OS.listdir('/sys/devices/system/cpu')) > 0)")
+    assert result["success"], result["error"]
+    assert result["stdout"].startswith("MemTotal")
+
+
 def test_library_files_can_still_be_read():
     result = escaped("import numpy as np\nprint(len(opener(np.get_include() + '/numpy/ndarrayobject.h').read()) > 0)")
     assert result["success"], result["error"]

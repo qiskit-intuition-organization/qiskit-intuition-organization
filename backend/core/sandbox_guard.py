@@ -26,7 +26,13 @@ import sys
 DENIED_ROOTS = ("/proc", "/sys", "/dev", "/etc", "/private/etc", "/run", "/var/run", "/root")
 # Every file on these pseudo filesystems is refused, however it was reached.
 DENIED_FILESYSTEMS = ("/proc", "/sys", "/dev")
-SAFE_DEVICES = ("/dev/null", "/dev/zero", "/dev/random", "/dev/urandom")
+# Harmless system files: devices, and the hardware facts Qiskit Aer reads (via
+# psutil) to size simulations. Matched by inode, so no other spelling gets in.
+SAFE_SYSTEM_FILES = (
+    "/dev/null", "/dev/zero", "/dev/random", "/dev/urandom",
+    "/proc/meminfo", "/proc/cpuinfo", "/proc/stat", "/proc/loadavg",
+)
+SAFE_SYSTEM_TREES = ("/sys/devices/system/cpu",)
 # Local databases never need reading by learner code.
 DATABASE_SUFFIXES = (".sqlite3", ".sqlite", ".db")
 # Other learners' worker folders live beside this one; they are off limits.
@@ -135,7 +141,7 @@ def build_guard(writable_dirs, cwd=None, readable_dirs=None):
             filesystems.append(found[0])
     settings = (
         _identities(writable_dirs), here, _identities(DENIED_ROOTS), frozenset(filesystems),
-        _identities(SAFE_DEVICES), BLOCKED_EVENT_PREFIXES, FUNCTION_INTERNALS,
+        _identities(SAFE_SYSTEM_FILES), BLOCKED_EVENT_PREFIXES, FUNCTION_INTERNALS,
         READ_PATH_EVENTS, CHANGE_PATH_EVENTS, WRITE_FLAGS,
         # The folder holding this worker's folder holds the others too. (Inside
         # the worker TMPDIR points at its own folder, so gettempdir() won't do.)
@@ -143,6 +149,7 @@ def build_guard(writable_dirs, cwd=None, readable_dirs=None):
         WORKER_FOLDER_PREFIX,
         _identities([*writable_dirs, *(default_readable_dirs() if readable_dirs is None else readable_dirs)]),
         DATABASE_SUFFIXES,
+        _identities(SAFE_SYSTEM_TREES),
     )
 
     def guard(event, args, _settings=settings, _as_text=as_text, _prefixes=prefixes,
@@ -150,7 +157,7 @@ def build_guard(writable_dirs, cwd=None, readable_dirs=None):
               _tuple=tuple, _range=range, _stat=os.stat, _error=PermissionError):
         (writable, cwd, denied, filesystems, devices, blocked, internals,
          read_events, change_events, write_flags, shared_temp, worker_prefix,
-         readable, databases) = _settings
+         readable, databases, safe_trees) = _settings
 
         def within(text, roots):
             steps = _prefixes(text, cwd)
@@ -187,9 +194,10 @@ def build_guard(writable_dirs, cwd=None, readable_dirs=None):
             if text.casefold().endswith(databases):
                 raise _error("Reading database files is not allowed in the sandbox.")
             target = _identity(text, _stat)
-            if target not in devices and not within(text, readable):
+            safe = target in devices or within(text, safe_trees)
+            if not safe and not within(text, readable):
                 raise _error(f"Reading '{text}' is not allowed in the sandbox.")
-            if target not in devices:
+            if not safe:
                 if target is not None and target[0] in filesystems:
                     raise _error(f"Reading '{text}' is not allowed in the sandbox.")
                 parent = None
