@@ -1,0 +1,173 @@
+<!doctype html>
+<!--
+  Qiskit Intuition certificate of completion: design template (draft for Anders).
+  A4 landscape. Open with #light for the print-friendly version.
+  Placeholders: {{name}}, {{date}}, {{id}}. The sample values below are filled in by the script at the end.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Certificate of completion</title>
+<style>
+  @font-face { font-family: "TASA Orbiter"; font-weight: 400 800; src: url("../../web/public/fonts/TASAOrbiter-latin-wght.woff2") format("woff2"); }
+  @font-face { font-family: "Space Mono"; font-weight: 400; src: url("../../web/public/fonts/SpaceMono-Regular-latin.woff2") format("woff2"); }
+
+  :root {
+    --bg: #000;
+    --ink: #fff;
+    --soft: rgba(255, 255, 255, 0.66);
+    --faint: rgba(255, 255, 255, 0.4);
+    --hair: rgba(255, 255, 255, 0.14);
+    --gold: #d9b463;
+    --logo-filter: none;
+  }
+  .light {
+    --bg: #fbfaf6;
+    --ink: #151b1b;
+    --soft: rgba(21, 27, 27, 0.72);
+    --faint: rgba(21, 27, 27, 0.5);
+    --hair: rgba(21, 27, 27, 0.16);
+    --gold: #a77f2e;
+    --logo-filter: invert(1) hue-rotate(180deg);
+  }
+
+  @page { size: 297mm 210mm; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); }
+  body {
+    width: 297mm; height: 210mm; overflow: hidden;
+    font-family: "TASA Orbiter", system-ui, sans-serif; font-weight: 500;
+    color: var(--ink);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+
+  .sheet { position: relative; width: 100%; height: 100%; padding: 18mm 20mm 14mm; }
+  /* Thin frame with gold corner ticks */
+  .frame { position: absolute; inset: 9mm; border: 0.3mm solid var(--hair); pointer-events: none; }
+  .frame i { position: absolute; width: 7mm; height: 7mm; border-color: var(--gold); border-style: solid; border-width: 0; }
+  .frame i:nth-child(1) { top: -0.3mm; left: -0.3mm; border-top-width: 0.6mm; border-left-width: 0.6mm; }
+  .frame i:nth-child(2) { top: -0.3mm; right: -0.3mm; border-top-width: 0.6mm; border-right-width: 0.6mm; }
+  .frame i:nth-child(3) { bottom: -0.3mm; left: -0.3mm; border-bottom-width: 0.6mm; border-left-width: 0.6mm; }
+  .frame i:nth-child(4) { bottom: -0.3mm; right: -0.3mm; border-bottom-width: 0.6mm; border-right-width: 0.6mm; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .logo { height: 9mm; filter: var(--logo-filter); }
+  .kicker { font-size: 3mm; letter-spacing: 0.24em; text-transform: uppercase; color: var(--faint); }
+  .kicker b { color: var(--gold); font-weight: 500; }
+
+  .main { display: grid; grid-template-columns: 1fr 62mm; gap: 12mm; align-items: center; margin-top: 25mm; }
+  .label { font-size: 3.4mm; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); margin: 0 0 7mm; }
+  .certifies { font-size: 4.6mm; color: var(--soft); margin: 0 0 2mm; }
+  .name { font-size: 17mm; line-height: 1.02; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 7mm; }
+  .name .dot { color: var(--gold); }
+  .body { font-size: 4.6mm; line-height: 1.5; color: var(--soft); max-width: 170mm; margin: 0 0 6mm; }
+  .body strong { color: var(--ink); font-weight: 600; }
+  .topics { font-family: "Space Mono", ui-monospace, monospace; font-size: 2.7mm; color: var(--faint); white-space: nowrap; }
+  .topics span + span::before { content: " / "; color: var(--gold); }
+
+  .sketch { width: 62mm; height: 62mm; }
+  .sketch .ink { stroke: var(--ink); opacity: 0.75; }
+  .sketch .gold { stroke: var(--gold); }
+  .sketch text { font-family: "Space Mono", monospace; font-size: 5.2px; fill: var(--soft); }
+
+  .bottom { position: absolute; left: 20mm; right: 20mm; bottom: 19mm; display: flex; justify-content: space-between; align-items: flex-end; }
+  .facts { display: flex; gap: 11mm; }
+  .fact .k { font-size: 2.5mm; letter-spacing: 0.24em; text-transform: uppercase; color: var(--faint); margin-bottom: 1.6mm; }
+  .fact .v { font-size: 3.6mm; color: var(--ink); }
+  .fact .v.mono { font-family: "Space Mono", monospace; font-size: 3.2mm; }
+  .sign { width: 66mm; text-align: left; }
+  .sign .line { border-top: 0.3mm solid var(--soft); margin-bottom: 2mm; height: 0; }
+  .sign .script { font-size: 3mm; color: var(--faint); font-style: italic; height: 9mm; display: flex; align-items: flex-end; padding-bottom: 1.5mm; }
+  .sign .who { font-size: 3.8mm; font-weight: 600; }
+  .sign .role { font-size: 3mm; color: var(--soft); margin-top: 0.6mm; }
+
+  .fine { position: absolute; left: 20mm; right: 20mm; bottom: 11.5mm; font-size: 2.2mm; color: var(--faint); letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="frame"><i></i><i></i><i></i><i></i></div>
+
+  <div class="top">
+    <img class="logo" src="https://thequantumeconomy.com/wp-content/uploads/2026/11/the-quantum-economy-logo-tomorrowmensch.svg" alt="The Quantum Economy, a project of tomorrowmensch">
+    <div class="kicker">Learn / <b>Qiskit Intuition</b></div>
+  </div>
+
+  <div class="main">
+    <div>
+      <p class="label">Certificate of completion</p>
+      <p class="certifies">This certifies that</p>
+      <h1 class="name"><span id="name">{{name}}</span><span class="dot">.</span></h1>
+      <p class="body">has completed <strong>Qiskit Intuition</strong>, a 22-lesson course in quantum computing from
+        The Quantum Economy, writing and testing working Qiskit code at every step, from a single qubit
+        to Grover search, the quantum Fourier transform and running circuits on real hardware.</p>
+      <div class="topics"><span>qubits</span><span>superposition</span><span>entanglement</span><span>teleportation</span><span>Grover</span><span>QFT</span><span>phase estimation</span><span>real hardware</span></div>
+    </div>
+    <!-- Hand-drawn Bloch sphere, in the style of the lesson videos (strokes drawn twice with a little wobble) -->
+    <svg class="sketch" viewBox="0 0 120 120" fill="none" stroke-linecap="round" stroke-linejoin="round" id="sketch">
+      <text x="56" y="9">|0⟩</text>
+      <text x="56" y="118">|1⟩</text>
+    </svg>
+  </div>
+
+  <div class="bottom">
+    <div class="facts">
+      <div class="fact"><div class="k">Date</div><div class="v" id="date">{{date}}</div></div>
+      <div class="fact"><div class="k">Certificate ID</div><div class="v mono" id="cid">{{id}}</div></div>
+      <div class="fact"><div class="k">Verify at</div><div class="v mono">learn.thequantumeconomy.com/verify/<span id="cid2">{{id}}</span></div></div>
+    </div>
+    <div class="sign">
+      <div class="script">signature, with Anders' OK</div>
+      <div class="line"></div>
+      <div class="who">Anders Indset</div>
+      <div class="role">The Quantum Economy</div>
+    </div>
+  </div>
+
+  <p class="fine">Qiskit is a trademark of IBM. This certificate is issued by The Quantum Economy, a project of tomorrowmensch, and is not affiliated with or endorsed by IBM.</p>
+</div>
+
+<script>
+  // Theme: #light for the print version.
+  if (location.hash === "#light" || new URLSearchParams(location.search).get("theme") === "light") {
+    document.documentElement.classList.add("light");
+  }
+  // Sample values for the draft.
+  const sample = { name: "Alex Morgan", date: "12 November 2026", id: "QE-QI-7K2F-9XMB" };
+  for (const [el, v] of [["name", sample.name], ["date", sample.date], ["cid", sample.id], ["cid2", sample.id]]) {
+    const node = document.getElementById(el);
+    if (node.textContent.startsWith("{{")) node.textContent = v;
+  }
+
+  // Rough, hand-drawn strokes: each shape is drawn twice with a small seeded wobble.
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) - 0.5;
+  const svg = document.getElementById("sketch");
+  const path = (pts, cls, w, dash) => {
+    for (let pass = 0; pass < 2; pass++) {
+      const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${(x + rnd() * 0.9).toFixed(2)},${(y + rnd() * 0.9).toFixed(2)}`).join("");
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", d); p.setAttribute("class", cls); p.setAttribute("stroke-width", pass ? w * 0.6 : w);
+      if (dash) p.setAttribute("stroke-dasharray", dash);
+      svg.appendChild(p);
+    }
+  };
+  const ellipse = (cx, cy, rx, ry, from, to, n = 64) =>
+    Array.from({ length: n + 1 }, (_, i) => { const t = from + (to - from) * i / n; return [cx + rx * Math.cos(t), cy + ry * Math.sin(t)]; });
+  const C = [60, 62], R = 44;
+  path(ellipse(C[0], C[1], R, R, 0, Math.PI * 2, 90), "ink", 0.9);                 // sphere
+  path(ellipse(C[0], C[1], R, R * 0.3, Math.PI, Math.PI * 2), "ink", 0.6, "2 2.4"); // equator, back half dashed
+  path(ellipse(C[0], C[1], R, R * 0.3, 0, Math.PI), "ink", 0.7);                    // equator, front half
+  path([[C[0], C[1] - R - 3], [C[0], C[1] + R + 3]], "ink", 0.5, "1.5 2");          // z axis
+  // State arrow in gold, pointing up and to the right (a superposition), with its arrowhead
+  const tip = [C[0] + 27, C[1] - 30];
+  path([C, tip], "gold", 1.5);
+  path([[tip[0] - 7.2, tip[1] + 1.2], tip, [tip[0] - 1.6, tip[1] + 7]], "gold", 1.5);
+  // Dotted drop line to the equator
+  path([tip, [tip[0], C[1] + 6]], "gold", 0.5, "1 1.8");
+  const dotC = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  dotC.setAttribute("cx", C[0]); dotC.setAttribute("cy", C[1]); dotC.setAttribute("r", 1.4); dotC.setAttribute("fill", "var(--gold)");
+  svg.appendChild(dotC);
+</script>
+</body>
+</html>
