@@ -19,10 +19,13 @@ router = APIRouter()
 class ExplainRequest(BaseModel):
     concept: str
 
+MAX_CIRCUIT_DESC = 2000  # Far longer than any circuit the builder makes.
+
+
 class CoachRequest(BaseModel):
-    latest_gate: str
-    qubit: int
-    full_circuit_desc: str
+    latest_gate: str = Field(max_length=20)
+    qubit: int = Field(ge=0, le=64)
+    full_circuit_desc: str = Field(max_length=MAX_CIRCUIT_DESC)
     eli5_mode: bool = False
 
 class EvaluateRequest(BaseModel):
