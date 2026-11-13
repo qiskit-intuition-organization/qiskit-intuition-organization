@@ -81,6 +81,22 @@ class Certificate(Base):
     issued_at: Mapped[int] = mapped_column(Integer)
 
 
+class CourseFeedback(Base):
+    """A learner's note from the in-course feedback form. Private: never shown on the site."""
+
+    __tablename__ = "course_feedback"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    created_at: Mapped[int] = mapped_column(Integer, index=True)
+    kind: Mapped[str] = mapped_column(String(40))
+    message: Mapped[str] = mapped_column(Text)
+    email: Mapped[str | None] = mapped_column(String(254), nullable=True)
+    page: Mapped[str] = mapped_column(String(40))
+    lesson_id: Mapped[str] = mapped_column(String(80))
+    stage: Mapped[str] = mapped_column(String(40))
+    # No foreign key: feedback outlives a deleted account.
+    user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+
 class AuthSession(Base):
     __tablename__ = "auth_sessions"
     id: Mapped[str] = mapped_column(String(128), primary_key=True)
@@ -103,7 +119,7 @@ class RateLimit(Base):
     __tablename__ = "auth_rate_limits"
     key: Mapped[str] = mapped_column(String(128), primary_key=True)
     count: Mapped[int] = mapped_column(Integer)
-    expires_at: Mapped[int] = mapped_column(Integer)
+    expires_at: Mapped[int] = mapped_column(Integer, index=True)  # Expired rows are swept by it.
 
 
 class Setting(Base):

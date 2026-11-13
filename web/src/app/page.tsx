@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/auth-provider";
 import CircuitLab from "@/components/circuit-lab";
+import FeedbackDialog from "@/components/feedback-dialog";
 import { CodeWalkthrough, PythonBasics } from "@/components/code-walkthrough";
 import { hasLessonVideo, LessonVideo } from "@/components/lesson-video";
 import IntuitionWidget from "@/components/intuition-widget";
@@ -289,7 +290,6 @@ export default function Home() {
       <Paragraphs lines={lesson.intuition} />
     </>
   );
-  const feedbackLink = `https://github.com/MeylinLeonario/qiskit-intuition-organization/issues/new?${new URLSearchParams({ title: `[Feedback] ${lesson.title}`, body: `Page: ${view}\nLesson: ${lesson.title}\nStage: ${STAGES[stage]}\n\nWhat happened?\n` })}`;
 
   if (!ready)
     return <main className="course-loading">Opening your notebook…</main>;
@@ -377,9 +377,12 @@ export default function Home() {
           />{" "}
           Easy reading
         </label>
-        <a href={feedbackLink} target="_blank" rel="noreferrer">
-          Report feedback
-        </a>
+        <FeedbackDialog
+          page={view}
+          lessonId={lesson.id}
+          lessonTitle={lesson.title}
+          stage={STAGES[stage]}
+        />
       </aside>
       <main className="course-main">
         {shouldShowSyncNotice({ status, guestAvailable, cacheError }) && (

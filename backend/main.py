@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 # Load environment variables
 load_dotenv()
 
-from backend.routers import agents, auth, certificate, course, execute, simulate
+from backend.routers import agents, auth, certificate, course, execute, feedback, simulate
 from backend.auth.notebook import router as notebook_router
 
 app = FastAPI(
@@ -25,9 +25,10 @@ app = FastAPI(
 
 @app.exception_handler(RequestValidationError)
 async def safe_validation_error(request, error):
-    if request.url.path.startswith(("/auth/", "/certificate")):
+    if request.url.path.startswith(("/auth/", "/certificate", "/feedback")):
         # Do not echo submitted passwords or reset tokens in validation responses.
         detail = error.errors()[0].get("msg", "Check the submitted account details.")
+        detail = detail.removeprefix("Value error, ")  # Pydantic's prefix for validator messages.
         return JSONResponse({"detail": detail}, status_code=422, headers={"Cache-Control": "no-store"})
     return await request_validation_exception_handler(request, error)
 
@@ -65,6 +66,7 @@ app.include_router(auth.router)
 app.include_router(notebook_router)
 app.include_router(course.router, tags=["course"])
 app.include_router(certificate.router)
+app.include_router(feedback.router)
 app.include_router(simulate.router, tags=["simulation"])
 app.include_router(execute.router, tags=["execution"])
 app.include_router(agents.router, prefix="/agent", tags=["agents"])

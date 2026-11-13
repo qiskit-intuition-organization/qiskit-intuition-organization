@@ -23,6 +23,7 @@ const paths = new Set([
   "auth/reset-password",
   "certificate",
   "certificate/status",
+  "feedback",
 ]);
 // Public certificate lookups; the backend decides whether the ID exists.
 const certificateLookup = /^certificate\/verify\/[A-Za-z0-9-]{1,40}$/;
@@ -42,7 +43,8 @@ async function proxy(
     route.startsWith("auth/") ||
     route === "certificate" ||
     route === "certificate/status" ||
-    route === "course/exercise";
+    route === "course/exercise" ||
+    route === "feedback";
   if (authentication && request.method === "POST") {
     const origin = request.headers.get("origin");
     // Next's internal URL can use localhost behind a reverse proxy. The browser
@@ -118,6 +120,14 @@ async function proxy(
       if (session) headers.set("Cookie", session);
       if (request.headers.get("origin"))
         headers.set("Origin", request.headers.get("origin")!);
+    }
+    if (route === "feedback") {
+      // Vercel sets x-forwarded-for to the learner's address; the backend rate-limits on it.
+      const learner = request.headers.get("x-forwarded-for")?.split(",")[0].trim();
+      if (learner) headers.set("X-Learner-IP", learner.slice(0, 64));
+      // Proves to the backend that this proxy, not a direct caller, named the learner.
+      const proxyKey = process.env.FEEDBACK_PROXY_KEY?.trim();
+      if (proxyKey) headers.set("X-Feedback-Proxy-Key", proxyKey);
     }
     const upstream = await fetch(`${base}/${route}`, {
       method: request.method,

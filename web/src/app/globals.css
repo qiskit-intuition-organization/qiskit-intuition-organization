@@ -59,7 +59,7 @@ button, select { cursor: pointer; }
 .sidebar-progress small { display: block; color: var(--muted); font-size: 14px; }
 .site-sidebar progress { width: 100%; accent-color: var(--gold); }
 .site-sidebar > label:not(.sidebar-lesson) { margin-top: 12px; color: var(--text-2); font-size: 15px; }
-.site-sidebar > a { width: 100%; margin-top: 12px; }
+.site-sidebar > a, .site-sidebar > .feedback-open { width: 100%; margin-top: 12px; }
 
 /* ---- Main panel ---- */
 .site-main, .course-main {
@@ -267,4 +267,29 @@ input[type="file"]::file-selector-button:hover { background: var(--hover); }
   .message { max-width: 94%; }
   .workspace-switch { width: 100%; }
   .workspace-switch button { flex: 1; }
+}
+
+/* ---- Feedback form (a native dialog, so it is modal and keyboard-friendly) ---- */
+.feedback-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 28px;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-panel);
+  background: var(--base);
+  color: var(--text-2);
+}
+.feedback-dialog::backdrop { background: rgba(0, 0, 0, .65); }
+.feedback-dialog form { display: grid; gap: 16px; }
+.feedback-dialog h2 { margin: 0; color: var(--text); font-size: 22px; }
+.feedback-dialog .field span { color: var(--muted); font-size: 13px; font-weight: 600; }
+.feedback-dialog textarea { padding: 10px 12px; resize: vertical; min-height: 120px; }
+.feedback-where, .feedback-note { margin: 0; color: var(--muted); font-size: 14px; }
+.feedback-status { margin: 0; font-size: 15px; }
+.feedback-status.error { color: var(--error); }
+.feedback-status.done { color: var(--gold); }
+.feedback-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 540px) {
+  .feedback-dialog { padding: 20px; }
+  .feedback-actions button { flex: 1 1 auto; }
 }

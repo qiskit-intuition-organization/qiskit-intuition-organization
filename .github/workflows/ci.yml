@@ -5,10 +5,13 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # Weekly run so new advisories are caught even when nothing is pushed (Mon 09:00 IST).
+  schedule:
+    - cron: "30 3 * * 1"
 
 # A newer push to the same branch makes an older run pointless.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -47,3 +50,20 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
+
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Python dependencies with known vulnerabilities
+        run: pip install pip-audit && pip-audit -r requirements.txt
+      - name: Web dependencies with high or critical advisories
+        working-directory: web
+        run: npm audit --audit-level=high
