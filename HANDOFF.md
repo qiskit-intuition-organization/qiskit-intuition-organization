@@ -64,6 +64,25 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   the iframe script to `var B="https://learn.thequantumeconomy.com"`, rename his pages to Quantum Intuition and use Dhruv's
   statement. Dhruv confirmed sign-in works inside the embedded page (2026-11-12).
 
+- **Physics fact-check (2026-11-13, `585e073`)**: all 22 lessons reviewed by a physicist pass plus a skeptic pass; 31 text fixes
+  (teleportation identity, parameter-shift rule, CNOT qubit order, phase-estimation odds, IBM's cz basis, Grover rounds) are live.
+- **Security schedule (2026-11-13, `9da2fa2`)**: `SECURITY.md` is the source of truth (what runs when, patch deadlines).
+  GitHub secret scanning + push protection, CodeQL default setup, Dependabot alerts/security updates and private vulnerability
+  reporting are ON. `.github/dependabot.yml` opens weekly update PRs (Monday 09:00 IST); CI has an `audit` job (pip-audit,
+  npm audit --audit-level=high) and a weekly scheduled run. Dependabot opened PRs #22 to #35 on 2026-11-13: not merged yet;
+  majors (TypeScript 7, tailwind-merge 3, @types/node 26, actions v7, React) need a check before merging.
+- **CodeQL triage (2026-11-13)**: fixed the ReDoS in `agents/composer_agent.py` (public `/agent/coach`, inputs now bounded) and
+  set CI's token to `contents: read`. The six `js/bad-code-sanitization` alerts are in offline `video-studio` scene scripts
+  that only inline our own constants: false positives, to be dismissed by Dhruv.
+- **Feedback form (2026-11-13, `9da2fa2`, Dhruv approved the screenshots)**: "Report feedback" opens a private dialog
+  (`web/src/components/feedback-dialog.tsx`) that posts to `POST /feedback` (`backend/routers/feedback.py`), stored in the
+  `course_feedback` table (read it in Turso's console). Rate limits: 5 per learner per 15 min; only the web proxy may name the
+  learner's address, proven by `FEEDBACK_PROXY_KEY` (set on BOTH Vercel projects, Production; rotate every 90 days).
+  Checked live: a test message was stored (201), GET is 405, cross-site POST is 403.
+- **Routines still to create**: the daily (06:00 IST) and weekly (Mon 09:00 IST) Opus 5.5 security routines described in
+  `SECURITY.md`. Creating them from the Tomorrow Mensch account failed with `github_token_missing`: connect GitHub at
+  https://claude.ai/connect-github on that account, then create them (prompts are in this session's history).
+
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
    - Before every batch, check both the 5-hour **and the weekly** limit (`mcp__ccd_session_mgmt__get_usage`).
@@ -87,8 +106,8 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
 ```bash
 .venv/bin/python scripts/export_course.py --check
 .venv/bin/ruff check .
-.venv/bin/pytest tests -q                 # 468 passed, 3 skipped
-cd web && npm test && npm run lint && npm run build   # 29 pass
+.venv/bin/pytest tests -q                 # 501 passed, 3 skipped
+cd web && npm test && npm run lint && npm run build   # 34 pass
 ```
 `web/` is Next.js 16: read `web/AGENTS.md` before changing it, because this version has breaking changes.
 After pushing, confirm that both Vercel statuses on the commit say `success`.

@@ -83,7 +83,8 @@ def _clean_gate_name(gate: str) -> str:
 def _parse_sequence(full_circuit_desc: str) -> list[str]:
     if not full_circuit_desc:
         return []
-    pieces = re.split(r"\s*(?:→|->|,|;)\s*", full_circuit_desc)
+    # Split on the separators only, then strip: no \s* around them, so no slow backtracking.
+    pieces = re.split(r"→|->|,|;", full_circuit_desc)
     return [piece.strip() for piece in pieces if piece.strip()]
 
 

@@ -9,6 +9,10 @@ on:
   schedule:
     - cron: "30 3 * * 1"
 
+# CI only reads the repository; the token gets no write access.
+permissions:
+  contents: read
+
 # A newer push to the same branch makes an older run pointless.
 concurrency:
   group: ci-${{ github.event_name }}-${{ github.ref }}
