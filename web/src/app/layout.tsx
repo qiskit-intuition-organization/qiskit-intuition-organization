@@ -6,6 +6,7 @@ import "./auth.css";
 import "./certificate.css";
 import { NotebookProvider } from "@/components/notebook-provider";
 import { AuthProvider } from "@/components/auth-provider";
+import SiteAnalytics from "@/components/site-analytics";
 
 export const metadata: Metadata = {
   title: "Quantum Intuition: Learn quantum computing",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <AuthProvider>
           <NotebookProvider>{children}</NotebookProvider>
         </AuthProvider>
+        <SiteAnalytics />
       </body>
     </html>
   );
