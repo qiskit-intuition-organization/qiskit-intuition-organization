@@ -4,7 +4,11 @@ Read this first if you are picking up from another account. For deeper detail on
 pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also merged into `main`).
 
 ## Where things stand
-- Live site: https://qiskit-intuition-organization-phi.vercel.app (Vercel Hobby, 2 projects). **Every push to `main` deploys.**
+- Live site: https://learn.thequantumeconomy.com (also https://qiskit-intuition-organization-phi.vercel.app; Vercel Hobby, 2 projects).
+  **Every merge to `main` deploys.** `main` is protected (2026-11-15): changes go through a PR, the `python`, `web` and
+  `audit` checks must pass, no force pushes, admins included. Repo auto-merge is allowed, so a PR can be set to merge itself.
+- **Visitor counts**: Vercel Web Analytics is on (free Hobby tier, 30 days of history) with `web/src/components/site-analytics.tsx`;
+  `web/src/lib/analytics.js` strips query strings except `?lesson=`. See the project's Analytics page in Vercel.
 - Repo: `qiskit-intuition-organization/qiskit-intuition-organization`, public (it has to be: Vercel Hobby can't deploy from a private org repo).
 - Design: dark "Tomorrow Mensch / Quantum Economy", option A "White". Approved and live, with the brand box removed.
 - **All 22 lessons have a hand-drawn explainer video on the live site** (16:9 and a phone 9:16 cut, 83 to 90 s each, Kokoro voice `bf_emma`).
