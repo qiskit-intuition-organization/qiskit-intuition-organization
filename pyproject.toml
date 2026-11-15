@@ -26,7 +26,7 @@ dependencies = [
 # built-in coach answers. Install with: uv sync --extra ai
 ai = ["google-genai>=0.3.0"]
 # Figures from learner code and circuit images; the sandbox runs without them.
-plots = ["matplotlib>=3.8.0", "pylatexenc>=2.10"]
+plots = ["matplotlib>=3.8.0", "pylatexenc>=2.11"]
 
 [dependency-groups]
 dev = ["ruff>=0.4.0"]
