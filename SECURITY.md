@@ -32,7 +32,9 @@ The two Claude checks run as scheduled tasks in the Claude desktop app (`qi-dail
 | Moderate | the next weekly batch |
 | Low | 30 days |
 
-Every fix goes through a pull request with the full CI run. A person merges it; automated routines never merge.
+Every change goes through a pull request with the full CI run. `main` is protected: a pull request is required,
+the `python`, `web` and `audit` checks must pass before it can merge, force pushes and branch deletion are blocked,
+and the rules apply to admins too. A person merges; automated checks never merge.
 
 The backend installs the newest allowed Python versions from `requirements.txt` on every deploy,
 so a Python security fix is applied by redeploying the backend project (after CI passes).
