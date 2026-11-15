@@ -16,9 +16,12 @@ Do not open a public issue. We reply within 3 days.
 | Every push and pull request | CodeQL code scanning | GitHub |
 | Every push and pull request | `pip-audit` and `npm audit --audit-level=high` (the `audit` job in CI) | GitHub Actions |
 | As soon as an advisory is published | Dependabot alert and security-fix pull request | GitHub |
-| Daily, 06:00 IST | Review of the last 24 hours of commits and any new alerts; opens fix PRs, never merges | Claude routine (Opus 5.5) |
-| Weekly, Monday 09:00 IST | Dependabot version updates, the scheduled CI and audit run, and a deeper audit of the code sandbox, sign-in and headers | Dependabot, GitHub Actions, Claude routine (Opus 5.5) |
+| Daily, 06:00 IST | Review of the last 24 hours of commits and any new alerts; opens fix PRs, never merges | Claude scheduled task on the maintainer's Mac |
+| Weekly, Monday 09:00 IST | Dependabot version updates, the scheduled CI and audit run, and a deeper audit of the code sandbox, sign-in and headers | Dependabot, GitHub Actions, Claude scheduled task on the maintainer's Mac |
 | Every 90 days | Rotate `AUTH_JWT_SECRET`, the Turso database token and `FEEDBACK_PROXY_KEY`, then redeploy | Maintainer |
+
+The two Claude checks run as scheduled tasks in the Claude desktop app (`qi-daily-security-check`,
+`qi-weekly-security-audit`). They run while the app is open; a run missed while it is closed starts on the next launch.
 
 ## How fast we patch
 

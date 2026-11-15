@@ -79,9 +79,11 @@ pipeline, read `video-studio/HANDOFF.md` on the `video-lessons` branch (also mer
   `course_feedback` table (read it in Turso's console). Rate limits: 5 per learner per 15 min; only the web proxy may name the
   learner's address, proven by `FEEDBACK_PROXY_KEY` (set on BOTH Vercel projects, Production; rotate every 90 days).
   Checked live: a test message was stored (201), GET is 405, cross-site POST is 403.
-- **Routines still to create**: the daily (06:00 IST) and weekly (Mon 09:00 IST) Opus 5.5 security routines described in
-  `SECURITY.md`. Creating them from the Tomorrow Mensch account failed with `github_token_missing`: connect GitHub at
-  https://claude.ai/connect-github on that account, then create them (prompts are in this session's history).
+- **Security checks schedule (2026-11-15)**: cloud routines could not be saved (the Tomorrow Mensch Claude Team account has no
+  GitHub link; an org admin must enable the GitHub connector). Instead two local scheduled tasks run in the Claude desktop app
+  on Dhruv's Mac: `qi-daily-security-check` (06:00 IST) and `qi-weekly-security-audit` (Mon 09:00 IST), prompts in
+  `~/.claude/scheduled-tasks/*/SKILL.md`. They work in separate git worktrees, open PRs only and never merge.
+  The Claude Code GitHub plugin fails because `GITHUB_PERSONAL_ACCESS_TOKEN` is unset; it is not needed (`gh` works).
 
 ## Rules Dhruv set (follow every one)
 1. **Never use paid extra usage.** Not under any circumstances.
