@@ -14,7 +14,7 @@
     "@vercel/analytics": "2.0.1",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
-    "katex": "^0.19.1",
+    "katex": "^0.18.10",
     "lucide-react": "^0.428.0",
     "next": "^16.4.6",
     "react": "^19.3.1",
