@@ -1,8 +1,10 @@
 """Tests for the sandbox execution core in the FastAPI backend layout."""
+import json
 import sys
 
 import pytest
 
+from backend.core import notebook_engine
 from backend.core.notebook_engine import _child_env, execute_notebook_code
 
 
@@ -42,6 +44,31 @@ def test_figures_are_returned_as_png_bytes():
     assert result["success"] is True
     assert len(result["figures"]) == 1
     assert result["figures"][0].startswith(b"\x89PNG")
+
+
+def test_oversized_figures_are_dropped_with_a_note(monkeypatch):
+    # Without a byte cap a few noise images returned 170 MB through the backend.
+    code = (
+        "plt.plot([0, 1], [1, 0])\n"
+        "plt.figure(figsize=(25, 25), dpi=100)\n"
+        "plt.imshow(np.random.default_rng(0).random((2500, 2500)))\n"
+    )
+    result = execute_notebook_code(code)
+    assert result["success"] is True, result["error"]
+    assert len(result["figures"]) == 1
+    assert sum(len(figure) for figure in result["figures"]) <= notebook_engine.MAX_FIGURE_BYTES
+    assert "too large" in result["stderr"]
+
+
+def test_an_oversized_result_file_is_refused_before_it_is_read(tmp_path, monkeypatch):
+    monkeypatch.setattr(notebook_engine, "MAX_RESULT_BYTES", 1000)
+    forged = tmp_path / "result.json"
+    forged.write_text(json.dumps({"success": True, "stdout": "x" * 5000, "stderr": "", "error": None, "figures": []}))
+
+    result = notebook_engine._read_result(str(forged))
+
+    assert result["success"] is False
+    assert "too large" in result["error"]
 
 
 def test_infinite_loop_times_out():

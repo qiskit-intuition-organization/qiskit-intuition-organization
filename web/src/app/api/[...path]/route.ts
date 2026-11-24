@@ -25,6 +25,13 @@ const paths = new Set([
   "certificate/status",
   "feedback",
 ]);
+// Routes the backend rate-limits per learner. The proxy is one address for every
+// learner, so it names the learner and proves it with the shared key.
+const learnerAddressRoutes = new Set([
+  "feedback",
+  "auth/signup",
+  "auth/reset-password",
+]);
 // Public certificate lookups; the backend decides whether the ID exists.
 const certificateLookup = /^certificate\/verify\/[A-Za-z0-9-]{1,40}$/;
 export const runtime = "nodejs";
@@ -121,7 +128,7 @@ async function proxy(
       if (request.headers.get("origin"))
         headers.set("Origin", request.headers.get("origin")!);
     }
-    if (route === "feedback") {
+    if (learnerAddressRoutes.has(route)) {
       // Vercel sets x-forwarded-for to the learner's address; the backend rate-limits on it.
       const learner = request.headers.get("x-forwarded-for")?.split(",")[0].trim();
       if (learner) headers.set("X-Learner-IP", learner.slice(0, 64));

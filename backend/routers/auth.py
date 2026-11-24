@@ -159,6 +159,17 @@ class AvatarRequest(BaseModel):
     image: str | None = Field(default=None, max_length=2800000)
 
 
+def client_address(request: Request) -> str:
+    """The learner's address for rate limits, as named by the course's web proxy.
+
+    Every learner reaches this backend from the proxy's one address, so keying
+    on the connection alone would make one shared limit for everyone.
+    """
+    from backend.routers.feedback import learner_key  # feedback imports this module
+
+    return learner_key(request)[0]
+
+
 def throttle(prefix: str, identifier: str, maximum=10, period=900):
     now = int(time.time())
     key = prefix + ":" + hashlib.sha256(identifier.encode()).hexdigest()
@@ -228,7 +239,7 @@ def clear_cookie(response: Response):
 
 @router.post("/signup", status_code=201)
 def signup(req: SignupRequest, response: Response, request: Request):
-    throttle("signup", request.client.host if request.client else "unknown", maximum=30)
+    throttle("signup", client_address(request), maximum=30)
     # Validate signing configuration before persisting an account.
     from backend.auth.security import secret
 
@@ -440,9 +451,7 @@ def forgot_password(req: EmailRequest, tasks: BackgroundTasks):
 
 @router.post("/reset-password")
 def reset_password(req: ResetRequest, response: Response, request: Request):
-    throttle(
-        "reset-use", request.client.host if request.client else "unknown", maximum=30
-    )
+    throttle("reset-use", client_address(request), maximum=30)
     digest = hashlib.sha256(req.token.encode()).hexdigest()
     encoded = PASSWORDS.hash(req.new_password)
     now = int(time.time())
