@@ -158,3 +158,17 @@ def test_worker_never_receives_backend_secrets(monkeypatch):
     assert "must-not-reach-learner-code" not in env.values()
     assert env["OMP_NUM_THREADS"] == "1"
     assert env["PYTHONPATH"]
+
+
+@pytest.mark.parametrize("code", [
+    "import numpy as np\nnp.testing.measure('print(1)', 1)\n",
+    "from numpy.testing import measure\nmeasure('print(1)')\n",
+    "import numpy.testing as t\nt.measure('print(1)')\n",
+    "import numpy as np\nnp.f2py.compile('x')\n",
+])
+def test_library_helpers_that_exec_strings_are_blocked(code):
+    # numpy.testing.measure() exec()s a string in the caller's namespace,
+    # which would skip the static check (dunders, real builtins).
+    result = execute_notebook_code(code)
+    assert result["success"] is False
+    assert "Security Restriction" in result["error"]
