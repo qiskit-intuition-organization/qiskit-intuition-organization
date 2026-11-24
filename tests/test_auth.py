@@ -376,3 +376,48 @@ def test_remove_picture_and_logout_expired_cookie(client):
     client.cookies.set(COOKIE, "invalid.session.token")
     assert client.post("/auth/logout").status_code == 200
     assert client.get("/auth/me").status_code == 401
+
+
+PROXY_KEY = "proxy-test-key-0123456789abcdef"
+
+
+def test_signup_and_reset_limits_are_per_learner_behind_the_web_proxy(client, monkeypatch):
+    # Every learner reaches the backend from the web proxy's one address, so the
+    # proxy names the learner (proven by the shared key). One caller using up the
+    # limit must not close sign-up or password reset for everybody else.
+    monkeypatch.setenv("FEEDBACK_PROXY_KEY", PROXY_KEY)
+
+    def proxied(ip):
+        return {"X-Learner-IP": ip, "X-Feedback-Proxy-Key": PROXY_KEY}
+
+    bogus = {"token": "x" * 40, "new_password": NEW_PASSWORD}
+    resets = [
+        client.post("/auth/reset-password", json=bogus, headers=proxied("203.0.113.7")).status_code
+        for _ in range(31)
+    ]
+    other_reset = client.post("/auth/reset-password", json=bogus, headers=proxied("198.51.100.2"))
+    assert resets[-1] == 429
+    assert other_reset.status_code == 400
+
+    account = {"email": "alice@example.com", "password": PASSWORD, "display_name": "Alice"}
+    signups = [
+        client.post("/auth/signup", json=account, headers=proxied("203.0.113.7")).status_code
+        for _ in range(31)
+    ]
+    other_signup = client.post(
+        "/auth/signup", json={**account, "email": "bob@example.com"}, headers=proxied("198.51.100.2")
+    )
+    assert signups[-1] == 429
+    assert other_signup.status_code == 201
+
+
+def test_a_faked_learner_address_without_the_proxy_key_is_ignored(client, monkeypatch):
+    monkeypatch.setenv("FEEDBACK_PROXY_KEY", PROXY_KEY)
+    bogus = {"token": "x" * 40, "new_password": NEW_PASSWORD}
+
+    codes = [
+        client.post("/auth/reset-password", json=bogus, headers={"X-Learner-IP": f"10.0.0.{i}"}).status_code
+        for i in range(31)
+    ]
+
+    assert codes[-1] == 429  # Rotating the header does not reset the limit.

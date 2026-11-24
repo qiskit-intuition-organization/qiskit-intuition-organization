@@ -50,6 +50,11 @@ sandbox_guard.make_process_undumpable()
 DEFAULT_TIMEOUT_SECONDS = 15
 MAX_OUTPUT_CHARS = 20_000
 MAX_FIGURES = 8
+# Byte caps on returned images and on the worker's whole result file, so one
+# program cannot push hundreds of megabytes through the shared backend.
+MAX_FIGURE_BYTES = 2 * 1024 ** 2
+MAX_TOTAL_FIGURE_BYTES = 6 * 1024 ** 2
+MAX_RESULT_BYTES = 12 * 1024 ** 2
 # Extra memory a learner program may allocate beyond the interpreter's own
 # footprint. Stops one heavy program from exhausting a small shared host.
 MEMORY_HEADROOM_BYTES = 1024 ** 3
@@ -263,19 +268,26 @@ def _run(code_string: str) -> dict:
             error_message = _truncate(traceback.format_exc())
 
     figures = []
+    notes = []
     for num in sorted(set(plt.get_fignums()) - existing_figs) if plt else []:
         fig = plt.figure(num)
         if len(figures) < MAX_FIGURES:
             try:
-                figures.append(_figure_to_png(fig))
+                png = _figure_to_png(fig)
             except Exception:
-                pass
+                png = None
+            if png is not None and (
+                len(png) > MAX_FIGURE_BYTES or sum(map(len, figures)) + len(png) > MAX_TOTAL_FIGURE_BYTES
+            ):
+                notes.append(f"Figure {num} was not shown: the image is too large. Use a smaller figure or fewer points.")
+            elif png is not None:
+                figures.append(png)
         plt.close(num)
 
     return {
         "success": success,
         "stdout": _truncate(stdout_buffer.getvalue()),
-        "stderr": _truncate(stderr_buffer.getvalue()),
+        "stderr": _truncate("".join(note + "\n" for note in notes) + stderr_buffer.getvalue()),
         "error": error_message,
         "figures": figures,
     }
@@ -293,6 +305,8 @@ def _read_result(path: str) -> dict:
     what the learner could have printed anyway.
     """
     try:
+        if os.path.getsize(path) > MAX_RESULT_BYTES:
+            return _failure("The program's output was too large to return.")
         with open(path, encoding="utf-8") as handle:
             data = json.load(handle)
         figures = data["figures"]

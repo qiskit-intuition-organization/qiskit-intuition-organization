@@ -44,5 +44,5 @@ so a Python security fix is applied by redeploying the backend project (after CI
 - Never commit secrets. Keys live only in Vercel environment variables.
 - Learner code runs in a guarded worker with a minimal environment (`backend/core/sandbox_guard.py`).
 - Feedback and account data are never shared outside the project.
-- The feedback form's rate limit trusts the learner's address only from the web proxy, which proves itself
-  with `FEEDBACK_PROXY_KEY`. Set the same random value on both Vercel projects and rotate it with the other secrets.
+- The rate limits on the feedback form, sign-up and password reset trust the learner's address only from
+  the web proxy, which proves itself with `FEEDBACK_PROXY_KEY`. Set the same random value on both Vercel projects and rotate it with the other secrets.
