@@ -106,6 +106,9 @@ BLOCKED_ATTRS = {
     "gc", "get_objects", "get_referrers", "get_referents", "inspect", "getmembers",
     "enum", "types", "logging", "dill", "pointers", "importlib", "modules",
     "get_type_hints", "ForwardRef", "sympify", "parse_expr", "literal_eval",
+    # numpy.testing.measure() exec()s a string in the caller's namespace, which
+    # skips every check above; f2py compiles and loads native code.
+    "testing", "rundocs", "f2py", "distutils",
 }
 FORMAT_ATTRS = {"format", "format_map"}
 
