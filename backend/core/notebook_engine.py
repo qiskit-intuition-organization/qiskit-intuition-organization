@@ -19,6 +19,7 @@ without an additional OS-level boundary (container, seccomp, etc.).
 
 import ast
 import contextlib
+import re
 import io
 import base64
 import binascii
@@ -106,7 +107,14 @@ BLOCKED_ATTRS = {
     "gc", "get_objects", "get_referrers", "get_referents", "inspect", "getmembers",
     "enum", "types", "logging", "dill", "pointers", "importlib", "modules",
     "get_type_hints", "ForwardRef", "sympify", "parse_expr", "literal_eval",
+    # singledispatch evaluates string annotations; these build classes or set
+    # attributes from names chosen at run time, out of reach of this check.
+    "singledispatch", "singledispatchmethod", "update_wrapper", "wraps",
+    "make_dataclass", "new_class",
 }
+# Metaclasses (ABCMeta, NamedTupleMeta, ...) build classes from a dict of names
+# chosen at run time, like a three-argument type().
+METACLASS_SUFFIXES = ("Meta", "MetaClass", "Metaclass")
 FORMAT_ATTRS = {"format", "format_map"}
 
 # The only parts of this process's environment the worker needs. Everything
@@ -118,6 +126,20 @@ CHILD_ENV_KEYS = (
 
 # Dunder attributes learners legitimately read.
 ALLOWED_DUNDERS = {"__name__", "__doc__", "__version__", "__init__", "__len__"}
+# Special methods a learner's own class may define. Others are refused: numpy
+# reads raw memory at any address a class's __array_interface__ names.
+ALLOWED_METHOD_DUNDERS = ALLOWED_DUNDERS | {
+    "__repr__", "__str__", "__eq__", "__ne__", "__lt__", "__le__", "__gt__", "__ge__",
+    "__hash__", "__bool__", "__call__", "__iter__", "__next__", "__contains__",
+    "__getitem__", "__setitem__", "__delitem__", "__add__", "__radd__", "__sub__",
+    "__rsub__", "__mul__", "__rmul__", "__matmul__", "__rmatmul__", "__truediv__",
+    "__rtruediv__", "__floordiv__", "__mod__", "__pow__", "__neg__", "__pos__",
+    "__abs__", "__invert__", "__and__", "__or__", "__xor__", "__enter__", "__exit__",
+    "__post_init__",
+}
+# Dunder names inside string literals ("__main__" is the usual one).
+_DUNDER_IN_TEXT = re.compile(r"__\w+__")
+ALLOWED_TEXT_DUNDERS = ALLOWED_DUNDERS | {"__main__", "__sandbox__"}
 
 BLOCKED_KEYWORDS = {"filename", "file", "fname"}
 
@@ -156,13 +178,64 @@ SAFE_BUILTINS = {
 }
 
 
+def _safe_type(obj, *more):
+    """``type(x)`` for learners: no class building, and no metaclasses.
+
+    Three-argument ``type()`` (or a metaclass called the same way) builds a
+    class from names made at run time, which the AST check cannot see.
+    """
+    if more:
+        raise TypeError("Security Restriction: building classes with type() is not available "
+                        "in the sandbox. Use a class statement instead.")
+    found = type(obj)
+    if issubclass(found, type):
+        raise TypeError("Security Restriction: the type of a class is not available in the sandbox.")
+    return found
+
+
+SAFE_BUILTINS["type"] = _safe_type
+
+
 def _is_private(name: str) -> bool:
     """Library internals (``random._os`` is ``os``) are walled off; lessons never need them."""
     return name.startswith("_") and not (name.startswith("__") and name.endswith("__"))
 
 
+def _blocked_name(name: str) -> bool:
+    return name in BLOCKED_ATTRS or _is_private(name) or name.endswith(METACLASS_SUFFIXES)
+
+
 def _blocked_path(dotted: str) -> bool:
-    return any(part in BLOCKED_ATTRS or _is_private(part) for part in dotted.split("."))
+    return any(_blocked_name(part) for part in dotted.split("."))
+
+
+def _is_dunder(name) -> bool:
+    return isinstance(name, str) and name.startswith("__") and name.endswith("__")
+
+
+def _definition_violation(node) -> str | None:
+    """Names a learner defines, or reads through a pattern, rather than writes as an attribute."""
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+        if _is_dunder(node.name) and node.name not in ALLOWED_METHOD_DUNDERS:
+            return f"Security Restriction: Defining '{node.name}' is prohibited in the sandbox."
+        if isinstance(node, ast.ClassDef) and node.keywords:
+            return "Security Restriction: Class keywords such as 'metaclass=' are not available in the sandbox."
+    elif isinstance(node, ast.arg):
+        if node.arg.startswith("__") and node.arg not in ALLOWED_DUNDERS:
+            return f"Security Restriction: Name '{node.arg}' is prohibited in the sandbox."
+    elif isinstance(node, ast.keyword):
+        if node.arg and node.arg.startswith("__") and node.arg not in ALLOWED_DUNDERS:
+            return f"Security Restriction: Name '{node.arg}' is prohibited in the sandbox."
+    elif isinstance(node, ast.MatchClass):
+        # case object(name=x) reads obj.name: judge it as an attribute.
+        for attr in node.kwd_attrs:
+            if _blocked_name(attr) or (_is_dunder(attr) and attr not in ALLOWED_DUNDERS):
+                return f"Security Restriction: Accessing '{attr}' is prohibited in the sandbox."
+    elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+        for found in _DUNDER_IN_TEXT.findall(node.value):
+            if found not in ALLOWED_TEXT_DUNDERS:
+                return f"Security Restriction: The name '{found}' is prohibited in the sandbox."
+    return None
 
 
 def validate_code_safety(code_string: str):
@@ -187,7 +260,7 @@ def validate_code_safety(code_string: str):
             for alias in node.names:
                 if alias.name == "*":
                     return "Security Restriction: 'import *' is not available in the sandbox. Import the names you need."
-                if alias.name in BLOCKED_ATTRS or _is_private(alias.name):
+                if _blocked_name(alias.name):
                     return f"Security Restriction: Importing '{alias.name}' is prohibited in the sandbox."
         elif isinstance(node, ast.Call):
             if isinstance(node.func, ast.Name) and node.func.id in BLOCKED_CALLS:
@@ -203,11 +276,15 @@ def validate_code_safety(code_string: str):
                     f"Security Restriction: '.{attr}()' is not available in the sandbox. "
                     'Use an f-string instead, for example f"{p:.3f}".'
                 )
-            if attr in BLOCKED_ATTRS or (is_dunder and attr not in ALLOWED_DUNDERS) or _is_private(attr):
+            if _blocked_name(attr) or (is_dunder and attr not in ALLOWED_DUNDERS):
                 return f"Security Restriction: Accessing '{attr}' is prohibited in the sandbox."
         elif isinstance(node, ast.Name):
             if node.id.startswith("__") and node.id not in ALLOWED_DUNDERS:
                 return f"Security Restriction: Name '{node.id}' is prohibited in the sandbox."
+        else:
+            violation = _definition_violation(node)
+            if violation:
+                return violation
 
     return None
 

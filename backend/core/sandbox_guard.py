@@ -6,7 +6,8 @@ scientific libraries offer endless indirect ways to reach ``open`` or ``os``
 So the worker also gets:
 
 * ``lock_down_process``: on Linux a seccomp filter makes the kernel refuse to
-  start any program, and the unaudited process helpers are removed.
+  start any program, fork, or open a socket, and the unaudited process helpers
+  are removed.
 * ``install``: a PEP 578 audit hook that sees every file open, spawn and socket
   the worker makes, whichever library asks. Python code cannot remove it.
 
@@ -245,17 +246,27 @@ def install(writable_dirs) -> None:
 
 # --- Process lock-down -----------------------------------------------------------
 
-# Syscalls the worker never needs: starting programs, and reading or writing
-# other processes. (Linux numbers per architecture, with the audit arch value.)
+# Syscalls the worker never needs: starting programs, reading or writing other
+# processes, opening sockets, making new processes and io_uring (whose requests
+# skip this filter). The audit hook refuses these too, but it lives in the
+# worker's own memory, so code that gets raw memory access can switch it off;
+# the kernel filter cannot be undone. Threads still start: clone() is allowed
+# only with CLONE_THREAD, and clone3() answers ENOSYS so glibc falls back to it.
+# (Linux numbers per architecture, with the audit arch value.)
 _SECCOMP_TABLES = {
-    "x86_64": (0xC000003E, (59, 322, 101, 310, 311)),  # execve, execveat, ptrace, process_vm_readv/writev
-    "aarch64": (0xC00000B7, (221, 281, 117, 270, 271)),
+    # execve, execveat, ptrace, process_vm_readv/writev, socket, fork, vfork, io_uring_setup
+    "x86_64": (0xC000003E, (59, 322, 101, 310, 311, 41, 57, 58, 425), 56, 435),
+    # execve, execveat, ptrace, process_vm_readv/writev, socket, io_uring_setup
+    "aarch64": (0xC00000B7, (221, 281, 117, 270, 271, 198, 425), 220, 435),
 }
+_CLONE_THREAD = 0x00010000
 
 
-def _seccomp_program(audit_arch, denied, x86):
-    load_word, jump_equal, jump_at_least, give = 0x20, 0x15, 0x35, 0x06
+def _seccomp_program(audit_arch, denied, clone, clone3, x86):
+    load_word, jump_equal, jump_at_least, jump_set, give = 0x20, 0x15, 0x35, 0x45, 0x06
     allow, refuse = 0x7FFF0000, 0x00050000 | 1  # SECCOMP_RET_ERRNO | EPERM
+    not_there = 0x00050000 | 38  # SECCOMP_RET_ERRNO | ENOSYS
+    first_argument = 16  # offsetof(struct seccomp_data, args[0]), low 32 bits
     program = [
         (load_word, 0, 0, 4),            # the calling architecture
         (jump_equal, 1, 0, audit_arch),  # ours: skip the refusal below
@@ -266,12 +277,19 @@ def _seccomp_program(audit_arch, denied, x86):
         program += [(jump_at_least, 0, 1, 0x40000000), (give, 0, 0, refuse)]
     for number in denied:
         program += [(jump_equal, 0, 1, number), (give, 0, 0, refuse)]
-    program.append((give, 0, 0, allow))
+    program += [
+        (jump_equal, 0, 1, clone3), (give, 0, 0, not_there),
+        (jump_equal, 1, 0, clone), (give, 0, 0, allow),
+        # clone(): a new thread is fine, a new process is not.
+        (load_word, 0, 0, first_argument),
+        (jump_set, 0, 1, _CLONE_THREAD), (give, 0, 0, allow),
+        (give, 0, 0, refuse),
+    ]
     return program
 
 
 def _install_seccomp() -> bool:
-    """Make the kernel refuse execve and cross-process access for this process."""
+    """Make the kernel refuse programs, new processes, sockets and cross-process access."""
     if not sys.platform.startswith("linux"):
         return False
     import ctypes

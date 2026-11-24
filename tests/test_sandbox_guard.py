@@ -181,11 +181,76 @@ def test_seccomp_stops_programs_starting_even_without_the_audit_hook():
 
 
 def test_seccomp_program_refuses_exec_and_allows_everything_else():
-    audit_arch, denied = sandbox_guard._SECCOMP_TABLES["x86_64"]
-    program = sandbox_guard._seccomp_program(audit_arch, denied, x86=True)
-    assert program[-1] == (0x06, 0, 0, 0x7FFF0000)
+    program = sandbox_guard._seccomp_program(*sandbox_guard._SECCOMP_TABLES["x86_64"], x86=True)
+    assert (0x06, 0, 0, 0x7FFF0000) in program
     assert (0x15, 0, 1, 59) in program  # execve
-    assert all(step[0] in (0x20, 0x15, 0x35, 0x06) for step in program)
+    assert all(step[0] in (0x20, 0x15, 0x35, 0x45, 0x06) for step in program)
+
+
+# Linux syscall numbers the filter is judged on (not taken from the code under test).
+_SYSCALLS = {
+    "x86_64": {"read": 0, "execve": 59, "socket": 41, "fork": 57, "vfork": 58, "clone": 56,
+               "clone3": 435, "io_uring_setup": 425},
+    "aarch64": {"read": 63, "execve": 221, "socket": 198, "clone": 220, "clone3": 435,
+                "io_uring_setup": 425},
+}
+_ALLOW, _EPERM, _ENOSYS = 0x7FFF0000, 0x00050000 | 1, 0x00050000 | 38
+_CLONE_THREAD, _SIGCHLD = 0x00010000, 17
+_PTHREAD_FLAGS = 0x3D0F00  # what glibc passes to clone() for a new thread
+
+
+def _verdict(program, audit_arch, number, first_arg=0):
+    """Run a classic BPF seccomp program the way the kernel would."""
+    data = {0: number, 4: audit_arch, 16: first_arg, 20: 0}
+    accumulator, step = 0, 0
+    while True:
+        code, if_true, if_false, value = program[step]
+        if code == 0x20:
+            accumulator = data[value]
+            step += 1
+        elif code == 0x06:
+            return value
+        else:
+            taken = {0x15: accumulator == value, 0x35: accumulator >= value,
+                     0x45: bool(accumulator & value)}[code]
+            step += 1 + (if_true if taken else if_false)
+
+
+@pytest.mark.parametrize("machine", ["x86_64", "aarch64"])
+def test_seccomp_program_refuses_network_and_new_processes(machine):
+    # An escape that switches off the audit hook (it lives in the worker's own
+    # memory) must still find the kernel refusing sockets and new processes.
+    table = sandbox_guard._SECCOMP_TABLES[machine]
+    program = sandbox_guard._seccomp_program(*table, x86=machine == "x86_64")
+    arch, calls = table[0], _SYSCALLS[machine]
+    assert _verdict(program, arch, calls["read"]) == _ALLOW
+    for name in ("execve", "socket", "fork", "vfork", "io_uring_setup"):
+        if name in calls:
+            assert _verdict(program, arch, calls[name]) == _EPERM, name
+    assert _verdict(program, arch, calls["clone"], _SIGCHLD) == _EPERM  # os.fork()
+    assert _verdict(program, arch, calls["clone"], _PTHREAD_FLAGS) == _ALLOW  # threads still start
+    assert _verdict(program, arch, calls["clone3"]) == _ENOSYS  # glibc then falls back to clone()
+    assert _verdict(program, 0xC0DE, calls["read"]) == _EPERM  # a foreign architecture
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="seccomp is Linux only")
+def test_seccomp_stops_sockets_and_forks_but_not_threads_without_the_audit_hook():
+    probe = (
+        "from backend.core import sandbox_guard\n"
+        "assert sandbox_guard._install_seccomp(), 'filter not installed'\n"
+        "import os, socket, threading\n"
+        "for attempt in (socket.socket, os.fork):\n"
+        "    try:\n"
+        "        attempt()\n"
+        "    except PermissionError:\n"
+        "        print('refused')\n"
+        "worker = threading.Thread(target=print, args=('thread ran',))\n"
+        "worker.start()\n"
+        "worker.join()\n"
+    )
+    child = subprocess.run([sys.executable, "-c", probe], capture_output=True, text=True, timeout=60,
+                           cwd=notebook_engine._PROJECT_ROOT)
+    assert child.stdout.split("\n")[:3] == ["refused", "refused", "thread ran"], child.stderr
 
 
 # --- The guard itself ---------------------------------------------------------------
@@ -294,12 +359,63 @@ def test_guard_refuses_path_objects_it_cannot_pin_down(tmp_path):
         "def gen():\n    yield 1\ng = gen()\nprint(g.gi_frame.f_back)",
         "try:\n    1 / 0\nexcept Exception as e:\n    print(e.with_traceback(None))\n    t = e.args\nx = (lambda: 0)\nprint(x.f_globals)",
         "import typing\ndef f(a: 'x'):\n    pass\nprint(typing.get_type_hints(f))",
+        # Round three (weekly audit 2026-11-24): match patterns read attributes by
+        # name, and a numpy __array_interface__ on a learner class reads and writes
+        # raw memory, which switches the audit hook off.
+        "import random\nmatch random:\n    case object(_os=OS):\n        pass",
+        "match np:\n    case object(__dict__=D):\n        pass",
+        "class M:\n    @property\n    def __array_interface__(self):\n        return {}",
+        "M = type('M', (), {'__array_interface__': {}})",
+        "M = type('M', (), dict(__array_interface__={}))",
+        "def f(__array_interface__=None):\n    pass",
+        "import collections.abc\nclass M(metaclass=collections.abc.ABCMeta):\n    pass",
+        "from collections.abc import ABCMeta",
+        "import typing\nprint(typing.NamedTupleMeta)",
+        "import dataclasses\nM = dataclasses.make_dataclass('M', ['x'])",
+        "from functools import update_wrapper",
+        # singledispatch evaluates string annotations, out of reach of this check.
+        "import functools\n@functools.singledispatch\ndef g(x):\n    return x\n"
+        "def f(x: 'random._os'):\n    pass\ng.register(f)",
     ],
 )
 def test_known_escape_routes_are_blocked_before_running(code):
     result = execute_notebook_code(code)
     assert result["success"] is False
     assert "Security Restriction" in result["error"]
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        "M = type('M', (), {})",
+        "print(type(int))",
+        "key = '_' * 2 + 'array_interface' + '_' * 2\nM = type(int)('M', (), {key: {}})",
+    ],
+)
+def test_classes_cannot_be_built_from_runtime_strings(code):
+    # Names built at run time slip past the AST check, so type() itself refuses
+    # to make classes or hand out the metaclass that would.
+    result = execute_notebook_code(code)
+    assert result["success"] is False
+    assert "Security Restriction" in result["error"]
+
+
+def test_ordinary_classes_and_type_checks_still_work():
+    code = (
+        "class Qubit:\n"
+        "    def __init__(self, name):\n"
+        "        self.name = name\n"
+        "    def __repr__(self):\n"
+        "        return f'Qubit({self.name})'\n"
+        "    def __eq__(self, other):\n"
+        "        return isinstance(other, Qubit) and other.name == self.name\n"
+        "print(Qubit('q0'), Qubit('q0') == Qubit('q0'), type(3).__name__, type(1.5) is float)\n"
+        "if __name__ == '__sandbox__':\n"
+        "    print('ok')\n"
+    )
+    result = execute_notebook_code(code)
+    assert result["success"], result["error"]
+    assert result["stdout"].split() == ["Qubit(q0)", "True", "int", "True", "ok"]
 
 
 def test_lesson_style_code_still_runs():
